@@ -18,9 +18,13 @@
 
 ```
 .
-├── index.html        — главная страница (hero + 6 секций + футер)
-├── images/           — фото-мокапы продукции
-│   ├── 1.jpg ... 15.jpg
+├── index.html        — главная (hero 8×6 + 6 секций + футер)
+├── discover.html     — ТЗ-генератор (8 шагов → PDF)
+├── robots.txt        — поиск (discover закрыт от индексации)
+├── sitemap.xml       — карта сайта
+├── vercel.json       — security headers + cache (для Vercel)
+├── _headers          — то же для Netlify
+├── images/           — фото-мокапы продукции (1.jpg … 15.jpg, 8.jpg намеренно пропущен)
 └── README.md
 ```
 
@@ -43,7 +47,13 @@ python3 -m http.server 8000
 
 ## Деплой
 
-### Netlify (рекомендуется для клиента)
+### Vercel (текущий хостинг)
+
+1. [vercel.com](https://vercel.com) → Import Git Repository → выбрать этот репо
+2. Framework Preset: **Other**, Build / Output: оставить пустыми
+3. `vercel.json` уже в репо — security headers и cache применятся автоматически
+
+### Netlify (альтернатива)
 
 1. [netlify.com](https://netlify.com) → войти через GitHub
 2. **Add new site → Import from Git** → выбрать этот репо

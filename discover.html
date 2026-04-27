@@ -4,6 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Premium Selection — Определение задачи (ТЗ-генератор)</title>
+<meta name="description" content="Бесплатный ТЗ-генератор за 8 шагов: цель → отрасль → размер → активы → объём работ → сроки и бюджет → контакты. Готовое ТЗ в PDF за 3 минуты.">
+<link rel="canonical" href="https://premium-selection.com/discover.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Premium Selection">
+<meta property="og:title" content="ТЗ-генератор · Premium Selection">
+<meta property="og:description" content="8 шагов от цели до готового PDF. Объём работ, фазы, бюджет — за 3 минуты.">
+<meta property="og:url" content="https://premium-selection.com/discover.html">
+<meta property="og:image" content="https://premium-selection.com/images/13.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ТЗ-генератор · Premium Selection">
+<meta name="twitter:description" content="8 шагов от цели до готового PDF. Объём работ, фазы, бюджет — за 3 минуты.">
+<meta name="twitter:image" content="https://premium-selection.com/images/13.jpg">
+
+<meta name="robots" content="noindex,follow">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -95,6 +115,10 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
 .tz-stat .k { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:rgba(0,0,0,.55); }
 .budget-warn { margin-top:12px; padding:12px 16px; background:var(--red); color:#fff; font-size:var(--fs-body); border-radius:2px; font-weight:500; }
 .budget-ok { margin-top:12px; padding:12px 16px; background:rgba(0,0,0,.06); color:var(--ink); font-size:var(--fs-body); border-radius:2px; border-left:3px solid var(--red); }
+.budget-pre { margin-top:24px; padding:16px 20px; border:1.5px solid rgba(255,255,255,.4); border-radius:4px; background:rgba(0,0,0,.18); font-size:var(--fs-body); line-height:1.5; }
+.budget-pre.warn { border-color:#fff; background:#fff; color:var(--ink); }
+.budget-pre strong { font-family:var(--ff-mono); letter-spacing:var(--ls-mono); text-transform:uppercase; font-size:var(--fs-meta); display:block; margin-bottom:4px; opacity:.7; font-weight:500; }
+.budget-pre .pre-num { font-family:var(--ff-display); font-weight:800; font-size:clamp(20px,2vw,28px); letter-spacing:var(--ls-display); }
 .tz-actions { display:flex; gap:12px; flex-wrap:wrap; margin:24px auto 80px; max-width:1280px; padding:0 clamp(24px, 5vw, 80px); }
 .btn-primary { display:inline-flex; align-items:center; gap:12px; padding:16px 28px; background:#fff; color:var(--ink); border-radius:999px; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; transition:all .3s; }
 .btn-primary:hover { background:var(--ink); color:#fff; }
@@ -116,6 +140,14 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
   .tz-grid2 { grid-template-columns:1fr; }
   .tz-head { grid-template-columns:1fr; }
   .tz-head .tz-meta { text-align:left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 </style>
 </head>
@@ -274,6 +306,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
     <button class="opt" data-key="budget" data-value="large" data-label="$50-200K"><span class="opt-num">BUDGET · L</span><span class="opt-title">$50-200K</span><span class="opt-desc">Полный цикл.</span></button>
     <button class="opt" data-key="budget" data-value="xl" data-label="$200K+"><span class="opt-num">BUDGET · XL</span><span class="opt-title">$200K+</span><span class="opt-desc">Многолетняя программа.</span></button>
   </div>
+  <div id="budgetCheck" class="budget-pre" hidden></div>
   <div class="step-foot">
     <button class="step-back" data-back="6">Назад</button>
     <button class="next-btn" data-next="8" data-from="7">Далее</button>
@@ -372,6 +405,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
   var $ = function(s){ return document.querySelector(s); };
   var $$ = function(s){ return document.querySelectorAll(s); };
   var TOTAL = 8;
+  var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   var branches = {
     sales: { q:'В чём <em>корень</em> проблемы?', opts:[
@@ -444,7 +478,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
     $('#stepIdx').textContent = stepKey === 'final' ? 'OK' : (idx<10?'0'+idx:''+idx);
     $('#progress').style.width = (stepKey === 'final' ? 100 : (idx/TOTAL*100)) + '%';
     renderCrumbs();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: prefersReduce ? 'auto' : 'smooth' });
   }
 
   function renderCrumbs(){
@@ -477,6 +511,50 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
     var lo = 0, hi = 0;
     state.dels.forEach(function(d){ var p = delsPricing[d]; if (p) { lo += p[0]; hi += p[1]; } });
     return [Math.round(lo), Math.round(hi)];
+  }
+
+  // Превью бюджета на шаге 7: показывает реальную вилку оценки vs выбранный бюджет
+  // ДО перехода на шаг 8 — чтобы клиент мог скорректировать deliverables, если scope не влезает.
+  function renderBudgetCheck(){
+    var box = $('#budgetCheck'); if (!box) return;
+    if (!state.budget && !state.urgency) { box.hidden = true; return; }
+    while (box.firstChild) box.removeChild(box.firstChild);
+    box.classList.remove('warn');
+
+    var est = calcEstimate();
+    var clientB = budgetRanges[state.budget] || null;
+
+    var titleEl = document.createElement('strong');
+    var numEl = document.createElement('span');
+    numEl.className = 'pre-num';
+    var subEl = document.createElement('div');
+    subEl.style.marginTop = '6px';
+
+    if (state.dels.length === 0) {
+      titleEl.textContent = 'Объём работ';
+      numEl.textContent = '— шаг 06 пуст';
+      subEl.textContent = 'На шаге 06 ничего не выбрано. Уточним deliverables на discovery — сейчас оценить нельзя.';
+    } else {
+      titleEl.textContent = 'Оценка по выбранным deliverables';
+      numEl.textContent = fmtMoney(est[0]) + ' – ' + fmtMoney(est[1]);
+      if (clientB) {
+        if (clientB[1] < est[0]) {
+          subEl.textContent = 'Бюджет «' + (labels.budget||'') + '» ниже минимальной оценки. На шаге 06 можно убрать пункты или выбрать поэтапную программу.';
+          box.classList.add('warn');
+        } else if (clientB[0] > est[1]) {
+          subEl.textContent = 'Бюджет «' + (labels.budget||'') + '» с запасом — есть пространство для премиум-исполнения.';
+        } else {
+          subEl.textContent = 'Бюджет «' + (labels.budget||'') + '» совпадает с оценкой. Финализируем scope на discovery.';
+        }
+      } else {
+        subEl.textContent = 'Выберите бюджет, чтобы сравнить с оценкой.';
+      }
+    }
+
+    box.appendChild(titleEl);
+    box.appendChild(numEl);
+    box.appendChild(subEl);
+    box.hidden = false;
   }
 
   function buildTzPhases(){
@@ -621,6 +699,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
         else if (k === 'branch') { show('3'); }
         else if (k === 'industry') { show('4'); }
         else if (k === 'size') { show('5'); }
+        else if (k === 'budget' || k === 'urgency') { renderBudgetCheck(); renderCrumbs(); }
       }
       return;
     }
@@ -635,7 +714,9 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
       return;
     }
     if (e.target.id === 'generateBtn') {
-      // Hijack: 3 быстрых клика подряд (<2s) — генерируем без обязательных полей
+      // Внутренний шорткат: 3 быстрых клика подряд (<2s) — генерируем ТЗ без обязательных полей.
+      // Зачем: для презентации/демо менеджеру можно протестировать вид документа без ввода реальных данных.
+      // Если перестанет быть нужен — удалить этот if-блок до строки `hijackClicks = [];` и оставить «Обычная валидация».
       var now = Date.now();
       hijackClicks.push(now);
       hijackClicks = hijackClicks.filter(function(t){ return now - t < 2000; });

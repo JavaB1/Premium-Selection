@@ -5,9 +5,49 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Premium Selection — Мы создаём грандиозные проекты</title>
 <meta name="description" content="Premium Selection — рекламно-производственная компания по созданию стильной брендированной продукции для вашего бизнеса.">
+<link rel="canonical" href="https://premium-selection.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Premium Selection">
+<meta property="og:title" content="Premium Selection — Мы создаём грандиозные проекты">
+<meta property="og:description" content="Marketing & Research · Production · IT. Группа компаний под единым стандартом качества. Tashkent · Dubai.">
+<meta property="og:url" content="https://premium-selection.com/">
+<meta property="og:image" content="https://premium-selection.com/images/13.jpg">
+<meta property="og:image:width" content="2310">
+<meta property="og:image:height" content="1341">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Premium Selection — Мы создаём грандиозные проекты">
+<meta name="twitter:description" content="Marketing & Research · Production · IT. Группа компаний под единым стандартом качества.">
+<meta name="twitter:image" content="https://premium-selection.com/images/13.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Premium Selection Group",
+  "url": "https://premium-selection.com/",
+  "logo": "https://premium-selection.com/images/13.jpg",
+  "foundingDate": "2018",
+  "description": "Группа компаний под единым стандартом качества — Marketing & Research, Production, IT.",
+  "address": [
+    { "@type": "PostalAddress", "addressLocality": "Tashkent", "addressCountry": "UZ" },
+    { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" }
+  ],
+  "contactPoint": [
+    { "@type": "ContactPoint", "contactType": "Marketing & Research", "telephone": "+998-71-200-11-01", "email": "marketing@premium-selection.com", "availableLanguage": ["ru","en","uz"] },
+    { "@type": "ContactPoint", "contactType": "Production",          "telephone": "+998-71-200-11-02", "email": "production@premium-selection.com", "availableLanguage": ["ru","en","uz"] },
+    { "@type": "ContactPoint", "contactType": "IT",                  "telephone": "+998-71-200-11-03", "email": "it@premium-selection.com",          "availableLanguage": ["ru","en","uz"] }
+  ]
+}
+</script>
 <style>
   :root {
     /* Цвет — Pantone 485 (исторический Ogilvy red), контраст с белым 5.4:1 — проходит WCAG AA */
@@ -56,6 +96,7 @@
     padding:20px var(--gutter);
     display:flex; justify-content:space-between; align-items:center;
     color:#fff;
+    transition: color .35s cubic-bezier(.65,0,.35,1);
   }
   .nav-logo { display:flex; align-items:center; gap:10px; }
   .nav-logo svg { width:34px; height:36px; display:block; }
@@ -69,6 +110,8 @@
     letter-spacing:var(--ls-mono); text-transform:uppercase;
   }
   .nav-meta a:hover { opacity:.6; }
+  /* Инверсия для светлых секций (about / works / news) — JS добавляет .dark */
+  .nav.dark { color: var(--ink); }
 
   /* ============ HERO ============ */
   .hero {
@@ -109,9 +152,11 @@
     transition: opacity 1s cubic-bezier(.65,0,.35,1);
   }
   .cell .frame.active { opacity:1; }
+  .cell .frame picture { display:block; width:100%; height:100%; }
   .cell .frame img {
     width:100%; height:100%; object-fit:cover; display:block;
   }
+  .work picture, .post .cover picture { display:block; width:100%; height:100%; }
 
   /* Цвета */
   .c1 { background:#1791C9; }
@@ -477,6 +522,20 @@
     color: rgba(255,255,255,.5);
   }
 
+  /* === FOCUS — клавиатурная навигация === */
+  :focus { outline: none; }
+  a:focus-visible, button:focus-visible,
+  .cta:focus-visible, .dir-row:focus-visible, .work:focus-visible,
+  .ghost-btn:focus-visible, .post:focus-visible, .contact-card:focus-visible,
+  .nav-meta a:focus-visible, .ftr-col a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .about :focus-visible, .works :focus-visible, .news :focus-visible {
+    outline-color: var(--ink);
+  }
+
   /* === FOOTER === */
   footer.site-footer {
     background: #050505; color: #fff;
@@ -582,6 +641,18 @@
     .bottom { grid-template-columns:1fr; gap:12px; }
     .bottom .cta { justify-self:flex-start; }
     .meta-bottom { flex-direction:column; gap:4px; align-items:flex-start; }
+  }
+
+  /* ============ REDUCED MOTION ============ */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .cell .frame { opacity: 1 !important; }
+    .center .lede em.fade { opacity: 1 !important; }
   }
 </style>
 </head>
@@ -768,31 +839,31 @@
 
     <div class="works-grid">
       <a href="#" class="work w1">
-        <img src="images/13.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/13.webp" type="image/webp"><img src="images/13.jpg" alt="Айдентика Bayan 2025" loading="lazy"></picture>
         <div class="meta"><div class="lbl">01 / Brand identity</div><h3>Айдентика&nbsp;— Bayan&nbsp;/&nbsp;2025</h3></div>
       </a>
       <a href="#" class="work w2">
-        <img src="images/12.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/12.webp" type="image/webp"><img src="images/12.jpg" alt="Корпоративная одежда Kapsula" loading="lazy"></picture>
         <div class="meta"><div class="lbl">02 / Apparel</div><h3>Корпоративная одежда&nbsp;— Kapsula</h3></div>
       </a>
       <a href="#" class="work w3">
-        <img src="images/1.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/1.webp" type="image/webp"><img src="images/1.jpg" alt="Брендированный мерч" loading="lazy"></picture>
         <div class="meta"><div class="lbl">03 / T-shirt</div><h3>Брендированный мерч</h3></div>
       </a>
       <a href="#" class="work w4">
-        <img src="images/2.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/2.webp" type="image/webp"><img src="images/2.jpg" alt="Шопер с логотипом" loading="lazy"></picture>
         <div class="meta"><div class="lbl">04 / Tote</div><h3>Шопер с&nbsp;логотипом</h3></div>
       </a>
       <a href="#" class="work w5">
-        <img src="images/15.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/15.webp" type="image/webp"><img src="images/15.jpg" alt="Сувенирная линейка" loading="lazy"></picture>
         <div class="meta"><div class="lbl">05 / Souvenir</div><h3>Сувенирная линейка</h3></div>
       </a>
       <a href="#" class="work w6">
-        <img src="images/14.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/14.webp" type="image/webp"><img src="images/14.jpg" alt="Наружная реклама Tashkent" loading="lazy"></picture>
         <div class="meta"><div class="lbl">06 / Outdoor</div><h3>Наружная реклама&nbsp;— Tashkent</h3></div>
       </a>
       <a href="#" class="work w7">
-        <img src="images/3.jpg" alt="" loading="lazy">
+        <picture><source srcset="images/3.webp" type="image/webp"><img src="images/3.jpg" alt="Брендирование" loading="lazy"></picture>
         <div class="meta"><div class="lbl">07 / Branding</div><h3>Брендирование</h3></div>
       </a>
     </div>
@@ -815,7 +886,7 @@
 
     <div class="news-grid">
       <a href="#" class="post">
-        <div class="cover"><img src="images/13.jpg" alt="" loading="lazy"></div>
+        <div class="cover"><picture><source srcset="images/13.webp" type="image/webp"><img src="images/13.jpg" alt="" loading="lazy"></picture></div>
         <div class="meta">
           <span class="cat">BRANDING</span>
           <span>22 АПР 2026</span>
@@ -826,7 +897,7 @@
       </a>
 
       <a href="#" class="post">
-        <div class="cover"><img src="images/14.jpg" alt="" loading="lazy"></div>
+        <div class="cover"><picture><source srcset="images/14.webp" type="image/webp"><img src="images/14.jpg" alt="" loading="lazy"></picture></div>
         <div class="meta">
           <span class="cat">PRODUCTION</span>
           <span>15 АПР 2026</span>
@@ -837,7 +908,7 @@
       </a>
 
       <a href="#" class="post">
-        <div class="cover"><img src="images/12.jpg" alt="" loading="lazy"></div>
+        <div class="cover"><picture><source srcset="images/12.webp" type="image/webp"><img src="images/12.jpg" alt="" loading="lazy"></picture></div>
         <div class="meta">
           <span class="cat">RESEARCH</span>
           <span>08 АПР 2026</span>
@@ -940,7 +1011,13 @@
 
 <script>
 (function(){
-  console.log('[PSG] init');
+  // Лог-канал виден только локально. На продакшене console.log → no-op (console.error остаётся).
+  var DEBUG = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname) || location.hostname === '';
+  var log = DEBUG ? console.log.bind(console) : function(){};
+  log('[PSG] init');
+
+  // Уважаем системную настройку «уменьшить анимации»: гейт для тяжёлых таймеров.
+  var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   // ============== 1. PHOTO CYCLING IN HERO CELLS ==============
   try {
@@ -973,37 +1050,45 @@
         var src = pool[(i * 2 + k * 5) % pool.length];
         var wrap = document.createElement('div');
         wrap.className = 'frame' + (k === 0 ? ' active' : '');
+        var picture = document.createElement('picture');
+        var source = document.createElement('source');
+        source.type = 'image/webp';
+        source.srcset = 'images/' + src.replace(/\.jpe?g$/i, '.webp');
         var img = document.createElement('img');
         img.src = 'images/' + src;
         img.alt = '';
         img.loading = 'lazy';
-        wrap.appendChild(img);
+        picture.appendChild(source);
+        picture.appendChild(img);
+        wrap.appendChild(picture);
         cell.appendChild(wrap);
       }
     });
 
-    cells.forEach(function(cell, i){
-      var frames = cell.querySelectorAll('.frame');
-      if (frames.length < 2) return;
-      var cur = 0;
-      // Случайная длительность каждой фазы — никогда не синхронизируются
-      function rand(min, max){ return min + Math.random() * (max - min); }
-      function step(){
-        frames[cur].classList.remove('active');
-        cell.classList.add('void');
-        var gap = rand(4000, 8000);   // 4–8 сек воздуха
-        setTimeout(function(){
-          cell.classList.remove('void');
-          cur = (cur + 1) % frames.length;
-          frames[cur].classList.add('active');
-          var show = rand(6000, 12000); // 6–12 сек показа
-          setTimeout(step, show);
-        }, gap);
-      }
-      // Стартовый рандомный сдвиг — старт у всех разный
-      setTimeout(step, rand(2000, 9000));
-    });
-    console.log('[PSG] cells ok:', cells.length);
+    if (!prefersReduce) {
+      cells.forEach(function(cell, i){
+        var frames = cell.querySelectorAll('.frame');
+        if (frames.length < 2) return;
+        var cur = 0;
+        // Случайная длительность каждой фазы — никогда не синхронизируются
+        function rand(min, max){ return min + Math.random() * (max - min); }
+        function step(){
+          frames[cur].classList.remove('active');
+          cell.classList.add('void');
+          var gap = rand(4000, 8000);   // 4–8 сек воздуха
+          setTimeout(function(){
+            cell.classList.remove('void');
+            cur = (cur + 1) % frames.length;
+            frames[cur].classList.add('active');
+            var show = rand(6000, 12000); // 6–12 сек показа
+            setTimeout(step, show);
+          }, gap);
+        }
+        // Стартовый рандомный сдвиг — старт у всех разный
+        setTimeout(step, rand(2000, 9000));
+      });
+    }
+    log('[PSG] cells ok:', cells.length);
   } catch(e) { console.error('[PSG] cells error:', e); }
 
   // ============== 2. LIVE CLOCK ==============
@@ -1027,7 +1112,7 @@
     }
     tick();
     setInterval(tick, 1000);
-    console.log('[PSG] clock ok');
+    log('[PSG] clock ok');
   } catch(e) { console.error('[PSG] clock error:', e); }
 
   // ============== 3. NAV COLOR ON SCROLL ==============
@@ -1050,14 +1135,14 @@
       }, { rootMargin: '-60px 0px -85% 0px' });
       darkSections.forEach(function(s){ darkObs.observe(s); });
     }
-    console.log('[PSG] nav ok');
+    log('[PSG] nav ok');
   } catch(e) { console.error('[PSG] nav error:', e); }
 
   // ============== 4. SYNONYM ROTATION ==============
   try {
     var synonyms = ['грандиозные','масштабные','амбициозные','выдающиеся','впечатляющие','легендарные','мощные','смелые','значимые','большие'];
     var rot = document.getElementById('rotWord');
-    if (rot) {
+    if (rot && !prefersReduce) {
       var ri = 0;
       setInterval(function(){
         rot.classList.add('fade');
@@ -1068,8 +1153,19 @@
         }, 350);
       }, 2400);
     }
-    console.log('[PSG] synonyms ok');
+    log('[PSG] synonyms ok');
   } catch(e) { console.error('[PSG] synonyms error:', e); }
+
+  // ============== 5. PLACEHOLDER ANCHORS — block scroll-to-top ==============
+  // Внутренние страницы ещё не готовы. Кликая на href="#" — ничего не происходит,
+  // вместо неприятного скачка наверх и порчи URL.
+  try {
+    document.addEventListener('click', function(e){
+      var a = e.target && e.target.closest && e.target.closest('a[href="#"]');
+      if (a) { e.preventDefault(); }
+    });
+    log('[PSG] anchor-block ok');
+  } catch(e) { console.error('[PSG] anchor-block error:', e); }
 })();
 </script>
 
