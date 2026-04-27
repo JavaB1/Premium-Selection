@@ -569,22 +569,31 @@
     transition:background .2s, border-color .2s;
   }
   .psg-modal-close:hover { background:var(--ink); color:#fff; border-color:var(--ink); }
-  .psg-modal-title {
-    font-family:var(--ff-display); font-weight:900;
-    font-size:clamp(28px, 4vw, 52px); line-height:1.05;
-    letter-spacing:var(--ls-display); text-transform:uppercase;
-    margin-bottom:8px;
+  .psg-modal-meta {
+    display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;
+    margin-bottom:24px; padding-bottom:18px;
+    border-bottom:1px solid rgba(0,0,0,.12);
   }
-  .psg-modal-word {
-    background:var(--ink); color:#fff;
-    padding:.05em .25em; display:inline-block; vertical-align:baseline;
-    word-break:break-word;
-  }
-  .psg-modal-sub {
+  .psg-modal-meta-label {
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.55); margin-top:24px;
+    color:rgba(0,0,0,.55); flex-shrink:0;
   }
+  .psg-modal-meta-label::after { content:":"; margin-left:.1em; }
+  .psg-modal-word {
+    background:var(--ink); color:#fff;
+    padding:.05em .3em; display:inline-block; vertical-align:baseline;
+    font-family:var(--ff-display); font-weight:800;
+    font-size:clamp(22px, 2.6vw, 36px); letter-spacing:var(--ls-display);
+    text-transform:uppercase; line-height:1.1;
+    word-break:break-word; max-width:100%;
+  }
+  .psg-modal-title {
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(26px, 3.4vw, 44px); line-height:1.05;
+    letter-spacing:var(--ls-display); text-transform:uppercase;
+  }
+  .psg-modal-sub { display:none; }
   .psg-modal-cta-pair {
     display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;
   }
@@ -1179,11 +1188,11 @@
     <button class="psg-modal-close" data-psg-close aria-label="Закрыть">×</button>
 
     <div class="psg-modal-default" id="psgDefault">
-      <h2 class="psg-modal-title" id="psgModalTitle">
-        Мы создаём <span class="psg-modal-word" id="psgWord">—</span><br>
-        для&nbsp;вашего проекта
-      </h2>
-      <p class="psg-modal-sub">С&nbsp;чего начнём?</p>
+      <div class="psg-modal-meta">
+        <span class="psg-modal-meta-label">— Идея</span>
+        <span class="psg-modal-word" id="psgWord">—</span>
+      </div>
+      <h2 class="psg-modal-title" id="psgModalTitle">С&nbsp;чего начнём?</h2>
 
       <div class="psg-modal-cta-pair">
         <button class="psg-cta-card" id="psgGoDiscover" type="button">
