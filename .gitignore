@@ -1,0 +1,31 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Логи и временные
+*.log
+*.tmp
+*.cache
+.cache/
+node_modules/
+
+# Локальные эксперименты (старые версии вёрстки)
+hero_A_manifest.html
+hero_B_architectural.html
+hero_C_transcript.html
+hero_D_kinetic.html
+hero_E_blocks.html
+hero_F_red_works.html
+hero_G_mockup_grid.html
+psg_home_v1.html
+fonts.html
+make_spec.py
+
+# Документы спецификации (хранить отдельно от сайта)
+*.docx
+ТЗ_*.docx

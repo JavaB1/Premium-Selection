@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Premium Selection — Мы создаём грандиозные проекты</title>
+<meta name="description" content="Premium Selection — рекламно-производственная компания по созданию стильной брендированной продукции для вашего бизнеса.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Цвет — Pantone 485 (исторический Ogilvy red), контраст с белым 5.4:1 — проходит WCAG AA */
+    --red:   #DA291C;
+    --ink:   #0A0A0A;
+    --paper: #FFFFFF;
+    --dim:   rgba(255,255,255,.78);
+    --dim-2: rgba(255,255,255,.55);
+
+    /* Типографическая шкала (модульная, шаг ~1.25) */
+    --fs-display: clamp(34px, 5.2vw, 92px);   /* PREMIUM / SELECTION */
+    --fs-body-l:  clamp(20px, 2.05vw, 34px);  /* Мы, lede */
+    --fs-h2:      clamp(28px, 3vw, 38px);
+    --fs-body:    clamp(14px, 1.05vw, 16px);  /* описания, абзацы */
+    --fs-tag:     11px;                        /* mono-метки в ячейках */
+    --fs-meta:    11px;                        /* mono-метки в мета-полосах */
+    --fs-cap:     10px;                        /* самый мелкий технический */
+
+    /* Семьи — Commissioner для display и текста, JetBrains Mono для технических меток */
+    --ff-display: 'Commissioner',system-ui,sans-serif;
+    --ff-text:    'Commissioner',system-ui,sans-serif;
+    --ff-mono:    'JetBrains Mono',ui-monospace,monospace;
+
+    /* Letter-spacing rules */
+    --ls-display: -.025em;
+    --ls-body:    0;
+    --ls-mono:    .12em;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body {
+    background:var(--red); color:#fff;
+    font-family:var(--ff-text); font-size:var(--fs-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    font-feature-settings: "ss01", "cv11", "kern";
+  }
+  a { color:inherit; text-decoration:none; }
+
+  /* ============ NAV ============ */
+  .nav {
+    position:fixed; top:0; left:0; right:0; z-index:30;
+    padding:20px 32px;
+    display:flex; justify-content:space-between; align-items:center;
+    color:#fff;
+  }
+  .nav-logo { display:flex; align-items:center; gap:10px; }
+  .nav-logo svg { width:34px; height:36px; display:block; }
+  .nav-logo .wm {
+    font-family:var(--ff-text); font-weight:700; font-size:var(--fs-cap);
+    letter-spacing:.18em; line-height:1.05;
+  }
+  .nav-meta {
+    display:flex; gap:24px;
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+  }
+  .nav-meta a:hover { opacity:.6; }
+
+  /* ============ HERO ============ */
+  .hero {
+    height:100vh; padding:68px 24px 14px;
+    display:flex; flex-direction:column; gap:10px;
+    max-width:1600px; margin:0 auto;
+  }
+
+  /* Верхний колонтитул */
+  .top {
+    display:flex; justify-content:space-between; align-items:center;
+    padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.22);
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:var(--dim); flex-shrink:0;
+  }
+  .top strong { color:#fff; font-weight:500; }
+
+  /* === ГРИД 8×6 — модульная сетка с большой вариативностью ===
+     Средние ряды чуть выше, чтобы центр-текст с 4 строками точно поместился */
+  .grid {
+    flex:1; min-height:0;
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: 0.85fr 0.85fr 1.25fr 1.25fr 0.9fr 0.9fr;
+    gap:8px;
+  }
+
+  .cell {
+    position:relative; overflow:hidden; border-radius:2px;
+    transition: transform .55s cubic-bezier(.65,0,.35,1);
+  }
+  .cell:hover { transform: translateY(-3px); }
+  .cell .frame {
+    position:absolute; inset:0; opacity:0;
+    transition: opacity 1s cubic-bezier(.65,0,.35,1);
+  }
+  .cell .frame.active { opacity:1; }
+  .cell .frame img {
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+
+  /* Цвета */
+  .c1 { background:#1791C9; }
+  .c2 { background:#93A09A; }
+  .c3 { background:#BDC074; }
+  .c4 { background:#EE7E10; }
+  .c5 { background:#F4E89A; }
+  .c6 { background:#B5DAEF; }
+  .c7 { background:#2E2A27; }
+  .c8 { background:#1F4E79; }
+  .c9 { background:#A53A30; }
+  .c10 { background:#0F4C5C; }
+  .c11 { background:#7D6B4F; }
+  .c12 { background:#3A4F3A; }
+
+  /* === Раскладка 8×6: 7 разных размеров блоков, всё по клеткам ===
+     1×1 · 2×1 · 1×2 · 2×2 · 3×1 · 1×3 · 2×3
+     Центр-текст: cols 3-6, rows 3-4 (4×2). */
+
+  /* Верх (r1-2) */
+  .b1  { grid-column: 1 / 3; grid-row: 1 / 3; } /* 2×2 */
+  .b2  { grid-column: 3 / 5; grid-row: 1 / 2; } /* 2×1 */
+  .b3  { grid-column: 5 / 6; grid-row: 1 / 3; } /* 1×2 башня */
+  .b4  { grid-column: 6 / 8; grid-row: 1 / 2; } /* 2×1 */
+  .b5  { grid-column: 8 / 9; grid-row: 1 / 4; } /* 1×3 узкая колонна */
+  .b6  { grid-column: 3 / 4; grid-row: 2 / 3; } /* 1×1 */
+  .b7  { grid-column: 4 / 5; grid-row: 2 / 3; } /* 1×1 */
+  .b8  { grid-column: 6 / 8; grid-row: 2 / 3; } /* 2×1 */
+
+  /* Середина (r3-4) — текст */
+  .b9  { grid-column: 1 / 2; grid-row: 3 / 5; } /* 1×2 узкий */
+  .b10 { grid-column: 2 / 3; grid-row: 3 / 5; } /* 1×2 узкий */
+  .center { grid-column: 3 / 7; grid-row: 3 / 5; }
+  .b11 { grid-column: 7 / 8; grid-row: 3 / 4; } /* 1×1 */
+
+  /* Низ (r4-6) — большая правая колонна и низ */
+  .b12 { grid-column: 7 / 9; grid-row: 4 / 7; } /* 2×3 — крупная вертикаль */
+
+  .b13 { grid-column: 1 / 3; grid-row: 5 / 7; } /* 2×2 угол */
+  .b14 { grid-column: 3 / 6; grid-row: 5 / 6; } /* 3×1 длинный бар */
+  .b15 { grid-column: 6 / 7; grid-row: 5 / 6; } /* 1×1 */
+  .b16 { grid-column: 3 / 4; grid-row: 6 / 7; } /* 1×1 */
+  .b17 { grid-column: 4 / 6; grid-row: 6 / 7; } /* 2×1 */
+  .b18 { grid-column: 6 / 7; grid-row: 6 / 7; } /* 1×1 */
+
+  /* === Центральный текст — выровнен по левому краю, всё в Inter === */
+  .center {
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    text-align:left; color:#fff; padding: 6px 12px;
+    overflow:visible; min-height:0;
+  }
+  .center .we {
+    font-family:var(--ff-text); font-weight:500;
+    font-size: var(--fs-body-l);
+    line-height: 1.1; letter-spacing:var(--ls-body);
+    margin-bottom: clamp(2px, 0.25vw, 5px);
+    color:#fff;
+  }
+  .center .brand-line {
+    font-family:var(--ff-display); font-weight:900;
+    font-size: var(--fs-display);
+    line-height: .96; letter-spacing:var(--ls-display);
+    color:#fff; text-transform:uppercase;
+    font-style:normal;
+  }
+  /* Selection теперь такого же стиля и веса, что PREMIUM */
+  .center .brand-line.italic {
+    font-weight:900; font-style:normal;
+    text-transform:uppercase; letter-spacing:var(--ls-display);
+  }
+  .center .lede {
+    margin-top: clamp(2px, 0.25vw, 5px);
+    font-family:var(--ff-text); font-weight:500; font-style:normal;
+    font-size: var(--fs-body-l);
+    line-height: 1.1; color:#fff; letter-spacing:var(--ls-body);
+  }
+  .center .lede em {
+    font-style:normal; color:var(--ink); font-weight:700;
+    background:#fff; padding:.05em .25em; margin:0 .08em;
+    display:inline-block; min-width:5ch; text-align:center;
+    transition: opacity .35s ease;
+  }
+  .center .lede em.fade { opacity:0; }
+
+  /* === Низ === */
+  .bottom {
+    display:grid; grid-template-columns: 1fr auto; gap:32px; align-items:end;
+    padding-top:14px; border-top:1px solid rgba(255,255,255,.18);
+  }
+  .bottom .desc {
+    font-family:var(--ff-text); font-size:var(--fs-body); line-height:1.5;
+    color:#fff; max-width:62ch; letter-spacing:var(--ls-body);
+  }
+  .bottom .cta {
+    display:inline-flex; align-items:center; gap:12px;
+    padding:14px 28px; border:1.5px solid #fff; border-radius:999px;
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:#fff; cursor:pointer; transition: all .3s; flex-shrink:0;
+  }
+  .bottom .cta:hover { background:var(--ink); border-color:var(--ink); color:#fff; }
+  .bottom .cta::after { content:'→'; }
+
+  .meta-bottom {
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:var(--dim-2); padding-top:4px;
+  }
+  .meta-bottom strong { color:#fff; font-weight:500; }
+
+  /* ============================================================
+     ============== СЕКЦИИ ПОСЛЕ HERO ============================
+     ============================================================ */
+
+  .section-pad { padding: clamp(80px, 10vw, 160px) clamp(20px, 4vw, 56px); }
+  .container { max-width: 1480px; margin: 0 auto; }
+
+  .section-head {
+    display:grid; grid-template-columns: auto 1fr; gap: clamp(40px, 6vw, 96px);
+    align-items: end; padding-bottom: 24px;
+    border-bottom: 1px solid currentColor;
+    opacity: .9;
+  }
+  .section-head .label {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    opacity: .6;
+  }
+  .section-head h2 {
+    font-family:var(--ff-display); font-weight:900;
+    font-size: clamp(40px, 6vw, 92px);
+    line-height: .96; letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+  }
+
+  /* === DIRECTIONS === */
+  .directions { background: var(--ink); color:#fff; }
+  .directions .section-head { padding: 0 clamp(20px, 4vw, 56px) 24px; max-width:1480px; margin:0 auto; }
+  .dir-rows { border-top: 1px solid rgba(255,255,255,.18); }
+  .dir-row {
+    display:grid; grid-template-columns: 80px 1fr auto;
+    align-items:center; gap: clamp(24px, 4vw, 60px);
+    padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 56px);
+    border-bottom: 1px solid rgba(255,255,255,.18);
+    cursor:pointer; position:relative; overflow:hidden;
+    color:#fff; text-decoration:none;
+    transition: background .55s cubic-bezier(.65,0,.35,1), color .35s;
+  }
+  .dir-row:hover { background: var(--red); }
+  .dir-row .dr-num {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); color: rgba(255,255,255,.5);
+    transition:color .35s;
+  }
+  .dir-row:hover .dr-num { color: rgba(255,255,255,.9); }
+  .dir-row .dr-name {
+    font-family:var(--ff-display); font-weight:900;
+    font-size: clamp(36px, 6vw, 92px); line-height:1;
+    letter-spacing:var(--ls-display); text-transform:uppercase;
+    transition: transform .55s cubic-bezier(.65,0,.35,1);
+  }
+  .dir-row:hover .dr-name { transform: translateX(20px); }
+  .dir-row .dr-desc {
+    font-size: var(--fs-body); line-height:1.5; color:rgba(255,255,255,.65);
+    margin-top: 10px; max-width: 56ch;
+  }
+  .dir-row .dr-arrow {
+    width:56px; height:56px; border-radius:50%; border:1px solid #fff;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition: all .55s cubic-bezier(.65,0,.35,1);
+  }
+  .dir-row .dr-arrow svg { width:18px; height:18px; transition: transform .55s; }
+  .dir-row:hover .dr-arrow { background:#fff; transform: rotate(-45deg); }
+  .dir-row:hover .dr-arrow path { stroke: var(--red); }
+
+  /* === ABOUT === */
+  .about {
+    background: var(--paper); color: var(--ink);
+  }
+  .about .section-head { color: var(--ink); border-bottom-color: var(--ink); }
+  .about-head {
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+  .about-grid {
+    display:grid; grid-template-columns: 1.2fr 1fr; gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .about-manifest {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(32px, 4.4vw, 76px);
+    line-height: 1.04; letter-spacing: var(--ls-display);
+    color: var(--ink);
+  }
+  .about-manifest em {
+    font-style: italic; font-weight: 800; color: var(--red);
+  }
+  .about-text {
+    font-size: clamp(15px, 1.2vw, 18px); line-height: 1.55; color: var(--ink);
+  }
+  .about-text p + p { margin-top: 18px; }
+
+  /* === STATS === */
+  .stats {
+    background: var(--red); color: #fff;
+    padding: clamp(60px, 7vw, 100px) clamp(20px, 4vw, 56px);
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    border-top: 1px solid rgba(255,255,255,.18);
+  }
+  .stat .num {
+    display:block;
+    font-family: var(--ff-display); font-weight: 900;
+    font-size: clamp(48px, 6.5vw, 132px);
+    line-height: .9; letter-spacing: var(--ls-display);
+    color:#fff; margin-bottom: 14px;
+  }
+  .stat .lbl {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(255,255,255,.78);
+  }
+
+  /* === WORKS === */
+  .works { background: var(--paper); color: var(--ink); }
+  .works .section-head { color: var(--ink); border-bottom-color: var(--ink); }
+  .works-head { margin-bottom: clamp(40px, 5vw, 72px); }
+
+  .works-grid {
+    display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px;
+  }
+  .work {
+    position:relative; overflow:hidden; border-radius: 2px;
+    cursor:pointer; transition: transform .5s cubic-bezier(.65,0,.35,1);
+  }
+  .work:hover { transform: translateY(-4px); }
+  .work img { width:100%; height:100%; object-fit:cover; display:block; }
+  .work .meta {
+    position:absolute; left:0; right:0; bottom:0;
+    padding: 18px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,.65), transparent);
+    color:#fff;
+  }
+  .work .meta .lbl {
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    opacity: .85;
+  }
+  .work .meta h3 {
+    font-family: var(--ff-text); font-weight: 700;
+    font-size: clamp(16px, 1.5vw, 22px); line-height: 1.15; margin-top: 4px;
+  }
+  .work.w1 { grid-column: span 7; aspect-ratio: 16/10; }
+  .work.w2 { grid-column: span 5; aspect-ratio: 16/10; }
+  .work.w3 { grid-column: span 4; aspect-ratio: 1/1; }
+  .work.w4 { grid-column: span 4; aspect-ratio: 1/1; }
+  .work.w5 { grid-column: span 4; aspect-ratio: 1/1; }
+  .work.w6 { grid-column: span 8; aspect-ratio: 2/1; }
+  .work.w7 { grid-column: span 4; aspect-ratio: 4/5; }
+  .works-cta {
+    margin-top: clamp(40px, 4vw, 56px); display:flex; justify-content: center;
+  }
+  .ghost-btn {
+    display:inline-flex; align-items:center; gap:12px;
+    padding: 16px 36px; border: 1.5px solid currentColor; border-radius: 999px;
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    cursor:pointer; transition: all .3s;
+  }
+  .ghost-btn:hover { background: currentColor; }
+  .ghost-btn:hover span { color: var(--paper); }
+  .ghost-btn::after { content:'→'; }
+
+  /* === CONTACT === */
+  .contact { background: var(--ink); color: #fff; }
+  .contact-grid {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .contact-card {
+    border: 1px solid rgba(255,255,255,.22);
+    padding: clamp(24px, 2.5vw, 40px);
+    display:flex; flex-direction:column; gap: 16px;
+    transition: all .35s cubic-bezier(.65,0,.35,1);
+    text-decoration:none; color:#fff;
+    min-height: 360px;
+  }
+  .contact-card:hover { background: var(--red); border-color: var(--red); transform: translateY(-4px); }
+  .contact-card .cc-num {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); color: var(--red);
+    transition: color .35s;
+  }
+  .contact-card:hover .cc-num { color:#fff; }
+  .contact-card h3 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1; letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+  }
+  .contact-card .cc-desc {
+    font-size: var(--fs-body); line-height: 1.55;
+    color: rgba(255,255,255,.78); margin-bottom: auto;
+  }
+  .contact-card:hover .cc-desc { color: rgba(255,255,255,.9); }
+  .contact-card .cc-line {
+    font-size: var(--fs-body);
+    border-bottom: 1px solid rgba(255,255,255,.3);
+    padding-bottom: 4px; width: fit-content;
+  }
+  .contact-card .cc-mngr {
+    font-family:var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+
+  /* === FOOTER === */
+  footer.site-footer {
+    background: #050505; color: #fff;
+    padding: clamp(60px, 6vw, 96px) clamp(20px, 4vw, 56px) 32px;
+  }
+  .ftr-grid {
+    max-width: 1480px; margin: 0 auto;
+    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+  }
+  .ftr-brand .brand-mark {
+    font-family: var(--ff-display); font-weight: 900;
+    font-size: clamp(40px, 4vw, 72px);
+    line-height: .95; letter-spacing: var(--ls-display); text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .ftr-brand .brand-mark .dot { color: var(--red); }
+  .ftr-brand p { font-size: var(--fs-body); color: rgba(255,255,255,.6); max-width: 32ch; line-height: 1.55; }
+  .ftr-col h5 {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(255,255,255,.5); font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .ftr-col ul { list-style: none; padding: 0; margin: 0; }
+  .ftr-col ul li { padding: 4px 0; }
+  .ftr-col ul a { font-size: var(--fs-body); color: #fff; }
+  .ftr-col ul a:hover { color: var(--red); }
+  .ftr-bottom {
+    max-width: 1480px; margin: 56px auto 0; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,.12);
+    display:flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+
+  /* === Responsive section adjustments === */
+  @media (max-width: 1100px) {
+    .works-grid { grid-template-columns: repeat(8, 1fr); }
+    .work.w1, .work.w2, .work.w6 { grid-column: span 8; }
+    .work.w3, .work.w4, .work.w5 { grid-column: span 4; }
+    .work.w7 { grid-column: span 4; }
+  }
+  @media (max-width: 760px) {
+    .stats { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .contact-card { min-height: auto; }
+    .ftr-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .dir-row { grid-template-columns: 60px 1fr auto; padding: 32px 20px; }
+    .dir-row .dr-name { font-size: clamp(28px, 7vw, 48px); }
+    .dir-row .dr-desc { display: none; }
+    .works-grid { grid-template-columns: repeat(4, 1fr); }
+    .work.w1, .work.w2, .work.w6 { grid-column: span 4; }
+    .work.w3, .work.w4, .work.w5, .work.w7 { grid-column: span 2; aspect-ratio: 1/1; }
+  }
+
+  /* ============ TABLET / NARROW DESKTOP ============ */
+  @media (max-width: 1280px) and (min-width: 901px) {
+    /* Скрываем мелкие 1×1, чтобы сетка не дробилась */
+    .b6, .b7, .b3, .b15, .b16, .b18 { display:none; }
+
+    /* Расширяем соседей, чтобы заполнить пробелы */
+    .b2  { grid-column: 3 / 6; grid-row: 1 / 2; }   /* было 2×1 c3-4, стало 3×1 c3-5 */
+    .b8  { grid-column: 3 / 8; grid-row: 2 / 3; }   /* большая полоса 5×1 поверх скрытых b6/b7/b3 */
+    .b14 { grid-column: 3 / 7; grid-row: 5 / 6; }   /* 4×1 — закрывает место b15 */
+    .b17 { grid-column: 3 / 7; grid-row: 6 / 7; }   /* 4×1 — закрывает b16/b18 */
+  }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 900px) {
+    .nav { padding:14px 16px; }
+    .nav-meta { display:none; }
+    .hero { height:100vh; min-height:560px; padding:64px 12px 12px; gap:8px; }
+
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap:6px; flex:1; min-height:0;
+    }
+    /* На мобильном оставляем всего ~6 ячеек:
+       2 строки сверху, центр в середине (4 ряда), 2 строки снизу.
+       Лишние блоки скрываем — Premium Selection всегда по центру. */
+    .b1  { grid-column: 1 / 3; grid-row: 1 / 3; }   /* 2×2 верх-лево */
+    .b2  { grid-column: 3 / 5; grid-row: 1 / 2; }   /* 2×1 верх-право */
+    .b4  { grid-column: 3 / 5; grid-row: 2 / 3; }   /* 2×1 ниже */
+
+    .center { grid-column: 1 / 5; grid-row: 3 / 7; padding:18px 8px; }
+
+    .b13 { grid-column: 1 / 3; grid-row: 7 / 9; }   /* 2×2 низ-лево */
+    .b14 { grid-column: 3 / 5; grid-row: 7 / 8; }   /* 2×1 низ-право */
+    .b12 { grid-column: 3 / 5; grid-row: 8 / 9; }   /* 2×1 */
+
+    /* всё остальное скрываем */
+    .b3, .b5, .b6, .b7, .b8, .b9, .b10, .b11,
+    .b15, .b16, .b17, .b18 { display:none; }
+
+    .center .we, .center .lede { font-size: clamp(16px, 4.6vw, 22px); }
+    .center .brand-line { font-size: clamp(40px, 12.5vw, 72px); }
+    .bottom .desc { font-size: 14px; line-height: 1.5; }
+    .bottom { grid-template-columns:1fr; gap:12px; }
+    .bottom .cta { justify-self:flex-start; }
+    .meta-bottom { flex-direction:column; gap:4px; align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo-ps-mini" viewBox="0 0 80 90">
+      <text x="0" y="62" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">P</text>
+      <text x="34" y="86" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">S</text>
+      <line x1="52" y1="4" x2="22" y2="88" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
+    </symbol>
+
+  </defs>
+</svg>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <svg><use href="#logo-ps-mini"/></svg>
+    <span class="wm">PREMIUM<br>SELECTION</span>
+  </a>
+  <div class="nav-meta">
+    <a href="#works">Работы</a>
+    <a href="#about">О нас</a>
+    <a href="#contact">Контакты</a>
+    <a href="#">RU · EN · UZ</a>
+  </div>
+</nav>
+
+<section class="hero">
+
+  <div class="top">
+    <span><strong>P/S</strong>&nbsp;— PREMIUM&nbsp;SELECTION&nbsp;GROUP</span>
+    <span>EDITION&nbsp;01 · APR&nbsp;2026</span>
+    <span><strong>TASHKENT</strong> · DUBAI</span>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="cell c1 b1"></div>
+    <div class="cell c2 b2"></div>
+    <div class="cell c3 b3"></div>
+    <div class="cell c4 b4"></div>
+    <div class="cell c5 b5"></div>
+    <div class="cell c6 b6"></div>
+    <div class="cell c7 b7"></div>
+    <div class="cell c8 b8"></div>
+
+    <div class="cell c9 b9"></div>
+    <div class="cell c10 b10"></div>
+
+    <div class="center">
+      <div class="we">Мы</div>
+      <div class="brand-line">Premium</div>
+      <div class="brand-line italic">Selection</div>
+      <div class="lede">создаём <em id="rotWord">грандиозные</em>&nbsp;проекты</div>
+    </div>
+
+    <div class="cell c11 b11"></div>
+
+    <div class="cell c12 b12"></div>
+
+    <div class="cell c2 b13"></div>
+    <div class="cell c4 b14"></div>
+    <div class="cell c5 b15"></div>
+    <div class="cell c6 b16"></div>
+    <div class="cell c8 b17"></div>
+    <div class="cell c9 b18"></div>
+  </div>
+
+  <div class="bottom">
+    <p class="desc">Мы&nbsp;решаем масштабные задачи с&nbsp;помощью стратегии и&nbsp;креатива&nbsp;— внедряя инновации и&nbsp;собирая решения на&nbsp;стыке областей, чтобы предлагать клиентам лучшие варианты для&nbsp;роста.</p>
+    <a href="#contact" class="cta">Связаться</a>
+  </div>
+
+  <div class="meta-bottom">
+    <span>SECTION 01 / HERO</span>
+    <span>12 НАПРАВЛЕНИЙ ПРОДУКЦИИ</span>
+    <span>SCROLL ↓</span>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     ============ 02 — НАПРАВЛЕНИЯ =============================
+     ============================================================ -->
+<section class="directions section-pad" id="directions" style="padding-bottom:0;">
+  <div class="section-head">
+    <span class="label">02 — Направления</span>
+    <h2>Выбери&nbsp;своё</h2>
+  </div>
+
+  <div class="dir-rows">
+    <a href="#" class="dir-row">
+      <span class="dr-num">01</span>
+      <div>
+        <div class="dr-name">Marketing &amp; Research</div>
+        <p class="dr-desc">Стратегия, маркетинговые исследования, бизнес-аналитика и&nbsp;моделирование, креатив, консалтинг для&nbsp;зрелого бизнеса.</p>
+      </div>
+      <span class="dr-arrow">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
+      </span>
+    </a>
+
+    <a href="#" class="dir-row">
+      <span class="dr-num">02</span>
+      <div>
+        <div class="dr-name">Production</div>
+        <p class="dr-desc">Полиграфия, наружная реклама, POS-материалы, сувенирная продукция, брендированные носители&nbsp;— один подрядчик под&nbsp;весь бренд.</p>
+      </div>
+      <span class="dr-arrow">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
+      </span>
+    </a>
+
+    <a href="#" class="dir-row">
+      <span class="dr-num">03</span>
+      <div>
+        <div class="dr-name">IT</div>
+        <p class="dr-desc">Веб-разработка, мобильные приложения, системные интеграции, автоматизация процессов, IT-аутсорс и&nbsp;поддержка.</p>
+      </div>
+      <span class="dr-arrow">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ 03 — О ГРУППЕ ================================
+     ============================================================ -->
+<section class="about section-pad" id="about">
+  <div class="container">
+    <div class="section-head about-head">
+      <span class="label">03 — О&nbsp;группе</span>
+      <h2 style="visibility:hidden;">·</h2>
+    </div>
+
+    <div class="about-grid">
+      <p class="about-manifest">
+        Мы&nbsp;собираем команды для&nbsp;задач, которые не&nbsp;решаются <em>одним</em> подрядчиком.
+      </p>
+      <div class="about-text">
+        <p>Premium Selection Group объединяет три самостоятельных направления под&nbsp;единым стандартом качества. Каждое работает автономно&nbsp;— со&nbsp;своими процессами, командой и&nbsp;ответственностью.</p>
+        <p>Это даёт клиенту главное: предсказуемость, прозрачность и&nbsp;единое окно входа, когда задачи требуют синтеза стратегии, продакшена и&nbsp;технологий.</p>
+        <p>Премиум для&nbsp;нас&nbsp;— это не&nbsp;золото и&nbsp;мрамор. Это уважение ко&nbsp;времени, ресурсу и&nbsp;решению клиента.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ 04 — ЦИФРЫ ===================================
+     ============================================================ -->
+<section class="stats" id="stats">
+  <div class="stat">
+    <span class="num">07</span>
+    <span class="lbl">Лет на&nbsp;рынке</span>
+  </div>
+  <div class="stat">
+    <span class="num">240+</span>
+    <span class="lbl">Реализованных проектов</span>
+  </div>
+  <div class="stat">
+    <span class="num">12</span>
+    <span class="lbl">Стран присутствия</span>
+  </div>
+  <div class="stat">
+    <span class="num">03</span>
+    <span class="lbl">Направления бизнеса</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ 05 — РАБОТЫ ==================================
+     ============================================================ -->
+<section class="works section-pad" id="works">
+  <div class="container">
+    <div class="section-head works-head">
+      <span class="label">05 — Избранные работы</span>
+      <h2>Что мы&nbsp;делаем</h2>
+    </div>
+
+    <div class="works-grid">
+      <a href="#" class="work w1">
+        <img src="images/13.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">01 / Brand identity</div><h3>Айдентика&nbsp;— Bayan&nbsp;/&nbsp;2025</h3></div>
+      </a>
+      <a href="#" class="work w2">
+        <img src="images/12.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">02 / Apparel</div><h3>Корпоративная одежда&nbsp;— Kapsula</h3></div>
+      </a>
+      <a href="#" class="work w3">
+        <img src="images/1.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">03 / T-shirt</div><h3>Брендированный мерч</h3></div>
+      </a>
+      <a href="#" class="work w4">
+        <img src="images/2.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">04 / Tote</div><h3>Шопер с&nbsp;логотипом</h3></div>
+      </a>
+      <a href="#" class="work w5">
+        <img src="images/15.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">05 / Souvenir</div><h3>Сувенирная линейка</h3></div>
+      </a>
+      <a href="#" class="work w6">
+        <img src="images/14.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">06 / Outdoor</div><h3>Наружная реклама&nbsp;— Tashkent</h3></div>
+      </a>
+      <a href="#" class="work w7">
+        <img src="images/3.jpg" alt="" loading="lazy">
+        <div class="meta"><div class="lbl">07 / Branding</div><h3>Брендирование</h3></div>
+      </a>
+    </div>
+
+    <div class="works-cta">
+      <a href="#" class="ghost-btn"><span>Все работы</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ 06 — КОНТАКТЫ =================================
+     ============================================================ -->
+<section class="contact section-pad" id="contact">
+  <div class="container">
+    <div class="section-head" style="border-bottom-color: rgba(255,255,255,.22); margin-bottom: clamp(32px, 4vw, 56px);">
+      <span class="label">06 — Контакты</span>
+      <h2>Связаться с&nbsp;направлением</h2>
+    </div>
+
+    <div class="contact-grid">
+      <a href="mailto:marketing@premium-selection.com" class="contact-card">
+        <span class="cc-num">01 / Marketing &amp; Research</span>
+        <h3>Marketing&nbsp;&amp;<br>Research</h3>
+        <p class="cc-desc">Стратегия, исследования, креатив. Для&nbsp;брендов, у&nbsp;которых самые амбициозные планы.</p>
+        <span class="cc-line">+998 71 200 11 01</span>
+        <span class="cc-line">marketing@premium-selection.com</span>
+        <span class="cc-mngr">Менеджер&nbsp;— А. Рахимов</span>
+      </a>
+      <a href="mailto:production@premium-selection.com" class="contact-card">
+        <span class="cc-num">02 / Production</span>
+        <h3>Production</h3>
+        <p class="cc-desc">Полиграфия, наружка, POS, мерч и&nbsp;сувенирка. Один подрядчик на&nbsp;весь бренд-носитель.</p>
+        <span class="cc-line">+998 71 200 11 02</span>
+        <span class="cc-line">production@premium-selection.com</span>
+        <span class="cc-mngr">Менеджер&nbsp;— М. Юлдашев</span>
+      </a>
+      <a href="mailto:it@premium-selection.com" class="contact-card">
+        <span class="cc-num">03 / IT</span>
+        <h3>IT</h3>
+        <p class="cc-desc">Web, mobile, интеграции, автоматизация, поддержка. Для&nbsp;тех, кто хочет цифровизироваться без&nbsp;боли.</p>
+        <span class="cc-line">+998 71 200 11 03</span>
+        <span class="cc-line">it@premium-selection.com</span>
+        <span class="cc-mngr">Менеджер&nbsp;— Д. Каримов</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ ФУТЕР =========================================
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="ftr-grid">
+    <div class="ftr-brand">
+      <div class="brand-mark">P/S<span class="dot">.</span></div>
+      <p>Premium Selection Group<br>Tashkent · Dubai · 2018</p>
+    </div>
+    <div class="ftr-col">
+      <h5>Направления</h5>
+      <ul>
+        <li><a href="#">Marketing &amp; Research</a></li>
+        <li><a href="#">Production</a></li>
+        <li><a href="#">IT</a></li>
+      </ul>
+    </div>
+    <div class="ftr-col">
+      <h5>Компания</h5>
+      <ul>
+        <li><a href="#about">О&nbsp;нас</a></li>
+        <li><a href="#works">Работы</a></li>
+        <li><a href="#contact">Контакты</a></li>
+        <li><a href="#">Карьера</a></li>
+      </ul>
+    </div>
+    <div class="ftr-col">
+      <h5>Документы</h5>
+      <ul>
+        <li><a href="#">Политика конфиденциальности</a></li>
+        <li><a href="#">Cookies</a></li>
+        <li><a href="#">Публичная оферта</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ftr-bottom">
+    <span>© 2026 Premium Selection Group. All rights reserved.</span>
+    <span>RU · EN · UZ</span>
+    <span>SECTION 07 / FOOTER</span>
+  </div>
+</footer>
+
+<script>
+  // Все фото-мокапы из workspace, сгруппированы по соотношению сторон
+  const ALL = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
+  const SQUARE = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
+  const WIDE   = ['13.jpg','14.jpg'];
+  const TALL   = ['12.jpg'];
+
+  // Аспект каждой ячейки определяется по data-атрибуту или по классу b*
+  // Маппинг: какие ячейки какого аспекта — берём из CSS-расклада
+  const aspectMap = {
+    b1:'sq', b2:'wide', b3:'tall', b4:'wide', b5:'tall',
+    b6:'sq', b7:'sq', b8:'wide', b9:'tall', b10:'tall',
+    b11:'sq', b12:'tall', b13:'sq', b14:'wide',
+    b15:'sq', b16:'sq', b17:'wide', b18:'sq'
+  };
+
+  const cells = Array.from(document.querySelectorAll('.cell'));
+
+  function makeFrame(src) {
+    const wrap = document.createElement('div');
+    wrap.className = 'frame';
+    wrap.innerHTML = `<img src="images/${src}" loading="lazy" alt="">`;
+    return wrap;
+  }
+
+  // Раздаём 3 фото в каждую ячейку, отдавая приоритет матчу аспекта
+  cells.forEach((cell, i) => {
+    const cls = [...cell.classList].find(c => c.match(/^b\d+$/));
+    const aspect = aspectMap[cls] || 'sq';
+    let pool;
+    if (aspect === 'wide')      pool = [...WIDE, ...SQUARE];
+    else if (aspect === 'tall') pool = [...TALL, ...ALL];
+    else                        pool = [...SQUARE, ...WIDE, ...TALL];
+
+    // 3 разных индекса со сдвигом по i — чтобы соседи не показывали одно и то же
+    for (let k = 0; k < 3; k++) {
+      const src = pool[(i * 2 + k * 5) % pool.length];
+      const f = makeFrame(src);
+      if (k === 0) f.classList.add('active');
+      cell.appendChild(f);
+    }
+  });
+
+  // Циклы — у каждой ячейки свой период, чтобы композиция жила
+  cells.forEach((cell, i) => {
+    const frames = cell.querySelectorAll('.frame');
+    let cur = 0;
+    setInterval(() => {
+      frames[cur].classList.remove('active');
+      cur = (cur + 1) % frames.length;
+      frames[cur].classList.add('active');
+    }, 3200 + i * 470);
+  });
+
+  // Авто-переключение цвета nav в зависимости от секции под ним
+  const nav = document.querySelector('.nav');
+  // На светлых секциях (paper) — тёмный текст
+  const lightSections = document.querySelectorAll('.about, .works');
+  const lightObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) nav.classList.add('dark');
+    });
+  }, { rootMargin: '-60px 0px -85% 0px' });
+  lightSections.forEach(s => lightObs.observe(s));
+  // На красных/тёмных — белый текст
+  const darkSections = document.querySelectorAll('.hero, .directions, .stats, .contact, .site-footer');
+  const darkObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) nav.classList.remove('dark');
+    });
+  }, { rootMargin: '-60px 0px -85% 0px' });
+  darkSections.forEach(s => darkObs.observe(s));
+
+  // Ротация синонимов слова «грандиозные»
+  const synonyms = [
+    'грандиозные',
+    'масштабные',
+    'амбициозные',
+    'выдающиеся',
+    'впечатляющие',
+    'легендарные',
+    'мощные',
+    'смелые',
+    'значимые',
+    'большие'
+  ];
+  const rot = document.getElementById('rotWord');
+  let ri = 0;
+  setInterval(() => {
+    rot.classList.add('fade');
+    setTimeout(() => {
+      ri = (ri + 1) % synonyms.length;
+      rot.textContent = synonyms[ri];
+      rot.classList.remove('fade');
+    }, 350);
+  }, 2400);
+</script>
+
+</body>
+</html>
