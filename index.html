@@ -58,8 +58,8 @@
     --dim-2: rgba(255,255,255,.55);
 
     /* Типографическая шкала (модульная, шаг ~1.25) */
-    --fs-display: clamp(34px, 5.2vw, 92px);   /* PREMIUM / SELECTION */
-    --fs-body-l:  clamp(20px, 2.05vw, 34px);  /* Мы, lede */
+    --fs-display: clamp(40px, 7vw, 132px);    /* PREMIUM / SELECTION — крупнее, центр доминирует */
+    --fs-body-l:  clamp(22px, 2.7vw, 48px);   /* Мы, lede — пропорционально ~+40% */
     --fs-h2:      clamp(28px, 3vw, 38px);
     --fs-body:    clamp(14px, 1.05vw, 16px);  /* описания, абзацы */
     --fs-tag:     11px;                        /* mono-метки в ячейках */
@@ -130,12 +130,12 @@
   .top strong { color:#fff; font-weight:500; }
 
   /* === ГРИД 8×6 — модульная сетка с большой вариативностью ===
-     Средние ряды чуть выше, чтобы центр-текст с 4 строками точно поместился */
+     Средние ряды растянуты, чтобы крупный центр-текст (4 строки) дышал */
   .grid {
     flex:1; min-height:0;
     display:grid;
     grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: 0.85fr 0.85fr 1.25fr 1.25fr 0.9fr 0.9fr;
+    grid-template-rows: 0.7fr 0.7fr 1.6fr 1.6fr 0.7fr 0.7fr;
     gap:8px;
   }
 
@@ -233,13 +233,23 @@
     font-size: var(--fs-body-l);
     line-height: 1.1; color:#fff; letter-spacing:var(--ls-body);
   }
+  /* «Думающая» плашка: белый блок никогда не исчезает, ширина следует за контентом
+     (inline-block + auto width). Внутри typewriter-эффект + мигающий курсор. */
   .center .lede em {
     font-style:normal; color:var(--ink); font-weight:700;
-    background:#fff; padding:.05em .25em; margin:0 .08em;
-    display:inline-block; min-width:5ch; text-align:center;
-    transition: opacity .35s ease;
+    background:#fff; padding:.05em .35em .05em .25em; margin:0 .08em;
+    display:inline-block; vertical-align:baseline; white-space:nowrap;
+    transition: padding .25s ease;
   }
-  .center .lede em.fade { opacity:0; }
+  .center .lede em::after {
+    content:'';
+    display:inline-block; vertical-align:baseline;
+    width:.08em; height:.95em; margin-left:.08em;
+    background:currentColor;
+    transform: translateY(.12em);
+    animation: psg-caret 1.05s steps(1) infinite;
+  }
+  @keyframes psg-caret { 50% { opacity:0; } }
 
   /* === Низ === */
   .bottom {
@@ -635,8 +645,8 @@
     .b3, .b5, .b6, .b7, .b8, .b9, .b10, .b11,
     .b15, .b16, .b17, .b18 { display:none; }
 
-    .center .we, .center .lede { font-size: clamp(16px, 4.6vw, 22px); }
-    .center .brand-line { font-size: clamp(40px, 12.5vw, 72px); }
+    .center .we, .center .lede { font-size: clamp(18px, 5.6vw, 30px); }
+    .center .brand-line { font-size: clamp(48px, 15vw, 96px); }
     .bottom .desc { font-size: 14px; line-height: 1.5; }
     .bottom { grid-template-columns:1fr; gap:12px; }
     .bottom .cta { justify-self:flex-start; }
@@ -1138,20 +1148,36 @@
     log('[PSG] nav ok');
   } catch(e) { console.error('[PSG] nav error:', e); }
 
-  // ============== 4. SYNONYM ROTATION ==============
+  // ============== 4. SYNONYM TYPEWRITER ==============
+  // «Думаем что писать»: чёрный текст стирается посимвольно, плашка ужимается под него,
+  // потом плашка расширяется по мере набора нового слова. Белый фон не исчезает.
   try {
     var synonyms = ['грандиозные','масштабные','амбициозные','выдающиеся','впечатляющие','легендарные','мощные','смелые','значимые','большие'];
     var rot = document.getElementById('rotWord');
     if (rot && !prefersReduce) {
       var ri = 0;
-      setInterval(function(){
-        rot.classList.add('fade');
-        setTimeout(function(){
-          ri = (ri + 1) % synonyms.length;
-          rot.textContent = synonyms[ri];
-          rot.classList.remove('fade');
-        }, 350);
-      }, 2400);
+      var HOLD_MS    = 2200;  // сколько слово «живёт» перед стиранием
+      var ERASE_MS   = 55;    // базовый шаг удаления
+      var TYPE_MS    = 80;    // базовый шаг печати
+      var THINK_MS   = 380;   // пауза между стиранием и началом печати — «думаем»
+      function jitter(base){ return base + Math.random() * base * 0.6; }
+      function erase(target){
+        var cur = rot.textContent;
+        if (cur.length === 0) { setTimeout(function(){ type(target); }, THINK_MS); return; }
+        rot.textContent = cur.slice(0, -1);
+        setTimeout(function(){ erase(target); }, jitter(ERASE_MS));
+      }
+      function type(target){
+        var cur = rot.textContent;
+        if (cur.length >= target.length) { setTimeout(next, HOLD_MS); return; }
+        rot.textContent = target.slice(0, cur.length + 1);
+        setTimeout(function(){ type(target); }, jitter(TYPE_MS));
+      }
+      function next(){
+        ri = (ri + 1) % synonyms.length;
+        erase(synonyms[ri]);
+      }
+      setTimeout(next, HOLD_MS);
     }
     log('[PSG] synonyms ok');
   } catch(e) { console.error('[PSG] synonyms error:', e); }
