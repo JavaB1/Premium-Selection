@@ -234,13 +234,20 @@
     line-height: 1.1; color:#fff; letter-spacing:var(--ls-body);
   }
   /* «Думающая» плашка: белый блок никогда не исчезает, ширина следует за контентом
-     (inline-block + auto width). Внутри typewriter-эффект + мигающий курсор. */
+     (inline-block + auto width). Внутри typewriter-эффект + мигающий курсор.
+     Click → contenteditable: юзер пишет своё слово, Enter → modal. */
   .center .lede em {
     font-style:normal; color:var(--ink); font-weight:700;
     background:#fff; padding:.05em .35em .05em .25em; margin:0 .08em;
     display:inline-block; vertical-align:baseline; white-space:nowrap;
     transition: padding .25s ease;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
   }
+  .center .lede em[contenteditable="true"] {
+    cursor:text; outline: 2px solid var(--ink); outline-offset: 1px;
+  }
+  .center .lede em:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
   .center .lede em::after {
     content:'';
     display:inline-block; vertical-align:baseline;
@@ -249,6 +256,9 @@
     transform: translateY(.12em);
     animation: psg-caret 1.05s steps(1) infinite;
   }
+  /* При фокусе показывается системный caret — наша анимированная полоска не нужна */
+  .center .lede em[contenteditable="true"]::after,
+  .center .lede em:focus::after { display:none; }
   @keyframes psg-caret { 50% { opacity:0; } }
 
   /* === Низ === */
@@ -530,6 +540,145 @@
     font-family:var(--ff-mono); font-size: var(--fs-cap);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
     color: rgba(255,255,255,.5);
+  }
+
+  /* === MODAL «Мы создаём ___ Ваш проект» === */
+  /* Юзер вводит своё слово в плашку → Enter → эта модалка с вилкой:
+     ТЗ-генератор или прямой контакт. Без сохранения данных — закрытие = reset. */
+  .psg-modal { position:fixed; inset:0; display:none; z-index:100; }
+  .psg-modal[open] { display:flex; align-items:center; justify-content:center; }
+  .psg-modal-overlay {
+    position:absolute; inset:0; background:rgba(10,10,10,.86);
+    opacity:0; transition:opacity .2s; cursor:pointer; border:0;
+  }
+  .psg-modal[open] .psg-modal-overlay { opacity:1; }
+  .psg-modal-card {
+    position:relative; background:var(--paper); color:var(--ink);
+    width:min(720px, calc(100% - 40px)); max-height:90vh; overflow-y:auto;
+    padding:clamp(28px, 4vw, 56px); border-radius:4px;
+    transform:scale(.96); opacity:0;
+    transition:transform .25s cubic-bezier(.65,0,.35,1), opacity .25s;
+  }
+  .psg-modal[open] .psg-modal-card { transform:scale(1); opacity:1; }
+  .psg-modal-close {
+    position:absolute; top:14px; right:14px;
+    width:40px; height:40px; border-radius:50%;
+    background:transparent; border:1px solid rgba(0,0,0,.15);
+    cursor:pointer; font-size:22px; line-height:1; color:var(--ink);
+    transition:background .2s, border-color .2s;
+  }
+  .psg-modal-close:hover { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .psg-modal-title {
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(28px, 4vw, 52px); line-height:1.05;
+    letter-spacing:var(--ls-display); text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .psg-modal-word {
+    background:var(--ink); color:#fff;
+    padding:.05em .25em; display:inline-block; vertical-align:baseline;
+    word-break:break-word;
+  }
+  .psg-modal-sub {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(0,0,0,.55); margin-top:24px;
+  }
+  .psg-modal-cta-pair {
+    display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;
+  }
+  .psg-cta-card {
+    text-align:left; border:1.5px solid var(--ink); background:transparent;
+    padding:20px 22px; cursor:pointer; color:var(--ink);
+    display:flex; flex-direction:column; gap:8px;
+    transition:background .25s, color .25s, border-color .25s, transform .25s;
+  }
+  .psg-cta-card:hover, .psg-cta-card.active {
+    background:var(--red); color:#fff; border-color:var(--red); transform:translateY(-2px);
+  }
+  .psg-cta-num {
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase; opacity:.65;
+  }
+  .psg-cta-title {
+    font-family:var(--ff-display); font-weight:800;
+    font-size:clamp(18px, 1.6vw, 22px); letter-spacing:var(--ls-display);
+    line-height:1.1; text-transform:uppercase;
+  }
+  .psg-cta-desc { font-size:var(--fs-body); line-height:1.4; opacity:.8; }
+  .psg-form { max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.65,0,.35,1); }
+  .psg-form.open { max-height:800px; margin-top:24px; }
+  .psg-form-intro {
+    font-family:var(--ff-display); font-weight:600;
+    font-size:clamp(18px, 1.6vw, 22px); line-height:1.3;
+    margin-bottom:20px; padding-bottom:16px;
+    border-bottom:1px solid rgba(0,0,0,.12);
+  }
+  .psg-form-intro strong {
+    background:var(--ink); color:#fff; padding:0 .2em;
+    font-weight:600;
+  }
+  .psg-form-fields { display:grid; gap:18px; }
+  .psg-input-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .psg-field { display:flex; flex-direction:column; gap:6px; }
+  .psg-field label {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(0,0,0,.55);
+  }
+  .psg-field input {
+    width:100%; padding:10px 0; font:inherit; color:var(--ink);
+    background:transparent; border:0; border-bottom:1.5px solid rgba(0,0,0,.25);
+    outline:none; transition:border-color .2s;
+  }
+  .psg-field input:focus { border-bottom-color:var(--red); }
+  .psg-field input.invalid { border-bottom-color:var(--red); }
+  .psg-checkbox-row {
+    display:flex; gap:10px; align-items:flex-start;
+    cursor:pointer; padding:6px 0; line-height:1.4;
+    font-size:var(--fs-body); color:var(--ink);
+  }
+  .psg-checkbox-row input { accent-color:var(--red); margin-top:3px; flex-shrink:0; }
+  .psg-msgr-note {
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(0,0,0,.55); margin-left:26px;
+  }
+  .psg-form-actions {
+    margin-top:24px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  }
+  .psg-submit {
+    background:var(--red); color:#fff; border:0; padding:14px 28px; border-radius:999px;
+    font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono);
+    text-transform:uppercase; cursor:pointer; transition:background .25s;
+  }
+  .psg-submit:hover { background:var(--ink); }
+  .psg-submit::after { content:" →"; }
+  .psg-back {
+    background:transparent; color:rgba(0,0,0,.55); border:0; padding:14px 12px;
+    font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono);
+    text-transform:uppercase; cursor:pointer;
+  }
+  .psg-back:hover { color:var(--ink); }
+  .psg-success { text-align:center; padding:32px 0; }
+  .psg-success h2 {
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(28px, 3.2vw, 44px); letter-spacing:var(--ls-display);
+    text-transform:uppercase; margin-bottom:12px;
+  }
+  .psg-success p { font-size:var(--fs-body-l); color:rgba(0,0,0,.7); }
+  @media (max-width: 760px) {
+    .psg-modal-card {
+      width:100%; max-width:100%; height:100vh; max-height:none;
+      border-radius:0; padding:24px 20px 32px;
+    }
+    .psg-modal-cta-pair { grid-template-columns:1fr; }
+    .psg-input-row { grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .psg-modal-overlay, .psg-modal-card, .psg-form, .psg-cta-card {
+      transition:none !important;
+    }
   }
 
   /* === FOCUS — клавиатурная навигация === */
@@ -1019,6 +1168,66 @@
   </div>
 </footer>
 
+<dialog class="psg-modal" id="psgModal" aria-labelledby="psgModalTitle">
+  <button class="psg-modal-overlay" data-psg-close aria-label="Закрыть"></button>
+  <div class="psg-modal-card" role="document">
+    <button class="psg-modal-close" data-psg-close aria-label="Закрыть">×</button>
+
+    <div class="psg-modal-default" id="psgDefault">
+      <h2 class="psg-modal-title" id="psgModalTitle">
+        Мы создаём <span class="psg-modal-word" id="psgWord">—</span><br>
+        для&nbsp;вашего проекта
+      </h2>
+      <p class="psg-modal-sub">С&nbsp;чего начнём?</p>
+
+      <div class="psg-modal-cta-pair">
+        <button class="psg-cta-card" id="psgGoDiscover" type="button">
+          <span class="psg-cta-num">01</span>
+          <span class="psg-cta-title">Открыть ТЗ-генератор</span>
+          <span class="psg-cta-desc">8&nbsp;шагов → готовое ТЗ в&nbsp;PDF</span>
+        </button>
+        <button class="psg-cta-card" id="psgGoContact" type="button">
+          <span class="psg-cta-num">02</span>
+          <span class="psg-cta-title">Связаться напрямую</span>
+          <span class="psg-cta-desc">Имя, телефон → менеджер свяжется</span>
+        </button>
+      </div>
+
+      <form class="psg-form" id="psgForm" novalidate>
+        <p class="psg-form-intro">
+          Хочу создать <strong id="psgFormWord">—</strong> проект с&nbsp;вами и&nbsp;обсудить детали.
+        </p>
+        <div class="psg-form-fields">
+          <div class="psg-input-row">
+            <div class="psg-field">
+              <label for="psgName">Имя</label>
+              <input type="text" id="psgName" name="name" autocomplete="name" required maxlength="80">
+            </div>
+            <div class="psg-field">
+              <label for="psgPhone">Телефон</label>
+              <input type="tel" id="psgPhone" name="phone" autocomplete="tel" required maxlength="24" placeholder="+998 ··· ·· ·· ···">
+            </div>
+          </div>
+          <label class="psg-checkbox-row">
+            <input type="checkbox" id="psgMsgr" name="msgr" checked>
+            <span>В&nbsp;этом номере у&nbsp;меня Telegram&nbsp;/ WhatsApp&nbsp;— можно писать туда</span>
+          </label>
+          <p class="psg-msgr-note" id="psgMsgrNote">Менеджер напишет в&nbsp;мессенджер.</p>
+        </div>
+        <div class="psg-form-actions">
+          <button class="psg-submit" id="psgSubmit" type="submit">Отправить</button>
+          <button class="psg-back" id="psgBack" type="button">Назад</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="psg-success" id="psgSuccess" hidden>
+      <h2>Спасибо, <span id="psgSuccessName">—</span>!</h2>
+      <p>Менеджер свяжется в&nbsp;течение 30&nbsp;минут.</p>
+    </div>
+  </div>
+</dialog>
+
 <script>
 (function(){
   // Лог-канал виден только локально. На продакшене console.log → no-op (console.error остаётся).
@@ -1148,36 +1357,52 @@
     log('[PSG] nav ok');
   } catch(e) { console.error('[PSG] nav error:', e); }
 
-  // ============== 4. SYNONYM TYPEWRITER ==============
+  // ============== 4. SYNONYM TYPEWRITER + INTERACTIVE HERO ==============
   // «Думаем что писать»: чёрный текст стирается посимвольно, плашка ужимается под него,
   // потом плашка расширяется по мере набора нового слова. Белый фон не исчезает.
+  // Click по плашке (desktop) → ротация на паузе, юзер сам печатает → Enter → modal.
+  // Tap по плашке (mobile) → сразу modal с инпутом «напечатай своё слово».
+  // Закрытие modal без отправки → reset, ротация продолжается.
+  var psgPaused = false;       // флаг паузы typewriter (модалка / редактирование)
+  var psgResumeTimer = null;   // таймер возобновления
+  var psgResume = null;        // функция возобновления (определена ниже)
   try {
     var synonyms = ['грандиозные','масштабные','амбициозные','выдающиеся','впечатляющие','легендарные','мощные','смелые','значимые','большие'];
     var rot = document.getElementById('rotWord');
     if (rot && !prefersReduce) {
       var ri = 0;
-      var HOLD_MS    = 2200;  // сколько слово «живёт» перед стиранием
-      var ERASE_MS   = 55;    // базовый шаг удаления
-      var TYPE_MS    = 80;    // базовый шаг печати
-      var THINK_MS   = 380;   // пауза между стиранием и началом печати — «думаем»
+      var HOLD_MS    = 2200;
+      var ERASE_MS   = 55;
+      var TYPE_MS    = 80;
+      var THINK_MS   = 380;
       function jitter(base){ return base + Math.random() * base * 0.6; }
       function erase(target){
+        if (psgPaused) return;
         var cur = rot.textContent;
-        if (cur.length === 0) { setTimeout(function(){ type(target); }, THINK_MS); return; }
+        if (cur.length === 0) { psgResumeTimer = setTimeout(function(){ type(target); }, THINK_MS); return; }
         rot.textContent = cur.slice(0, -1);
-        setTimeout(function(){ erase(target); }, jitter(ERASE_MS));
+        psgResumeTimer = setTimeout(function(){ erase(target); }, jitter(ERASE_MS));
       }
       function type(target){
+        if (psgPaused) return;
         var cur = rot.textContent;
-        if (cur.length >= target.length) { setTimeout(next, HOLD_MS); return; }
+        if (cur.length >= target.length) { psgResumeTimer = setTimeout(next, HOLD_MS); return; }
         rot.textContent = target.slice(0, cur.length + 1);
-        setTimeout(function(){ type(target); }, jitter(TYPE_MS));
+        psgResumeTimer = setTimeout(function(){ type(target); }, jitter(TYPE_MS));
       }
       function next(){
+        if (psgPaused) return;
         ri = (ri + 1) % synonyms.length;
         erase(synonyms[ri]);
       }
-      setTimeout(next, HOLD_MS);
+      psgResume = function(){
+        if (!psgPaused) return;
+        psgPaused = false;
+        // продолжить с текущего слова в массиве (rot.textContent может быть «обкусанным» —
+        // дотыпиваем target до конца и идём дальше)
+        type(synonyms[ri]);
+      };
+      psgResumeTimer = setTimeout(next, HOLD_MS);
     }
     log('[PSG] synonyms ok');
   } catch(e) { console.error('[PSG] synonyms error:', e); }
@@ -1192,6 +1417,190 @@
     });
     log('[PSG] anchor-block ok');
   } catch(e) { console.error('[PSG] anchor-block error:', e); }
+
+  // ============== 6. INTERACTIVE HERO — click → type → modal ==============
+  // Юзер кликает по плашке. Desktop: contenteditable + Enter → modal. Mobile: сразу modal.
+  // Cancel закрывает без сохранения и продолжает synonym typewriter с того же места.
+  try {
+    var hero = document.getElementById('rotWord');
+    var modal = document.getElementById('psgModal');
+    var defaultPane = document.getElementById('psgDefault');
+    var successPane = document.getElementById('psgSuccess');
+    var form = document.getElementById('psgForm');
+    var contactBtn = document.getElementById('psgGoContact');
+    var discoverBtn = document.getElementById('psgGoDiscover');
+    var nameInput = document.getElementById('psgName');
+    var phoneInput = document.getElementById('psgPhone');
+    var msgrCb = document.getElementById('psgMsgr');
+    var msgrNote = document.getElementById('psgMsgrNote');
+    var wordSpan = document.getElementById('psgWord');
+    var formWord = document.getElementById('psgFormWord');
+    var successName = document.getElementById('psgSuccessName');
+    var backBtn = document.getElementById('psgBack');
+    var isMobile = function(){ return window.matchMedia('(max-width: 760px)').matches; };
+    var lastFocus = null;
+
+    function pauseTypewriter(){
+      psgPaused = true;
+      if (psgResumeTimer) { clearTimeout(psgResumeTimer); psgResumeTimer = null; }
+    }
+    function resumeTypewriter(){
+      if (psgResume && psgPaused) psgResume();
+    }
+
+    function getCurrentWord(){
+      // Desktop: то что юзер напечатал в плашке. Mobile: запросим в модалке через prompt-инпут.
+      var w = (hero && hero.textContent || '').trim();
+      return w;
+    }
+
+    function openModal(word){
+      lastFocus = document.activeElement;
+      pauseTypewriter();
+      if (hero) hero.contentEditable = 'false';
+      wordSpan.textContent = word || '—';
+      formWord.textContent = word || '—';
+      // reset state
+      successPane.hidden = true;
+      defaultPane.hidden = false;
+      form.classList.remove('open');
+      contactBtn.classList.remove('active');
+      nameInput.classList.remove('invalid');
+      phoneInput.classList.remove('invalid');
+      // open
+      if (typeof modal.showModal === 'function') {
+        try { modal.showModal(); } catch(_){ modal.setAttribute('open', ''); }
+      } else {
+        modal.setAttribute('open', '');
+      }
+      // фокус на первой кнопке
+      setTimeout(function(){ discoverBtn.focus(); }, 50);
+    }
+
+    function closeModal(){
+      if (typeof modal.close === 'function') {
+        try { modal.close(); } catch(_){ modal.removeAttribute('open'); }
+      } else {
+        modal.removeAttribute('open');
+      }
+      if (hero) hero.contentEditable = 'false';
+      // вернуть фокус и продолжить ротацию
+      if (lastFocus && lastFocus !== document.body && typeof lastFocus.focus === 'function') {
+        try { lastFocus.focus(); } catch(_){}
+      }
+      resumeTypewriter();
+    }
+
+    // Клик по плашке
+    if (hero) {
+      hero.setAttribute('role', 'textbox');
+      hero.setAttribute('aria-label', 'Напечатай своё слово и нажми Enter');
+      hero.addEventListener('click', function(){
+        if (isMobile()) {
+          openModal(getCurrentWord() || synonyms[ri] || '');
+          return;
+        }
+        if (hero.contentEditable === 'true') return;
+        pauseTypewriter();
+        hero.contentEditable = 'true';
+        // выделить текущее слово, чтобы юзер сразу мог печатать
+        var range = document.createRange();
+        range.selectNodeContents(hero);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        hero.focus();
+      });
+      hero.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          var word = getCurrentWord();
+          if (!word) { hero.contentEditable = 'false'; resumeTypewriter(); return; }
+          openModal(word);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          hero.contentEditable = 'false';
+          hero.blur();
+          resumeTypewriter();
+        }
+      });
+      hero.addEventListener('blur', function(){
+        // если кликнул вне без Enter — отменяем
+        if (hero.contentEditable === 'true' && !modal.hasAttribute('open')) {
+          hero.contentEditable = 'false';
+          resumeTypewriter();
+        }
+      });
+    }
+
+    // Закрытие модалки: × / overlay / Esc / Cancel событие dialog
+    document.addEventListener('click', function(e){
+      var c = e.target && e.target.closest && e.target.closest('[data-psg-close]');
+      if (c) closeModal();
+    });
+    modal.addEventListener('cancel', function(e){ e.preventDefault(); closeModal(); });
+    modal.addEventListener('close', function(){
+      // если закрыли через native (Esc) и состояние не сбросили — подстрахуемся
+      if (psgPaused && successPane.hidden) resumeTypewriter();
+    });
+
+    // Кнопка «Открыть ТЗ-генератор»
+    discoverBtn.addEventListener('click', function(){
+      var word = wordSpan.textContent.trim();
+      var url = 'discover.html' + (word && word !== '—' ? '?w=' + encodeURIComponent(word) : '');
+      window.location.href = url;
+    });
+
+    // Кнопка «Связаться напрямую» — раскрыть форму
+    contactBtn.addEventListener('click', function(){
+      contactBtn.classList.add('active');
+      form.classList.add('open');
+      setTimeout(function(){ nameInput.focus(); }, 250);
+    });
+
+    // Назад из формы
+    backBtn.addEventListener('click', function(){
+      form.classList.remove('open');
+      contactBtn.classList.remove('active');
+      setTimeout(function(){ contactBtn.focus(); }, 100);
+    });
+
+    // Галочка мессенджера — текст рядом
+    function updateMsgrNote(){
+      msgrNote.textContent = msgrCb.checked
+        ? 'Менеджер напишет в мессенджер.'
+        : 'Менеджер позвонит на этот номер.';
+    }
+    msgrCb.addEventListener('change', updateMsgrNote);
+    updateMsgrNote();
+
+    // Submit — без бэкенда: валидация → success
+    function validatePhone(v){ return /[\d+()\s\-]{9,}/.test(v); }
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = nameInput.value.trim();
+      var phone = phoneInput.value.trim();
+      var ok = true;
+      if (!name) { nameInput.classList.add('invalid'); ok = false; } else nameInput.classList.remove('invalid');
+      if (!validatePhone(phone)) { phoneInput.classList.add('invalid'); ok = false; } else phoneInput.classList.remove('invalid');
+      if (!ok) { (nameInput.classList.contains('invalid') ? nameInput : phoneInput).focus(); return; }
+      // success state — без записи куда-либо
+      successName.textContent = name.split(/\s+/)[0];
+      defaultPane.hidden = true;
+      successPane.hidden = false;
+      log('[PSG] lead (no backend yet):', { word: wordSpan.textContent, name: name, phone: phone, msgr: msgrCb.checked });
+      // авто-закрытие 4с
+      setTimeout(function(){
+        if (!modal.hasAttribute('open')) return;
+        // сброс полей перед закрытием
+        nameInput.value = ''; phoneInput.value = '';
+        msgrCb.checked = true; updateMsgrNote();
+        closeModal();
+      }, 4000);
+    });
+
+    log('[PSG] interactive-hero ok');
+  } catch(e) { console.error('[PSG] interactive-hero error:', e); }
 })();
 </script>
 

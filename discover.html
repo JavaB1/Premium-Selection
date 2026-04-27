@@ -54,6 +54,11 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
 .nav-back:hover { opacity:.6; }
 .scene-head { padding:90px var(--gutter) 24px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); }
 .scene-head strong { color:#fff; font-weight:500; }
+/* Баннер «Из главной: <слово>» — пробрасываем контекст в шапку wizard */
+.seed-banner { padding:18px var(--gutter); border-bottom:1px solid var(--line); display:flex; gap:12px; flex-wrap:wrap; align-items:baseline; }
+.seed-banner-label { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); flex-shrink:0; }
+.seed-banner-word { background:#fff; color:var(--ink); font-weight:700; padding:.05em .35em; font-size:var(--fs-body-l); }
+.seed-banner-hint { font-size:var(--fs-body); color:var(--dim); }
 .progress-bar { height:2px; background:rgba(255,255,255,.22); margin-top:14px; overflow:hidden; grid-column:1/-1; }
 .progress-fill { height:100%; background:#fff; transition:width .55s cubic-bezier(.65,0,.35,1); width:12.5%; }
 .crumbs { display:flex; gap:8px; flex-wrap:wrap; }
@@ -176,6 +181,12 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
   <span><div class="crumbs" id="crumbs"></div></span>
   <span><strong id="stepIdx">01</strong> / 08</span>
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+</div>
+
+<div class="seed-banner" id="seedBanner" hidden>
+  <span class="seed-banner-label">— Из&nbsp;главной</span>
+  <span class="seed-banner-word" id="seedWord">—</span>
+  <span class="seed-banner-hint" id="seedHint">—</span>
 </div>
 
 <section class="step active" data-step="1">
@@ -470,6 +481,51 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
   };
   var budgetRanges = { lite:[0,10], mid:[10,50], large:[50,200], xl:[200,2000] };
 
+  // Keyword-словарь: слово клиента (substring, lowercase) → deliverable id шага 6.
+  // Если слово матчится — wizard стартует сразу на шаге 6 с отмеченным пунктом.
+  // Если нет — стартует с шага 1, слово только в банере и в финал-документе.
+  var seedMap = [
+    ['логотип', 'logo'], ['лого', 'logo'], ['айдентика', 'logo'],
+    ['брендбук', 'brandbook'], ['brandbook', 'brandbook'], ['brand book', 'brandbook'],
+    ['нейминг', 'naming'], ['название', 'naming'], ['позиционирование', 'naming'],
+    ['стратеги', 'strategy'],
+    ['исследовани', 'research'], ['аналитик', 'research'],
+    ['лендинг', 'landing'], ['landing', 'landing'],
+    ['корпоративный сайт', 'site'], ['сайт', 'site'],
+    ['магазин', 'ecommerce'], ['e-commerce', 'ecommerce'], ['ecommerce', 'ecommerce'], ['интернет-магазин', 'ecommerce'],
+    ['приложени', 'mobile'], ['mobile', 'mobile'], ['app', 'mobile'],
+    ['crm', 'crm'], ['автоматизац', 'crm'],
+    ['кампани', 'campaign'], ['реклам', 'campaign'],
+    ['performance', 'performance'], ['ppc', 'performance'], ['seo', 'performance'], ['smm', 'performance'],
+    ['наружк', 'ooh'], ['наружн', 'ooh'], ['билборд', 'ooh'],
+    ['полиграфи', 'print'], ['буклет', 'print'], ['каталог', 'print'],
+    ['pos', 'pos'], ['ценник', 'pos'],
+    ['сувенирк', 'souvenir'], ['мерч', 'souvenir'], ['merch', 'souvenir'],
+    ['вывеск', 'signage'],
+    ['упаковк', 'packaging'],
+    ['видео', 'video'],
+    ['фото', 'photo'], ['съёмк', 'photo'], ['съемк', 'photo'],
+    ['ивент', 'event'], ['event', 'event'], ['открыти', 'event'],
+    ['лояльност', 'loyalty'], ['loyalty', 'loyalty'],
+    ['hr-бренд', 'employer'], ['hr бренд', 'employer'], ['career', 'employer'],
+    ['контент', 'content']
+  ];
+  function matchSeed(word){
+    var w = (word||'').toLowerCase().trim();
+    if (!w) return null;
+    for (var i = 0; i < seedMap.length; i++) {
+      if (w.indexOf(seedMap[i][0]) !== -1) return seedMap[i][1];
+    }
+    return null;
+  }
+  function getSeedFromUrl(){
+    try {
+      var m = location.search.match(/[?&]w=([^&]+)/);
+      if (!m) return '';
+      return decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().slice(0, 60);
+    } catch(_) { return ''; }
+  }
+
   function show(stepKey){
     $$('.step').forEach(function(s){ s.classList.remove('active'); });
     var el = document.querySelector('[data-step="'+stepKey+'"]');
@@ -607,6 +663,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
       '. Уточнение: ' + (labels.branch || '—') +
       '. Срок: ' + (labels.urgency || '—') +
       '. Бюджет клиента: ' + (labels.budget || '—') + '.';
+    if (state.seed) briefText = '<strong>Слово клиента с&nbsp;главной:</strong> «' + state.seed + '».<br><br>' + briefText;
     if (state.contact.note) briefText += '<br><br><strong>Дополнительно:</strong> ' + state.contact.note;
     $('#tzBriefText').innerHTML = briefText;
 
@@ -761,6 +818,42 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
       show('1');
     }
   });
+
+  // ============== SEED — слово с главной страницы ==============
+  // ?w=<слово> в URL → банер сверху + (если матчится) старт сразу с шага 6
+  // с предотмеченным deliverable. Слово также попадает в финал-документ.
+  try {
+    var seedWord = getSeedFromUrl();
+    var seedDel = matchSeed(seedWord);
+    if (seedWord) {
+      state.seed = seedWord;
+      var banner = document.getElementById('seedBanner');
+      var sw = document.getElementById('seedWord');
+      var sh = document.getElementById('seedHint');
+      if (banner && sw && sh) {
+        sw.textContent = seedWord;
+        sh.textContent = seedDel
+          ? 'Узнали — это deliverable, начнём с шага 06. Можно добавить ещё пунктов или вернуться назад.'
+          : 'Не уверены, что это в стандартном списке. Уточним за 8 шагов; слово сохраним в брифе.';
+        banner.hidden = false;
+      }
+      if (seedDel) {
+        // отметить deliverable + jump на шаг 6
+        var btn = document.querySelector('.opt.multi[data-key="dels"][data-value="' + seedDel + '"]');
+        if (btn) {
+          btn.classList.add('selected');
+          if (state.dels.indexOf(seedDel) === -1) state.dels.push(seedDel);
+          labels['dels_' + seedDel] = btn.dataset.label || seedWord;
+          var step6 = document.querySelector('[data-step="6"]');
+          if (step6) {
+            var countEl = step6.querySelector('.selected-count');
+            if (countEl) countEl.textContent = 'Выбрано: ' + state.dels.length;
+          }
+        }
+        show('6');
+      }
+    }
+  } catch(e) { console.error('[PSG] seed init error:', e); }
 })();
 </script>
 
