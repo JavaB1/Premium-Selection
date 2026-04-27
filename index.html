@@ -984,8 +984,8 @@
       var frames = cell.querySelectorAll('.frame');
       if (frames.length < 2) return;
       var cur = 0;
-      var SHOW = 5000;      // фото висит 5 сек
-      var GAP  = 3000;      // 3 сек воздуха — виден красный фон страницы
+      var SHOW = 8000;      // фото висит 8 сек
+      var GAP  = 6000;      // 6 сек воздуха — виден красный фон страницы
       function step(){
         // прячем фото и убираем фон ячейки — пусть просвечивает красный
         frames[cur].classList.remove('active');
