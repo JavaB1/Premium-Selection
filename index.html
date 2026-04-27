@@ -31,6 +31,9 @@
     --ff-text:    'Commissioner',system-ui,sans-serif;
     --ff-mono:    'JetBrains Mono',ui-monospace,monospace;
 
+    /* Единый горизонтальный отступ для всех колонтитулов hero */
+    --gutter: clamp(20px, 3vw, 40px);
+
     /* Letter-spacing rules */
     --ls-display: -.025em;
     --ls-body:    0;
@@ -50,7 +53,7 @@
   /* ============ NAV ============ */
   .nav {
     position:fixed; top:0; left:0; right:0; z-index:30;
-    padding:20px 32px;
+    padding:20px var(--gutter);
     display:flex; justify-content:space-between; align-items:center;
     color:#fff;
   }
@@ -69,9 +72,8 @@
 
   /* ============ HERO ============ */
   .hero {
-    height:100vh; padding:68px 24px 14px;
+    height:100vh; padding:68px var(--gutter) 14px;
     display:flex; flex-direction:column; gap:10px;
-    max-width:1600px; margin:0 auto;
   }
 
   /* Верхний колонтитул */
@@ -226,21 +228,24 @@
   .container { max-width: 1480px; margin: 0 auto; }
 
   .section-head {
-    display:grid; grid-template-columns: auto 1fr; gap: clamp(40px, 6vw, 96px);
-    align-items: end; padding-bottom: 24px;
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap: clamp(24px, 4vw, 80px);
+    padding-bottom: 24px;
     border-bottom: 1px solid currentColor;
-    opacity: .9;
+    opacity: .95;
   }
   .section-head .label {
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    opacity: .6;
+    opacity: .6; flex-shrink:0;
+    align-self: flex-end; margin-bottom: 6px;
   }
   .section-head h2 {
     font-family:var(--ff-display); font-weight:900;
     font-size: clamp(40px, 6vw, 92px);
     line-height: .96; letter-spacing: var(--ls-display);
     text-transform: uppercase;
+    text-align: right;
   }
 
   /* === DIRECTIONS === */
@@ -556,9 +561,9 @@
 <section class="hero">
 
   <div class="top">
-    <span><strong>P/S</strong>&nbsp;— PREMIUM&nbsp;SELECTION&nbsp;GROUP</span>
-    <span>EDITION&nbsp;01 · APR&nbsp;2026</span>
-    <span><strong>TASHKENT</strong> · DUBAI</span>
+    <span id="liveDate"><span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · LOADING…</span>
+    <span id="liveTime">—</span>
+    <span><strong>TASHKENT</strong> · UTC+5</span>
   </div>
 
   <div class="grid" id="grid">
@@ -879,49 +884,29 @@
     }, 3200 + i * 470);
   });
 
+  // Живые часы и дата — Ташкент (UTC+5)
+  const dateEl = document.getElementById('liveDate');
+  const timeEl = document.getElementById('liveTime');
+  const days = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+  const months = ['ЯНВ','ФЕВ','МАР','АПР','МАЙ','ИЮН','ИЮЛ','АВГ','СЕН','ОКТ','НОЯ','ДЕК'];
+  function tick() {
+    const now = new Date();
+    const tsh = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 3600000));
+    const d  = days[tsh.getDay()];
+    const dd = String(tsh.getDate()).padStart(2,'0');
+    const mm = months[tsh.getMonth()];
+    const yy = tsh.getFullYear();
+    const hh = String(tsh.getHours()).padStart(2,'0');
+    const mi = String(tsh.getMinutes()).padStart(2,'0');
+    const ss = String(tsh.getSeconds()).padStart(2,'0');
+    dateEl.innerHTML = `<span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · ${d} ${dd}&nbsp;${mm} ${yy}`;
+    timeEl.innerHTML = `<strong>${hh}:${mi}:${ss}</strong>`;
+  }
+  tick();
+  setInterval(tick, 1000);
+
   // Авто-переключение цвета nav в зависимости от секции под ним
   const nav = document.querySelector('.nav');
   // На светлых секциях (paper) — тёмный текст
   const lightSections = document.querySelectorAll('.about, .works');
-  const lightObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) nav.classList.add('dark');
-    });
-  }, { rootMargin: '-60px 0px -85% 0px' });
-  lightSections.forEach(s => lightObs.observe(s));
-  // На красных/тёмных — белый текст
-  const darkSections = document.querySelectorAll('.hero, .directions, .stats, .contact, .site-footer');
-  const darkObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) nav.classList.remove('dark');
-    });
-  }, { rootMargin: '-60px 0px -85% 0px' });
-  darkSections.forEach(s => darkObs.observe(s));
-
-  // Ротация синонимов слова «грандиозные»
-  const synonyms = [
-    'грандиозные',
-    'масштабные',
-    'амбициозные',
-    'выдающиеся',
-    'впечатляющие',
-    'легендарные',
-    'мощные',
-    'смелые',
-    'значимые',
-    'большие'
-  ];
-  const rot = document.getElementById('rotWord');
-  let ri = 0;
-  setInterval(() => {
-    rot.classList.add('fade');
-    setTimeout(() => {
-      ri = (ri + 1) % synonyms.length;
-      rot.textContent = synonyms[ri];
-      rot.classList.remove('fade');
-    }, 350);
-  }, 2400);
-</script>
-
-</body>
-</html>
+  const lightObs = new Interse
