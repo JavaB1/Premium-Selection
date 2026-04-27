@@ -544,17 +544,18 @@
 
   /* === MODAL «Мы создаём ___ Ваш проект» === */
   /* Юзер вводит своё слово в плашку → Enter → эта модалка с вилкой:
-     ТЗ-генератор или прямой контакт. Без сохранения данных — закрытие = reset. */
-  .psg-modal { position:fixed; inset:0; display:none; z-index:100; }
-  .psg-modal[open] { display:flex; align-items:center; justify-content:center; }
-  .psg-modal-overlay {
-    position:absolute; inset:0; background:rgba(10,10,10,.86);
-    opacity:0; transition:opacity .2s; cursor:pointer; border:0;
+     ТЗ-генератор или прямой контакт. Без сохранения данных — закрытие = reset.
+     Использует <dialog> с native центровкой (margin auto) и ::backdrop. */
+  .psg-modal {
+    width:min(720px, calc(100% - 40px)); max-width:none;
+    max-height:90vh; padding:0; border:0; border-radius:4px;
+    background:transparent; color:var(--ink); overflow:visible;
   }
-  .psg-modal[open] .psg-modal-overlay { opacity:1; }
+  .psg-modal::backdrop { background:rgba(10,10,10,.86); }
+  .psg-modal-overlay { display:none; } /* legacy: nативный ::backdrop сам затемняет */
   .psg-modal-card {
     position:relative; background:var(--paper); color:var(--ink);
-    width:min(720px, calc(100% - 40px)); max-height:90vh; overflow-y:auto;
+    width:100%; max-height:90vh; overflow-y:auto;
     padding:clamp(28px, 4vw, 56px); border-radius:4px;
     transform:scale(.96); opacity:0;
     transition:transform .25s cubic-bezier(.65,0,.35,1), opacity .25s;
@@ -668,8 +669,12 @@
   }
   .psg-success p { font-size:var(--fs-body-l); color:rgba(0,0,0,.7); }
   @media (max-width: 760px) {
+    .psg-modal {
+      width:100vw; max-width:none; height:100vh; max-height:none;
+      margin:0; border-radius:0;
+    }
     .psg-modal-card {
-      width:100%; max-width:100%; height:100vh; max-height:none;
+      width:100%; height:100%; max-height:none;
       border-radius:0; padding:24px 20px 32px;
     }
     .psg-modal-cta-pair { grid-template-columns:1fr; }
@@ -1533,10 +1538,14 @@
       });
     }
 
-    // Закрытие модалки: × / overlay / Esc / Cancel событие dialog
+    // Закрытие модалки: × / Esc / клик по ::backdrop (target === dialog)
     document.addEventListener('click', function(e){
       var c = e.target && e.target.closest && e.target.closest('[data-psg-close]');
       if (c) closeModal();
+    });
+    modal.addEventListener('click', function(e){
+      // Click по native ::backdrop приходит на сам <dialog> с target === modal
+      if (e.target === modal) closeModal();
     });
     modal.addEventListener('cancel', function(e){ e.preventDefault(); closeModal(); });
     modal.addEventListener('close', function(){
