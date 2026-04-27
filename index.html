@@ -228,7 +228,8 @@
   .container { max-width: 1480px; margin: 0 auto; }
 
   .section-head {
-    display:flex; justify-content:space-between; align-items:flex-end;
+    display:flex; flex-direction: row-reverse;
+    justify-content:space-between; align-items:flex-end;
     gap: clamp(24px, 4vw, 80px);
     padding-bottom: 24px;
     border-bottom: 1px solid currentColor;
@@ -245,7 +246,7 @@
     font-size: clamp(40px, 6vw, 92px);
     line-height: .96; letter-spacing: var(--ls-display);
     text-transform: uppercase;
-    text-align: right;
+    text-align: left;
   }
 
   /* === DIRECTIONS === */
@@ -908,5 +909,4 @@
   // Авто-переключение цвета nav в зависимости от секции под ним
   const nav = document.querySelector('.nav');
   // На светлых секциях (paper) — тёмный текст
-  const lightSections = document.querySelectorAll('.about, .works');
-  const lightObs = new Interse
+  const lightSections = document.querySelectorAll('.about, .works')
