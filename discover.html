@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Premium Selection — Определение задачи</title>
+<meta name="description" content="Интерактивная диагностика: выберите цель, уточните задачу — получите персональный roadmap проекта.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#DA291C; --ink:#0A0A0A; --paper:#FFFFFF;
+    --dim:rgba(255,255,255,.78); --dim-2:rgba(255,255,255,.55);
+    --line:rgba(255,255,255,.18);
+    --fs-display: clamp(36px, 5.5vw, 84px);
+    --fs-h2: clamp(24px, 2.6vw, 36px);
+    --fs-body-l: clamp(17px, 1.5vw, 22px);
+    --fs-body: clamp(14px, 1.05vw, 16px);
+    --fs-meta: 11px; --fs-cap: 10px;
+    --ff-display:'Commissioner',system-ui,sans-serif;
+    --ff-text:'Commissioner',system-ui,sans-serif;
+    --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+    --ls-display:-.025em; --ls-body:0; --ls-mono:.12em;
+    --gutter: clamp(20px, 3vw, 40px);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body {
+    background:var(--red); color:#fff; min-height:100vh;
+    font-family:var(--ff-text); font-size:var(--fs-body);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  a { color:inherit; text-decoration:none; }
+  button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+
+  /* === NAV === */
+  .nav {
+    position:fixed; top:0; left:0; right:0; z-index:30;
+    padding:20px var(--gutter);
+    display:flex; justify-content:space-between; align-items:center;
+    color:#fff;
+  }
+  .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .nav-logo svg { width:34px; height:36px; }
+  .nav-logo .wm { font-weight:700; font-size:var(--fs-cap); letter-spacing:.18em; line-height:1.05; font-family:var(--ff-text); }
+  .nav-back {
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+  }
+  .nav-back:hover { opacity:.6; }
+
+  /* === HEADER (progress + breadcrumb) === */
+  .scene-head {
+    padding: 90px var(--gutter) 24px;
+    border-bottom: 1px solid var(--line);
+    display:grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items:end;
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim);
+  }
+  .scene-head strong { color:#fff; font-weight:500; }
+  .progress-bar {
+    height: 2px; background: rgba(255,255,255,.22);
+    margin-top: 14px; overflow:hidden; grid-column: 1 / -1;
+  }
+  .progress-fill {
+    height: 100%; background: #fff;
+    transition: width .55s cubic-bezier(.65,0,.35,1);
+    width: 25%;
+  }
+
+  /* === STEPS === */
+  .step {
+    padding: clamp(40px, 6vw, 80px) var(--gutter) 60px;
+    display:none;
+  }
+  .step.active { display:block; animation: fade .5s ease; }
+  @keyframes fade {
+    from { opacity:0; transform: translateY(12px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .step-num {
+    font-family: var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color: var(--dim); margin-bottom: 16px;
+  }
+  .step-q {
+    font-family: var(--ff-display); font-weight: 900;
+    font-size: var(--fs-display);
+    line-height: .96; letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+    max-width: 22ch; margin-bottom: clamp(36px, 5vw, 64px);
+  }
+  .step-q em { font-style:normal; color:var(--ink); background:#fff; padding: 0 .15em; }
+
+  /* === OPTIONS GRID === */
+  .options {
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    max-width: 1200px;
+  }
+  .opt {
+    text-align: left;
+    border: 1.5px solid var(--line); padding: 24px 28px;
+    border-radius: 4px;
+    transition: all .35s cubic-bezier(.65,0,.35,1);
+    display:flex; flex-direction:column; gap: 10px;
+    color: #fff;
+  }
+  .opt:hover, .opt:focus-visible {
+    background:#fff; color:var(--ink); border-color:#fff;
+    transform: translateY(-3px);
+    outline: none;
+  }
+  .opt .opt-num {
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    opacity: .65;
+  }
+  .opt .opt-title {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(20px, 2vw, 28px); line-height: 1.05;
+    letter-spacing: var(--ls-display);
+  }
+  .opt .opt-desc {
+    font-size: var(--fs-body); line-height: 1.45; opacity: .85;
+  }
+
+  /* === BREADCRUMB === */
+  .crumbs {
+    display:flex; gap: 10px; flex-wrap: wrap;
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim);
+  }
+  .crumb {
+    display:inline-flex; align-items:center; gap: 8px;
+    padding: 4px 10px; border:1px solid var(--line); border-radius: 999px;
+  }
+  .crumb b { color:#fff; font-weight:500; }
+
+  /* === BACK BTN === */
+  .step-back {
+    margin-top: 32px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim); cursor:pointer;
+  }
+  .step-back:hover { color: #fff; }
+  .step-back::before { content: '←'; }
+
+  /* === FINAL ROADMAP === */
+  .roadmap-head {
+    padding: clamp(40px, 6vw, 80px) var(--gutter) 24px;
+    max-width: 1480px; margin: 0 auto;
+  }
+  .roadmap-label {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim); margin-bottom: 16px;
+  }
+  .roadmap-title {
+    font-family: var(--ff-display); font-weight: 900;
+    font-size: var(--fs-display);
+    line-height: .94; letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .roadmap-summary {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    padding-top: 24px; border-top: 1px solid var(--line);
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+  .roadmap-summary strong { color:#fff; font-weight:500; display:block; font-size: 14px; margin-top: 4px; letter-spacing: 0; text-transform: none; line-height: 1.4; }
+
+  .phases {
+    padding: 0 var(--gutter) 40px;
+    max-width: 1480px; margin: 0 auto;
+  }
+  .phase {
+    display:grid; grid-template-columns: 80px 1fr 1.6fr; gap: clamp(24px, 4vw, 60px);
+    padding: clamp(24px, 3vw, 40px) 0;
+    border-top: 1px solid var(--line); align-items: start;
+  }
+  .phase:last-child { border-bottom: 1px solid var(--line); }
+  .phase .ph-num {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); color: var(--dim);
+  }
+  .phase .ph-title h3 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1; letter-spacing: var(--ls-display);
+    text-transform: uppercase; color:#fff;
+    margin-bottom: 8px;
+  }
+  .phase .ph-title .ph-time {
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim);
+  }
+  .phase ul { list-style:none; padding:0; margin:0; }
+  .phase ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-body); line-height:1.45;
+    display:flex; gap: 14px; align-items: baseline;
+  }
+  .phase ul li:last-child { border-bottom: none; }
+  .phase ul li::before {
+    content: '+';
+    font-family: var(--ff-mono); color: rgba(255,255,255,.5); font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .roadmap-cta {
+    padding: clamp(40px, 5vw, 80px) var(--gutter);
+    max-width: 1480px; margin: 0 auto;
+    display:grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+    border-top: 1px solid var(--line);
+  }
+  .roadmap-cta h4 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(24px, 3vw, 40px);
+    line-height: 1.05; letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+    max-width: 28ch;
+  }
+  .btn-primary {
+    display:inline-flex; align-items:center; gap: 12px;
+    padding: 18px 36px; background:#fff; color:var(--ink);
+    border-radius: 999px;
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    transition: all .3s;
+  }
+  .btn-primary:hover { background: var(--ink); color:#fff; }
+  .btn-primary::after { content:'→'; }
+  .btn-ghost {
+    display:inline-flex; align-items:center; gap: 12px;
+    padding: 18px 36px; border: 1.5px solid #fff; border-radius: 999px;
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color:#fff; transition: all .3s;
+  }
+  .btn-ghost:hover { background:#fff; color:var(--red); }
+  .btn-ghost::after { content:'↻'; }
+
+  .actions {
+    display:flex; gap: 14px;
+    margin-top: 32px; flex-wrap: wrap;
+  }
+
+  /* === Mobile === */
+  @media (max-width: 760px) {
+    .scene-head { grid-template-columns: 1fr; gap: 12px; padding-top: 76px; }
+    .options { grid-template-columns: 1fr; }
+    .step-q { font-size: clamp(28px, 9vw, 48px); }
+    .phase { grid-template-columns: 1fr; gap: 12px; }
+    .roadmap-summary { grid-template-columns: 1fr; gap: 12px; }
+    .roadmap-cta { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo-ps-mini" viewBox="0 0 80 90">
+      <text x="0" y="62" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">P</text>
+      <text x="34" y="86" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">S</text>
+      <line x1="52" y1="4" x2="22" y2="88" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <svg><use href="#logo-ps-mini"/></svg>
+    <span class="wm">PREMIUM<br>SELECTION</span>
+  </a>
+  <a href="index.html" class="nav-back">← На&nbsp;главную</a>
+</nav>
+
+<!-- Header: progress + breadcrumbs -->
+<div class="scene-head">
+  <span><strong>Определение задачи</strong></span>
+  <span id="crumbsSlot"><div class="crumbs" id="crumbs"></div></span>
+  <span><strong id="stepIdx">01</strong> / 04</span>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+</div>
+
+<!-- ============== STEP 1 ============== -->
+<section class="step active" data-step="1">
+  <div class="step-num">— Шаг 01 / 04 · Главная цель</div>
+  <h2 class="step-q">Что вы&nbsp;хотите <em>получить?</em></h2>
+  <div class="options">
+    <button class="opt" data-key="goal" data-value="sales" data-label="Повысить продажи">
+      <span class="opt-num">A · SALES</span>
+      <span class="opt-title">Повысить продажи</span>
+      <span class="opt-desc">Конверсия не&nbsp;там, где должна быть. Нужен ремонт воронки и/или продукта.</span>
+    </button>
+    <button class="opt" data-key="goal" data-value="awareness" data-label="Поднять узнаваемость">
+      <span class="opt-num">B · AWARENESS</span>
+      <span class="opt-title">Поднять узнаваемость</span>
+      <span class="opt-desc">Хороший продукт, но&nbsp;о&nbsp;нём мало знают. Нужна правильная упаковка и&nbsp;охват.</span>
+    </button>
+    <button class="opt" data-key="goal" data-value="reach" data-label="Расширить охват">
+      <span class="opt-num">C · REACH</span>
+      <span class="opt-title">Расширить охват</span>
+      <span class="opt-desc">Выход на&nbsp;новый рынок, регион или сегмент. Нужна стратегия и&nbsp;каналы.</span>
+    </button>
+    <button class="opt" data-key="goal" data-value="launch" data-label="Запустить продукт">
+      <span class="opt-num">D · LAUNCH</span>
+      <span class="opt-title">Запустить продукт</span>
+      <span class="opt-desc">Новый продукт или направление. Нужен go-to-market: бренд, дизайн, продакшен, IT.</span>
+    </button>
+    <button class="opt" data-key="goal" data-value="rebrand" data-label="Ребрендинг">
+      <span class="opt-num">E · REBRAND</span>
+      <span class="opt-title">Ребрендинг / перезапуск</span>
+      <span class="opt-desc">Бренд устарел, не&nbsp;отражает суть, конкуренты обогнали. Нужен переосмысленный образ.</span>
+    </button>
+    <button class="opt" data-key="goal" data-value="other" data-label="Другое / ещё не знаем">
+      <span class="opt-num">F · NOT SURE</span>
+      <span class="opt-title">Не&nbsp;знаем точно</span>
+      <span class="opt-desc">Есть ощущение что-то менять. Поможем определиться&nbsp;— через discovery-аудит.</span>
+    </button>
+  </div>
+</section>
+
+<!-- ============== STEP 2 ============== -->
+<section class="step" data-step="2">
+  <div class="step-num" id="step2num">— Шаг 02 / 04 · Уточнение</div>
+  <h2 class="step-q" id="step2q">В&nbsp;чём <em>корень</em> проблемы?</h2>
+  <div class="options" id="step2opts"></div>
+  <button class="step-back" data-back="1">Назад</button>
+</section>
+
+<!-- ============== STEP 3 ============== -->
+<section class="step" data-step="3">
+  <div class="step-num">— Шаг 03 / 04 · Срочность и&nbsp;ресурс</div>
+  <h2 class="step-q">Какой <em>горизонт</em> у&nbsp;задачи?</h2>
+  <div class="options">
+    <button class="opt" data-key="urgency" data-value="fast" data-label="Срочно — 1-2 месяца">
+      <span class="opt-num">URGENCY · A</span>
+      <span class="opt-title">Срочно</span>
+      <span class="opt-desc">1–2 месяца. Сжатый scope, быстрый MVP, без&nbsp;долгого discovery.</span>
+    </button>
+    <button class="opt" data-key="urgency" data-value="standard" data-label="Стандарт — 3-4 месяца">
+      <span class="opt-num">URGENCY · B</span>
+      <span class="opt-title">Стандарт</span>
+      <span class="opt-desc">3–4 месяца. Полный цикл с&nbsp;аналитикой, тестами и&nbsp;запуском в&nbsp;нескольких каналах.</span>
+    </button>
+    <button class="opt" data-key="urgency" data-value="strategic" data-label="Стратегически — 6+ месяцев">
+      <span class="opt-num">URGENCY · C</span>
+      <span class="opt-title">Стратегически</span>
+      <span class="opt-desc">6+ месяцев. Глубокое исследование, ребрендинг, многоэтапный запуск, итерации.</span>
+    </button>
+  </div>
+  <button class="step-back" data-back="2">Назад</button>
+</section>
+
+<!-- ============== STEP 4 ============== -->
+<section class="step" data-step="4">
+  <div class="step-num">— Шаг 04 / 04 · Бюджет (ориентировочно)</div>
+  <h2 class="step-q">Какой <em>бюджет</em> закладываем?</h2>
+  <div class="options">
+    <button class="opt" data-key="budget" data-value="lite" data-label="До $10k">
+      <span class="opt-num">BUDGET · S</span>
+      <span class="opt-title">До $10K</span>
+      <span class="opt-desc">Точечная задача&nbsp;— один продукт, одна кампания, один айдентика-блок.</span>
+    </button>
+    <button class="opt" data-key="budget" data-value="mid" data-label="$10–50k">
+      <span class="opt-num">BUDGET · M</span>
+      <span class="opt-title">$10K — $50K</span>
+      <span class="opt-desc">Связка из&nbsp;нескольких направлений. Стратегия + дизайн + продакшен или IT.</span>
+    </button>
+    <button class="opt" data-key="budget" data-value="large" data-label="$50k+">
+      <span class="opt-num">BUDGET · L</span>
+      <span class="opt-title">$50K+</span>
+      <span class="opt-desc">Полный цикл. Discovery → strategy → identity → производство → digital → поддержка.</span>
+    </button>
+    <button class="opt" data-key="budget" data-value="open" data-label="Открыто к обсуждению">
+      <span class="opt-num">BUDGET · ?</span>
+      <span class="opt-title">Открыто к&nbsp;обсуждению</span>
+      <span class="opt-desc">Цифры пока не&nbsp;определены. Готовы сначала услышать предложение и&nbsp;оценку.</span>
+    </button>
+  </div>
+  <button class="step-back" data-back="3">Назад</button>
+</section>
+
+<!-- ============== FINAL: ROADMAP ============== -->
+<section class="step" data-step="final">
+  <div class="roadmap-head">
+    <div class="roadmap-label">— Ваш персональный roadmap</div>
+    <h2 class="roadmap-title" id="rmTitle">План <em style="background:#fff;color:var(--ink);padding:0 .15em">действий</em></h2>
+    <p style="font-size:var(--fs-body-l); line-height:1.4; max-width:62ch; color: rgba(255,255,255,.92);" id="rmIntro">—</p>
+
+    <div class="roadmap-summary">
+      <span>Цель<strong id="sm-goal">—</strong></span>
+      <span>Срок<strong id="sm-urgency">—</strong></span>
+      <span>Бюджет<strong id="sm-budget">—</strong></span>
+    </div>
+  </div>
+
+  <div class="phases" id="phases"></div>
+
+  <div class="roadmap-cta">
+    <h4>Нравится план? Обсудим детали&nbsp;— <em style="background:#fff;color:var(--red);padding:0 .15em">по&nbsp;шагам</em></h4>
+    <div class="actions">
+      <a href="index.html#contact" class="btn-primary">Связаться</a>
+      <button class="btn-ghost" id="restart">Начать сначала</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  // ====== STATE ======
+  var state = { goal:null, branch:null, urgency:null, budget:null };
+  var labels = {};
+
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return document.querySelectorAll(s); };
+
+  // ====== STEP 2 BRANCHES ======
+  var branches = {
+    sales: {
+      q: 'В&nbsp;чём <em>корень</em> проблемы?',
+      opts: [
+        ['traffic',     'Низкий трафик',          'Знают мало, заходят редко.',    'AUDIT · TRAFFIC'],
+        ['conversion',  'Низкая конверсия',       'Заходят, но&nbsp;не&nbsp;покупают.', 'AUDIT · FUNNEL'],
+        ['retention',   'Не&nbsp;возвращаются',   'Покупают раз и&nbsp;уходят.',    'AUDIT · RETENTION'],
+        ['offer',       'Слабый продукт-маркет',  'Сам оффер не&nbsp;цепляет аудиторию.','AUDIT · OFFER']
+      ]
+    },
+    awareness: {
+      q: 'Где <em>растим</em> узнаваемость?',
+      opts: [
+        ['local',       'Локально в&nbsp;Узбекистане','Tashkent, регионы.',           'SCOPE · LOCAL'],
+        ['regional',    'Центральная Азия',          'Узбекистан + соседние рынки.', 'SCOPE · CIS'],
+        ['professional','В&nbsp;индустрии',           'B2B / профессиональное сообщество.','SCOPE · B2B'],
+        ['premium',     'Premium-аудитория',         'Узкий сегмент с&nbsp;высоким чеком.','SCOPE · LUX']
+      ]
+    },
+    reach: {
+      q: 'Куда <em>расширяемся?</em>',
+      opts: [
+        ['geo',     'Новый регион / страна', 'Локализация, адаптация под рынок.', 'EXPAND · GEO'],
+        ['segment', 'Новый сегмент',         'Тот&nbsp;же продукт для&nbsp;другой аудитории.', 'EXPAND · SEG'],
+        ['channel', 'Новые каналы продаж',   'Маркетплейсы, retail, digital.',    'EXPAND · CHN'],
+        ['product', 'Новая линейка',         'Расширение продуктовой матрицы.',   'EXPAND · LINE']
+      ]
+    },
+    launch: {
+      q: 'На&nbsp;какой <em>стадии</em> продукт?',
+      opts: [
+        ['idea',     'Идея / концепт',     'Гипотеза без&nbsp;прототипа.',                'STAGE · IDEA'],
+        ['mvp',      'Прототип / MVP',     'Тестируем на&nbsp;узкой аудитории.',          'STAGE · MVP'],
+        ['ready',    'Готов к&nbsp;выводу','Продукт сделан, нужен go-to-market.',         'STAGE · READY'],
+        ['relaunch', 'Перезапуск',         'Был запуск, не&nbsp;взлетел&nbsp;— нужен второй.','STAGE · RELAUNCH']
+      ]
+    },
+    rebrand: {
+      q: 'Что <em>не&nbsp;так</em> с&nbsp;текущим брендом?',
+      opts: [
+        ['old',     'Образ устарел',                'Стиль 5–10 лет назад, не&nbsp;соответствует сейчас.','PROBLEM · OLD'],
+        ['unclear', 'Не&nbsp;отражает суть',         'Бренд говорит не&nbsp;то, что компания делает.',     'PROBLEM · MISMATCH'],
+        ['lost',    'Конкуренты обогнали',           'Они выглядят свежее и&nbsp;премиальнее.',           'PROBLEM · CATCHUP'],
+        ['merger',  'Объединение / реструктуризация','Слияние компаний, нужна новая архитектура.',         'PROBLEM · M&A']
+      ]
+    },
+    other: {
+      q: 'С&nbsp;чего <em>удобнее</em> начать?',
+      opts: [
+        ['audit',    'Полный discovery-аудит', 'Посмотрим бизнес целиком и&nbsp;найдём узкие места.','START · DISCOVERY'],
+        ['strategy', 'Стратегия развития',     'Куда расти 1–3 года и&nbsp;как туда дойти.',         'START · STRATEGY'],
+        ['workshop', 'Рабочая сессия',         'Полдня с&nbsp;ключевой командой&nbsp;— проблема и&nbsp;вектор.','START · WORKSHOP'],
+        ['call',     'Просто созвониться',     'Расскажете контекст&nbsp;— скажем что делать.',     'START · CALL']
+      ]
+    }
+  };
+
+  // ====== ROADMAP TEMPLATES BY GOAL+BRANCH ======
+  function buildPhases(goal, branch, urgency, budget){
+    var t = {
+      fast:     { mod:.6, label:'1–2 месяца' },
+      standard: { mod:1,  label:'3–4 месяца' },
+      strategic:{ mod:1.6,label:'6+ месяцев' }
+    }[urgency] || { mod:1, label:'3–4 месяца' };
+
+    function w(min, max){
+      var lo = Math.max(1, Math.round(min*t.mod));
+      var hi = Math.max(lo+1, Math.round(max*t.mod));
+      return lo + '–' + hi + ' нед';
+    }
+
+    // Базовые задачи по фазе
+    var disc = ['Глубинные интервью с&nbsp;командой и&nbsp;клиентами','Анализ метрик и&nbsp;воронок','Конкурентный бенчмарк','Гипотезы и&nbsp;приоритезация'];
+    var strat = ['Tone of Voice и&nbsp;позиционирование','Продуктовая стратегия и&nbsp;офферы','Сегментация и&nbsp;customer journey','План коммуникаций по&nbsp;каналам'];
+    var design = ['Айдентика и&nbsp;визуальная система','Дизайн ключевых носителей','UX / прототипы продуктовых экранов','Гайдлайны для&nbsp;команды'];
+    var prod  = ['Полиграфия и&nbsp;брендирование','POS и&nbsp;промо-материалы','Видео и&nbsp;фото-контент','Наружная реклама и&nbsp;digital'];
+    var it    = ['Сайт / лендинг','Интеграции с&nbsp;CRM/ERP','Автоматизация воронки','Аналитика и&nbsp;дашборды'];
+    var launch= ['План запуска и&nbsp;коммуникации','Перформанс-кампании','PR и&nbsp;influencer-активации','Замер KPI и&nbsp;корректировки'];
+
+    // Кастомизация по веткам
+    if (goal === 'sales') {
+      if (branch === 'traffic')     prod = ['SEO и&nbsp;контент-кластеры','Performance-кампании','Influencer-партнёрства','Запуск охватных каналов'];
+      if (branch === 'conversion')  it   = ['UX-аудит и&nbsp;ремонт воронки','A/B-тесты ключевых экранов','Сквозная аналитика','Оптимизация форм и&nbsp;CTA'];
+      if (branch === 'retention')   it   = ['Программа лояльности','Email/Telegram-цепочки','CRM-сегментация','Воронка up-sell / cross-sell'];
+      if (branch === 'offer')       strat= ['Product–market fit интервью','Переупаковка офферов','Тест ценообразования','Новые гипотезы оффера'];
+    }
+    if (goal === 'awareness') {
+      design = ['Свежая визуальная система','Кампания-обложка с&nbsp;единым визуальным кодом','Контент-форматы под&nbsp;каждый канал','Гайды и&nbsp;шаблоны'];
+      prod   = ['OOH в&nbsp;ключевых точках','POS и&nbsp;ивенты','PR и&nbsp;спецпроекты с&nbsp;медиа','Партнёрский контент'];
+    }
+    if (goal === 'reach') {
+      strat = ['Анализ нового рынка / сегмента','Локализация продукта и&nbsp;коммуникаций','Каналы дистрибуции','Партнёрская стратегия'];
+    }
+    if (goal === 'launch') {
+      strat = ['Go-to-market план','Позиционирование и&nbsp;нейминг','Ценообразование','PR / launch event план'];
+      design= ['Айдентика продукта','Упаковка и&nbsp;ключевые носители','Лендинг и&nbsp;ключевые экраны','Промо-видео и&nbsp;контент-набор'];
+    }
+    if (goal === 'rebrand') {
+      disc  = ['Brand audit текущего состояния','Интервью клиентов и&nbsp;команды','Конкурентный бенчмарк','Brief на&nbsp;ребрендинг'];
+      design= ['Brand platform (миссия / манифест)','Новая айдентика','Архитектура бренда','Brand book и&nbsp;гайды'];
+      launch= ['Внутренний запуск (команда)','Внешний rollout','Кампания «представления»','Контроль соблюдения гайдов'];
+    }
+
+    return [
+      { num:'01', title:'Discovery',  time: w(2,3),   tasks: disc.slice(0,3) },
+      { num:'02', title:'Strategy',   time: w(2,4),   tasks: strat.slice(0,3) },
+      { num:'03', title:'Design',     time: w(3,5),   tasks: design.slice(0,3) },
+      { num:'04', title:'Production / IT', time: w(4,8), tasks: (goal==='launch'||goal==='sales')? prod.slice(0,2).concat(it.slice(0,1)) : prod.slice(0,3) },
+      { num:'05', title:'Launch',     time: w(2,3),   tasks: launch.slice(0,3) }
+    ];
+  }
+
+  // ====== RENDER ======
+  function show(stepKey){
+    $$('.step').forEach(function(s){ s.classList.remove('active'); });
+    var el = document.querySelector('[data-step="'+stepKey+'"]');
+    if (el) el.classList.add('active');
+    var idx = stepKey === 'final' ? 4 : parseInt(stepKey,10);
+    $('#stepIdx').textContent = stepKey === 'final' ? 'OK' : String(idx).padStart(2,'0');
+    $('#progress').style.width = (stepKey === 'final' ? 100 : (idx*25)) + '%';
+    renderCrumbs();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderCrumbs(){
+    var c = $('#crumbs'); c.innerHTML = '';
+    if (state.goal)    c.innerHTML += '<span class="crumb">Цель: <b>'+labels.goal+'</b></span>';
+    if (state.branch)  c.innerHTML += '<span class="crumb">Уточн.: <b>'+labels.branch+'</b></span>';
+    if (state.urgency) c.innerHTML += '<span class="crumb">Срок: <b>'+labels.urgency+'</b></span>';
+    if (state.budget)  c.innerHTML += '<span class="crumb">Бюджет: <b>'+labels.budget+'</b></span>';
+  }
+
+  function renderStep2(){
+    var b = branches[state.goal];
+    if (!b) return;
+    $('#step2q').innerHTML = b.q;
+    var box = $('#step2opts'); box.innerHTML = '';
+    b.opts.forEach(function(o){
+      var btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.dataset.key = 'branch';
+      btn.dataset.value = o[0];
+      btn.dataset.label = o[1];
+      btn.innerHTML = '<span class="opt-num">'+o[3]+'</span><span class="opt-title">'+o[1]+'</span><span class="opt-desc">'+o[2]+'</span>';
+      box.appendChild(btn);
+    });
+  }
+
+  function renderFinal(){
+    $('#sm-goal').innerHTML = labels.goal;
+    $('#sm-urgency').innerHTML = labels.urgency;
+    $('#sm-budget').innerHTML = labels.budget;
+
+    var titleByGoal = {
+      sales:    'План: РАЗОГНАТЬ <em>продажи</em>',
+      awareness:'План: ВЫРАСТИТЬ <em>узнаваемость</em>',
+      reach:    'План: ОТКРЫТЬ <em>новые рынки</em>',
+      launch:   'План: ЗАПУСТИТЬ <em>продукт</em>',
+      rebrand:  'План: ПЕРЕЗАПУСТИТЬ <em>бренд</em>',
+      other:    'План: НАЧАТЬ С <em>discovery</em>'
+    };
+    $('#rmTitle').innerHTML = titleByGoal[state.goal] || 'План <em>действий</em>';
+
+    var introByGoal = {
+      sales:    'Ремонтируем воронку и&nbsp;доводим конверсию до&nbsp;нужных цифр. Параллельно усиливаем продукт и&nbsp;коммуникацию там, где это даёт прирост.',
+      awareness:'Растим знание о&nbsp;бренде в&nbsp;нужной аудитории через сильную айдентику, точные каналы и&nbsp;узнаваемый визуальный код.',
+      reach:    'Открываем новый рынок: исследуем, локализуем, выстраиваем каналы и&nbsp;коммуникацию под&nbsp;конкретный сегмент.',
+      launch:   'Собираем go-to-market пакет: позиционирование, айдентика, лендинг, контент, кампания запуска и&nbsp;замер результата.',
+      rebrand:  'Переосмысливаем бренд: от&nbsp;манифеста до&nbsp;каждого носителя. Внутренний запуск перед&nbsp;внешним.',
+      other:    'Начинаем с&nbsp;аудита и&nbsp;стратегической сессии&nbsp;— определяем точку приложения сил, а&nbsp;дальше детальный план.'
+    };
+    $('#rmIntro').innerHTML = introByGoal[state.goal] || '';
+
+    var phases = buildPhases(state.goal, state.branch, state.urgency, state.budget);
+    var box = $('#phases'); box.innerHTML = '';
+    phases.forEach(function(p){
+      var div = document.createElement('div');
+      div.className = 'phase';
+      div.innerHTML =
+        '<div class="ph-num">'+p.num+'</div>' +
+        '<div class="ph-title"><h3>'+p.title+'</h3><span class="ph-time">'+p.time+'</span></div>' +
+        '<ul>' + p.tasks.map(function(t){ return '<li>'+t+'</li>'; }).join('') + '</ul>';
+      box.appendChild(div);
+    });
+  }
+
+  // ====== EVENTS ======
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.opt');
+    if (btn) {
+      var k = btn.dataset.key;
+      state[k] = btn.dataset.value;
+      labels[k] = btn.dataset.label;
+
+      if (k === 'goal') { renderStep2(); show('2'); }
+      else if (k === 'branch') { show('3'); }
+      else if (k === 'urgency') { show('4'); }
+      else if (k === 'budget') { renderFinal(); show('final'); }
+      return;
+    }
+
+    var back = e.target.closest('.step-back');
+    if (back) {
+      show(back.dataset.back);
+      return;
+    }
+
+    if (e.target.id === 'restart') {
+      state = { goal:null, branch:null, urgency:null, budget:null };
+      labels = {};
+      show('1');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
