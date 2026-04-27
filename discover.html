@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Premium Selection — Определение задачи</title>
-<meta name="description" content="Интерактивная диагностика: выберите цель, уточните задачу — получите персональный roadmap проекта.">
+<title>Premium Selection — Определение задачи (ТЗ-генератор)</title>
+<meta name="description" content="Интерактивное определение задачи. 8 шагов — и у вас на руках готовое ТЗ с объёмом работ, бюджетом и сроками.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,8 +13,7 @@
     --red:#DA291C; --ink:#0A0A0A; --paper:#FFFFFF;
     --dim:rgba(255,255,255,.78); --dim-2:rgba(255,255,255,.55);
     --line:rgba(255,255,255,.18);
-    --fs-display: clamp(36px, 5.5vw, 84px);
-    --fs-h2: clamp(24px, 2.6vw, 36px);
+    --fs-display: clamp(32px, 5vw, 72px);
     --fs-body-l: clamp(17px, 1.5vw, 22px);
     --fs-body: clamp(14px, 1.05vw, 16px);
     --fs-meta: 11px; --fs-cap: 10px;
@@ -32,24 +31,19 @@
   }
   a { color:inherit; text-decoration:none; }
   button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+  input, textarea { font:inherit; color:inherit; background:transparent; border:0; outline:none; }
 
-  /* === NAV === */
   .nav {
     position:fixed; top:0; left:0; right:0; z-index:30;
     padding:20px var(--gutter);
     display:flex; justify-content:space-between; align-items:center;
-    color:#fff;
   }
-  .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .nav-logo { display:flex; align-items:center; gap:10px; }
   .nav-logo svg { width:34px; height:36px; }
   .nav-logo .wm { font-weight:700; font-size:var(--fs-cap); letter-spacing:.18em; line-height:1.05; font-family:var(--ff-text); }
-  .nav-back {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-  }
+  .nav-back { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; }
   .nav-back:hover { opacity:.6; }
 
-  /* === HEADER (progress + breadcrumb) === */
   .scene-head {
     padding: 90px var(--gutter) 24px;
     border-bottom: 1px solid var(--line);
@@ -65,13 +59,20 @@
   .progress-fill {
     height: 100%; background: #fff;
     transition: width .55s cubic-bezier(.65,0,.35,1);
-    width: 25%;
+    width: 12.5%;
   }
+  .crumbs {
+    display:flex; gap: 8px; flex-wrap: wrap;
+  }
+  .crumb {
+    padding: 4px 10px; border:1px solid var(--line); border-radius: 999px;
+  }
+  .crumb b { color:#fff; font-weight:500; }
 
-  /* === STEPS === */
   .step {
     padding: clamp(40px, 6vw, 80px) var(--gutter) 60px;
     display:none;
+    max-width: 1480px; margin: 0 auto;
   }
   .step.active { display:block; animation: fade .5s ease; }
   @keyframes fade {
@@ -88,27 +89,35 @@
     font-size: var(--fs-display);
     line-height: .96; letter-spacing: var(--ls-display);
     text-transform: uppercase;
-    max-width: 22ch; margin-bottom: clamp(36px, 5vw, 64px);
+    max-width: 22ch; margin-bottom: clamp(28px, 4vw, 48px);
   }
   .step-q em { font-style:normal; color:var(--ink); background:#fff; padding: 0 .15em; }
-
-  /* === OPTIONS GRID === */
-  .options {
-    display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
-    max-width: 1200px;
+  .step-hint {
+    font-size: var(--fs-body); line-height: 1.45; max-width: 64ch;
+    color: rgba(255,255,255,.85); margin-bottom: clamp(24px, 3vw, 40px);
+    margin-top: -16px;
   }
+
+  .options { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .options.three { grid-template-columns: repeat(3, 1fr); }
+  .options.four  { grid-template-columns: repeat(4, 1fr); }
+
   .opt {
-    text-align: left;
-    border: 1.5px solid var(--line); padding: 24px 28px;
-    border-radius: 4px;
-    transition: all .35s cubic-bezier(.65,0,.35,1);
-    display:flex; flex-direction:column; gap: 10px;
-    color: #fff;
+    text-align: left; border: 1.5px solid var(--line); padding: 22px 24px;
+    border-radius: 4px; transition: all .35s cubic-bezier(.65,0,.35,1);
+    display:flex; flex-direction:column; gap: 8px; color: #fff;
+    position: relative;
   }
   .opt:hover, .opt:focus-visible {
     background:#fff; color:var(--ink); border-color:#fff;
-    transform: translateY(-3px);
-    outline: none;
+    transform: translateY(-2px); outline: none;
+  }
+  .opt.selected {
+    background:#fff; color:var(--ink); border-color:#fff;
+  }
+  .opt.selected::after {
+    content: '✓'; position:absolute; top: 16px; right: 18px;
+    font-weight: 700; color: var(--red); font-size: 18px;
   }
   .opt .opt-num {
     font-family: var(--ff-mono); font-size: var(--fs-cap);
@@ -117,29 +126,16 @@
   }
   .opt .opt-title {
     font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(20px, 2vw, 28px); line-height: 1.05;
+    font-size: clamp(18px, 1.7vw, 24px); line-height: 1.05;
     letter-spacing: var(--ls-display);
   }
-  .opt .opt-desc {
-    font-size: var(--fs-body); line-height: 1.45; opacity: .85;
-  }
+  .opt .opt-desc { font-size: var(--fs-body); line-height: 1.45; opacity: .85; }
 
-  /* === BREADCRUMB === */
-  .crumbs {
-    display:flex; gap: 10px; flex-wrap: wrap;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim);
+  .step-foot {
+    margin-top: 32px; display:flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
   }
-  .crumb {
-    display:inline-flex; align-items:center; gap: 8px;
-    padding: 4px 10px; border:1px solid var(--line); border-radius: 999px;
-  }
-  .crumb b { color:#fff; font-weight:500; }
-
-  /* === BACK BTN === */
   .step-back {
-    margin-top: 32px;
     display: inline-flex; align-items: center; gap: 8px;
     font-family: var(--ff-mono); font-size: var(--fs-meta);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
@@ -147,120 +143,162 @@
   }
   .step-back:hover { color: #fff; }
   .step-back::before { content: '←'; }
-
-  /* === FINAL ROADMAP === */
-  .roadmap-head {
-    padding: clamp(40px, 6vw, 80px) var(--gutter) 24px;
-    max-width: 1480px; margin: 0 auto;
-  }
-  .roadmap-label {
+  .next-btn {
+    display:inline-flex; align-items:center; gap: 12px;
+    padding: 14px 28px; border: 1.5px solid #fff; border-radius: 999px;
     font-family: var(--ff-mono); font-size: var(--fs-meta);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim); margin-bottom: 16px;
+    color:#fff; transition: all .3s; cursor: pointer;
   }
-  .roadmap-title {
+  .next-btn:hover { background:#fff; color:var(--red); }
+  .next-btn::after { content:'→'; }
+  .next-btn[disabled] { opacity:.4; cursor: not-allowed; }
+  .selected-count {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* Form (step 8) */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; max-width: 880px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--dim);
+  }
+  .field input, .field textarea {
+    border-bottom: 1.5px solid rgba(255,255,255,.4);
+    padding: 10px 0; font-size: var(--fs-body-l); color:#fff;
+    transition: border-color .3s;
+  }
+  .field input:focus, .field textarea:focus { border-bottom-color: #fff; }
+  .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,.45); }
+  .field.full { grid-column: 1 / -1; }
+  .field textarea { resize: vertical; min-height: 80px; font-family: var(--ff-text); }
+
+  /* === FINAL: TZ Document === */
+  #stepFinal { padding: 0; max-width: none; }
+  .tz {
+    background: #fff; color: var(--ink);
+    padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px);
+    margin: clamp(40px, 6vw, 80px) var(--gutter);
+    max-width: 1280px; margin-left:auto; margin-right:auto;
+    border-radius: 4px;
+  }
+  .tz-head {
+    border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 32px;
+    display:grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px;
+  }
+  .tz-head .tz-mark {
     font-family: var(--ff-display); font-weight: 900;
-    font-size: var(--fs-display);
-    line-height: .94; letter-spacing: var(--ls-display);
-    text-transform: uppercase;
-    margin-bottom: 32px;
+    font-size: clamp(36px, 5vw, 76px); line-height: .9;
+    letter-spacing: var(--ls-display); text-transform: uppercase;
   }
-  .roadmap-summary {
-    display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-    padding-top: 24px; border-top: 1px solid var(--line);
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim);
-    margin-bottom: clamp(40px, 5vw, 72px);
-  }
-  .roadmap-summary strong { color:#fff; font-weight:500; display:block; font-size: 14px; margin-top: 4px; letter-spacing: 0; text-transform: none; line-height: 1.4; }
-
-  .phases {
-    padding: 0 var(--gutter) 40px;
-    max-width: 1480px; margin: 0 auto;
-  }
-  .phase {
-    display:grid; grid-template-columns: 80px 1fr 1.6fr; gap: clamp(24px, 4vw, 60px);
-    padding: clamp(24px, 3vw, 40px) 0;
-    border-top: 1px solid var(--line); align-items: start;
-  }
-  .phase:last-child { border-bottom: 1px solid var(--line); }
-  .phase .ph-num {
+  .tz-head .tz-mark .red { color: var(--red); }
+  .tz-head .tz-meta {
     font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); color: var(--dim);
-  }
-  .phase .ph-title h3 {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(28px, 3vw, 44px);
-    line-height: 1; letter-spacing: var(--ls-display);
-    text-transform: uppercase; color:#fff;
-    margin-bottom: 8px;
-  }
-  .phase .ph-title .ph-time {
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim);
+    color: rgba(0,0,0,.55); text-align: right; line-height: 1.6;
   }
-  .phase ul { list-style:none; padding:0; margin:0; }
-  .phase ul li {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--line);
-    font-size: var(--fs-body); line-height:1.45;
-    display:flex; gap: 14px; align-items: baseline;
+  .tz-head .tz-meta strong { color: var(--ink); font-weight: 500; }
+
+  .tz-section { padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,.12); }
+  .tz-section:last-child { border-bottom: none; }
+  .tz-section h3 {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--red); font-weight: 500; margin-bottom: 14px;
   }
-  .phase ul li:last-child { border-bottom: none; }
-  .phase ul li::before {
-    content: '+';
-    font-family: var(--ff-mono); color: rgba(255,255,255,.5); font-size: 12px;
-    flex-shrink: 0;
+  .tz-section h2 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(24px, 2.6vw, 38px); line-height: 1.1;
+    letter-spacing: var(--ls-display); margin-bottom: 12px;
+  }
+  .tz-section p {
+    font-size: var(--fs-body-l); line-height: 1.5; color: var(--ink); max-width: 70ch;
+  }
+  .tz-section ul {
+    list-style: none; padding: 0; margin-top: 8px;
+  }
+  .tz-section ul li {
+    padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.08);
+    font-size: var(--fs-body); line-height: 1.4;
+    display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: baseline;
+  }
+  .tz-section ul li:last-child { border-bottom: none; }
+  .tz-section ul li::before {
+    content: '+'; font-family: var(--ff-mono); color: rgba(0,0,0,.35); font-size: 14px;
+  }
+  .tz-section ul li .est {
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); color: rgba(0,0,0,.55);
+  }
+  .tz-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .tz-stat { padding: 20px 0; border-top: 1px solid rgba(0,0,0,.12); }
+  .tz-stat .v {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(28px, 3.2vw, 44px); line-height: 1; letter-spacing: var(--ls-display);
+    color: var(--ink); margin-bottom: 6px;
+  }
+  .tz-stat .k {
+    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(0,0,0,.55);
+  }
+  .budget-warn {
+    margin-top: 12px; padding: 12px 16px; background: var(--red); color:#fff;
+    font-size: var(--fs-body); border-radius: 2px;
+    font-weight: 500;
+  }
+  .budget-ok {
+    margin-top: 12px; padding: 12px 16px; background: rgba(0,0,0,.06); color: var(--ink);
+    font-size: var(--fs-body); border-radius: 2px; border-left: 3px solid var(--red);
   }
 
-  .roadmap-cta {
-    padding: clamp(40px, 5vw, 80px) var(--gutter);
-    max-width: 1480px; margin: 0 auto;
-    display:grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
-    border-top: 1px solid var(--line);
-  }
-  .roadmap-cta h4 {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(24px, 3vw, 40px);
-    line-height: 1.05; letter-spacing: var(--ls-display);
-    text-transform: uppercase;
-    max-width: 28ch;
+  .tz-actions {
+    display:flex; gap: 12px; flex-wrap: wrap;
+    margin: 24px var(--gutter) 80px; max-width: 1280px;
+    margin-left: auto; margin-right: auto;
+    padding: 0 clamp(24px, 5vw, 80px);
   }
   .btn-primary {
     display:inline-flex; align-items:center; gap: 12px;
-    padding: 18px 36px; background:#fff; color:var(--ink);
-    border-radius: 999px;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
+    padding: 16px 28px; background:#fff; color:var(--ink);
+    border-radius: 999px; font-family: var(--ff-mono); font-size: var(--fs-meta);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
     transition: all .3s;
   }
   .btn-primary:hover { background: var(--ink); color:#fff; }
-  .btn-primary::after { content:'→'; }
   .btn-ghost {
     display:inline-flex; align-items:center; gap: 12px;
-    padding: 18px 36px; border: 1.5px solid #fff; border-radius: 999px;
+    padding: 16px 28px; border: 1.5px solid #fff; border-radius: 999px;
     font-family: var(--ff-mono); font-size: var(--fs-meta);
     letter-spacing: var(--ls-mono); text-transform: uppercase;
     color:#fff; transition: all .3s;
   }
   .btn-ghost:hover { background:#fff; color:var(--red); }
-  .btn-ghost::after { content:'↻'; }
 
-  .actions {
-    display:flex; gap: 14px;
-    margin-top: 32px; flex-wrap: wrap;
+  /* === Print styles for PDF === */
+  @media print {
+    @page { size: A4; margin: 16mm; }
+    body { background: #fff !important; color: #000 !important; }
+    .nav, .scene-head, .step:not(#stepFinal), .tz-actions, .step-foot, .step-back, .next-btn { display: none !important; }
+    #stepFinal { display: block !important; padding: 0 !important; }
+    .tz {
+      box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important;
+    }
+    .tz-section { page-break-inside: avoid; }
   }
 
-  /* === Mobile === */
   @media (max-width: 760px) {
     .scene-head { grid-template-columns: 1fr; gap: 12px; padding-top: 76px; }
-    .options { grid-template-columns: 1fr; }
-    .step-q { font-size: clamp(28px, 9vw, 48px); }
-    .phase { grid-template-columns: 1fr; gap: 12px; }
-    .roadmap-summary { grid-template-columns: 1fr; gap: 12px; }
-    .roadmap-cta { grid-template-columns: 1fr; }
+    .options, .options.three, .options.four { grid-template-columns: 1fr; }
+    .step-q { font-size: clamp(28px, 9vw, 44px); }
+    .form-grid { grid-template-columns: 1fr; }
+    .tz-grid2 { grid-template-columns: 1fr; }
+    .tz-head { grid-template-columns: 1fr; }
+    .tz-head .tz-meta { text-align: left; }
   }
 </style>
 </head>
@@ -284,363 +322,155 @@
   <a href="index.html" class="nav-back">← На&nbsp;главную</a>
 </nav>
 
-<!-- Header: progress + breadcrumbs -->
 <div class="scene-head">
-  <span><strong>Определение задачи</strong></span>
-  <span id="crumbsSlot"><div class="crumbs" id="crumbs"></div></span>
-  <span><strong id="stepIdx">01</strong> / 04</span>
+  <span><strong>ТЗ-генератор</strong> · 8 шагов</span>
+  <span><div class="crumbs" id="crumbs"></div></span>
+  <span><strong id="stepIdx">01</strong> / 08</span>
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 </div>
 
-<!-- ============== STEP 1 ============== -->
+<!-- ========== STEP 1: GOAL ========== -->
 <section class="step active" data-step="1">
-  <div class="step-num">— Шаг 01 / 04 · Главная цель</div>
+  <div class="step-num">— Шаг 01 / 08 · Главная цель</div>
   <h2 class="step-q">Что вы&nbsp;хотите <em>получить?</em></h2>
   <div class="options">
     <button class="opt" data-key="goal" data-value="sales" data-label="Повысить продажи">
-      <span class="opt-num">A · SALES</span>
-      <span class="opt-title">Повысить продажи</span>
+      <span class="opt-num">A · SALES</span><span class="opt-title">Повысить продажи</span>
       <span class="opt-desc">Конверсия не&nbsp;там, где должна быть. Нужен ремонт воронки и/или продукта.</span>
     </button>
     <button class="opt" data-key="goal" data-value="awareness" data-label="Поднять узнаваемость">
-      <span class="opt-num">B · AWARENESS</span>
-      <span class="opt-title">Поднять узнаваемость</span>
-      <span class="opt-desc">Хороший продукт, но&nbsp;о&nbsp;нём мало знают. Нужна правильная упаковка и&nbsp;охват.</span>
+      <span class="opt-num">B · AWARENESS</span><span class="opt-title">Поднять узнаваемость</span>
+      <span class="opt-desc">Хороший продукт, но&nbsp;о&nbsp;нём мало знают.</span>
     </button>
     <button class="opt" data-key="goal" data-value="reach" data-label="Расширить охват">
-      <span class="opt-num">C · REACH</span>
-      <span class="opt-title">Расширить охват</span>
-      <span class="opt-desc">Выход на&nbsp;новый рынок, регион или сегмент. Нужна стратегия и&nbsp;каналы.</span>
+      <span class="opt-num">C · REACH</span><span class="opt-title">Расширить охват</span>
+      <span class="opt-desc">Новый рынок, регион или сегмент.</span>
     </button>
     <button class="opt" data-key="goal" data-value="launch" data-label="Запустить продукт">
-      <span class="opt-num">D · LAUNCH</span>
-      <span class="opt-title">Запустить продукт</span>
-      <span class="opt-desc">Новый продукт или направление. Нужен go-to-market: бренд, дизайн, продакшен, IT.</span>
+      <span class="opt-num">D · LAUNCH</span><span class="opt-title">Запустить продукт</span>
+      <span class="opt-desc">Новый продукт или направление. Go-to-market.</span>
     </button>
     <button class="opt" data-key="goal" data-value="rebrand" data-label="Ребрендинг">
-      <span class="opt-num">E · REBRAND</span>
-      <span class="opt-title">Ребрендинг / перезапуск</span>
-      <span class="opt-desc">Бренд устарел, не&nbsp;отражает суть, конкуренты обогнали. Нужен переосмысленный образ.</span>
+      <span class="opt-num">E · REBRAND</span><span class="opt-title">Ребрендинг</span>
+      <span class="opt-desc">Бренд устарел, не&nbsp;отражает суть.</span>
     </button>
-    <button class="opt" data-key="goal" data-value="other" data-label="Другое / ещё не знаем">
-      <span class="opt-num">F · NOT SURE</span>
-      <span class="opt-title">Не&nbsp;знаем точно</span>
-      <span class="opt-desc">Есть ощущение что-то менять. Поможем определиться&nbsp;— через discovery-аудит.</span>
+    <button class="opt" data-key="goal" data-value="other" data-label="Не знаем точно">
+      <span class="opt-num">F · NOT SURE</span><span class="opt-title">Не&nbsp;знаем точно</span>
+      <span class="opt-desc">Поможем определиться через discovery-аудит.</span>
     </button>
   </div>
 </section>
 
-<!-- ============== STEP 2 ============== -->
+<!-- ========== STEP 2: BRANCH (dynamic) ========== -->
 <section class="step" data-step="2">
-  <div class="step-num" id="step2num">— Шаг 02 / 04 · Уточнение</div>
-  <h2 class="step-q" id="step2q">В&nbsp;чём <em>корень</em> проблемы?</h2>
+  <div class="step-num" id="step2num">— Шаг 02 / 08 · Уточнение</div>
+  <h2 class="step-q" id="step2q">В&nbsp;чём корень?</h2>
   <div class="options" id="step2opts"></div>
-  <button class="step-back" data-back="1">Назад</button>
+  <div class="step-foot"><button class="step-back" data-back="1">Назад</button></div>
 </section>
 
-<!-- ============== STEP 3 ============== -->
+<!-- ========== STEP 3: INDUSTRY ========== -->
 <section class="step" data-step="3">
-  <div class="step-num">— Шаг 03 / 04 · Срочность и&nbsp;ресурс</div>
-  <h2 class="step-q">Какой <em>горизонт</em> у&nbsp;задачи?</h2>
-  <div class="options">
-    <button class="opt" data-key="urgency" data-value="fast" data-label="Срочно — 1-2 месяца">
-      <span class="opt-num">URGENCY · A</span>
-      <span class="opt-title">Срочно</span>
-      <span class="opt-desc">1–2 месяца. Сжатый scope, быстрый MVP, без&nbsp;долгого discovery.</span>
-    </button>
-    <button class="opt" data-key="urgency" data-value="standard" data-label="Стандарт — 3-4 месяца">
-      <span class="opt-num">URGENCY · B</span>
-      <span class="opt-title">Стандарт</span>
-      <span class="opt-desc">3–4 месяца. Полный цикл с&nbsp;аналитикой, тестами и&nbsp;запуском в&nbsp;нескольких каналах.</span>
-    </button>
-    <button class="opt" data-key="urgency" data-value="strategic" data-label="Стратегически — 6+ месяцев">
-      <span class="opt-num">URGENCY · C</span>
-      <span class="opt-title">Стратегически</span>
-      <span class="opt-desc">6+ месяцев. Глубокое исследование, ребрендинг, многоэтапный запуск, итерации.</span>
-    </button>
+  <div class="step-num">— Шаг 03 / 08 · Отрасль</div>
+  <h2 class="step-q">Какая <em>отрасль?</em></h2>
+  <p class="step-hint">Влияет на регуляторные требования, тон коммуникации и каналы.</p>
+  <div class="options three">
+    <button class="opt" data-key="industry" data-value="fmcg" data-label="FMCG"><span class="opt-num">01</span><span class="opt-title">FMCG</span><span class="opt-desc">Продукты, напитки, бытовая химия.</span></button>
+    <button class="opt" data-key="industry" data-value="retail" data-label="Retail"><span class="opt-num">02</span><span class="opt-title">Ритейл</span><span class="opt-desc">Магазины, сети, e-commerce.</span></button>
+    <button class="opt" data-key="industry" data-value="manufacturing" data-label="Производство"><span class="opt-num">03</span><span class="opt-title">Производство</span><span class="opt-desc">Промышленность, сырьё, B2B-производство.</span></button>
+    <button class="opt" data-key="industry" data-value="services" data-label="Услуги"><span class="opt-num">04</span><span class="opt-title">Услуги</span><span class="opt-desc">B2B-сервисы, консалтинг, агентства.</span></button>
+    <button class="opt" data-key="industry" data-value="tech" data-label="IT / SaaS"><span class="opt-num">05</span><span class="opt-title">IT / SaaS</span><span class="opt-desc">Технологические продукты, платформы.</span></button>
+    <button class="opt" data-key="industry" data-value="finance" data-label="Финансы"><span class="opt-num">06</span><span class="opt-title">Финансы</span><span class="opt-desc">Банки, fintech, страхование.</span></button>
+    <button class="opt" data-key="industry" data-value="medical" data-label="Медицина"><span class="opt-num">07</span><span class="opt-title">Медицина</span><span class="opt-desc">Клиники, аптеки, фарма.</span></button>
+    <button class="opt" data-key="industry" data-value="education" data-label="Образование"><span class="opt-num">08</span><span class="opt-title">Образование</span><span class="opt-desc">Школы, курсы, EdTech.</span></button>
+    <button class="opt" data-key="industry" data-value="hospitality" data-label="HoReCa / гостеприимство"><span class="opt-num">09</span><span class="opt-title">HoReCa</span><span class="opt-desc">Рестораны, отели, кафе.</span></button>
+    <button class="opt" data-key="industry" data-value="realestate" data-label="Недвижимость"><span class="opt-num">10</span><span class="opt-title">Недвижимость</span><span class="opt-desc">Девелопмент, агентства.</span></button>
+    <button class="opt" data-key="industry" data-value="culture" data-label="Культура / Медиа"><span class="opt-num">11</span><span class="opt-title">Культура / Медиа</span><span class="opt-desc">Музеи, медиа-проекты, ивенты.</span></button>
+    <button class="opt" data-key="industry" data-value="other" data-label="Другое"><span class="opt-num">12</span><span class="opt-title">Другое</span><span class="opt-desc">Не подходит ни один пункт — уточним позже.</span></button>
   </div>
-  <button class="step-back" data-back="2">Назад</button>
+  <div class="step-foot"><button class="step-back" data-back="2">Назад</button></div>
 </section>
 
-<!-- ============== STEP 4 ============== -->
+<!-- ========== STEP 4: SIZE ========== -->
 <section class="step" data-step="4">
-  <div class="step-num">— Шаг 04 / 04 · Бюджет (ориентировочно)</div>
-  <h2 class="step-q">Какой <em>бюджет</em> закладываем?</h2>
-  <div class="options">
-    <button class="opt" data-key="budget" data-value="lite" data-label="До $10k">
-      <span class="opt-num">BUDGET · S</span>
-      <span class="opt-title">До $10K</span>
-      <span class="opt-desc">Точечная задача&nbsp;— один продукт, одна кампания, один айдентика-блок.</span>
-    </button>
-    <button class="opt" data-key="budget" data-value="mid" data-label="$10–50k">
-      <span class="opt-num">BUDGET · M</span>
-      <span class="opt-title">$10K — $50K</span>
-      <span class="opt-desc">Связка из&nbsp;нескольких направлений. Стратегия + дизайн + продакшен или IT.</span>
-    </button>
-    <button class="opt" data-key="budget" data-value="large" data-label="$50k+">
-      <span class="opt-num">BUDGET · L</span>
-      <span class="opt-title">$50K+</span>
-      <span class="opt-desc">Полный цикл. Discovery → strategy → identity → производство → digital → поддержка.</span>
-    </button>
-    <button class="opt" data-key="budget" data-value="open" data-label="Открыто к обсуждению">
-      <span class="opt-num">BUDGET · ?</span>
-      <span class="opt-title">Открыто к&nbsp;обсуждению</span>
-      <span class="opt-desc">Цифры пока не&nbsp;определены. Готовы сначала услышать предложение и&nbsp;оценку.</span>
-    </button>
+  <div class="step-num">— Шаг 04 / 08 · Размер бизнеса</div>
+  <h2 class="step-q">Какой <em>размер</em> бизнеса?</h2>
+  <div class="options four">
+    <button class="opt" data-key="size" data-value="startup" data-label="Стартап"><span class="opt-num">XS</span><span class="opt-title">Стартап</span><span class="opt-desc">До&nbsp;10 человек. Ищем product–market fit.</span></button>
+    <button class="opt" data-key="size" data-value="small" data-label="Малый"><span class="opt-num">S</span><span class="opt-title">Малый</span><span class="opt-desc">10–50 чел. Локальный рынок, расширяемся.</span></button>
+    <button class="opt" data-key="size" data-value="medium" data-label="Средний"><span class="opt-num">M</span><span class="opt-title">Средний</span><span class="opt-desc">50–500 чел. Выход на&nbsp;CIS / новые сегменты.</span></button>
+    <button class="opt" data-key="size" data-value="enterprise" data-label="Корпорация"><span class="opt-num">L</span><span class="opt-title">Корпорация</span><span class="opt-desc">500+ чел. Холдинг, мульти-бренд, регуляторика.</span></button>
   </div>
-  <button class="step-back" data-back="3">Назад</button>
+  <div class="step-foot"><button class="step-back" data-back="3">Назад</button></div>
 </section>
 
-<!-- ============== FINAL: ROADMAP ============== -->
-<section class="step" data-step="final">
-  <div class="roadmap-head">
-    <div class="roadmap-label">— Ваш персональный roadmap</div>
-    <h2 class="roadmap-title" id="rmTitle">План <em style="background:#fff;color:var(--ink);padding:0 .15em">действий</em></h2>
-    <p style="font-size:var(--fs-body-l); line-height:1.4; max-width:62ch; color: rgba(255,255,255,.92);" id="rmIntro">—</p>
-
-    <div class="roadmap-summary">
-      <span>Цель<strong id="sm-goal">—</strong></span>
-      <span>Срок<strong id="sm-urgency">—</strong></span>
-      <span>Бюджет<strong id="sm-budget">—</strong></span>
-    </div>
+<!-- ========== STEP 5: ASSETS (multi) ========== -->
+<section class="step" data-step="5">
+  <div class="step-num">— Шаг 05 / 08 · Что уже есть</div>
+  <h2 class="step-q">Что у&nbsp;вас <em>уже&nbsp;есть?</em></h2>
+  <p class="step-hint">Можно выбрать несколько. Это покажет, с какой точки начинаем.</p>
+  <div class="options three" id="assetsBox">
+    <button class="opt multi" data-key="assets" data-value="brand" data-label="Бренд / лого"><span class="opt-num">01</span><span class="opt-title">Бренд / лого</span><span class="opt-desc">Есть логотип и&nbsp;базовый стиль.</span></button>
+    <button class="opt multi" data-key="assets" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand&nbsp;book</span><span class="opt-desc">Полное описание стиля и&nbsp;коммуникации.</span></button>
+    <button class="opt multi" data-key="assets" data-value="site" data-label="Сайт"><span class="opt-num">03</span><span class="opt-title">Сайт</span><span class="opt-desc">Корпоративный сайт или лендинг.</span></button>
+    <button class="opt multi" data-key="assets" data-value="ecommerce" data-label="E-commerce"><span class="opt-num">04</span><span class="opt-title">E-commerce</span><span class="opt-desc">Интернет-магазин или маркетплейс.</span></button>
+    <button class="opt multi" data-key="assets" data-value="socials" data-label="Соцсети"><span class="opt-num">05</span><span class="opt-title">Соцсети</span><span class="opt-desc">Активные Instagram / Telegram / TikTok.</span></button>
+    <button class="opt multi" data-key="assets" data-value="team" data-label="Маркетинг-команда"><span class="opt-num">06</span><span class="opt-title">Маркетинг-команда</span><span class="opt-desc">Маркетолог / SMM / дизайнер in-house.</span></button>
+    <button class="opt multi" data-key="assets" data-value="data" data-label="Аналитика / данные"><span class="opt-num">07</span><span class="opt-title">Аналитика</span><span class="opt-desc">GA4 / Я.Метрика / BI / отчёты.</span></button>
+    <button class="opt multi" data-key="assets" data-value="crm" data-label="CRM"><span class="opt-num">08</span><span class="opt-title">CRM</span><span class="opt-desc">База клиентов с&nbsp;историей покупок.</span></button>
+    <button class="opt multi" data-key="assets" data-value="content" data-label="Фото / видео контент"><span class="opt-num">09</span><span class="opt-title">Контент</span><span class="opt-desc">Профессиональные фото и&nbsp;видео продукта.</span></button>
+    <button class="opt multi" data-key="assets" data-value="nothing" data-label="Ничего из этого"><span class="opt-num">⌀</span><span class="opt-title">Ничего из&nbsp;этого</span><span class="opt-desc">Стартуем с&nbsp;чистого листа.</span></button>
   </div>
-
-  <div class="phases" id="phases"></div>
-
-  <div class="roadmap-cta">
-    <h4>Нравится план? Обсудим детали&nbsp;— <em style="background:#fff;color:var(--red);padding:0 .15em">по&nbsp;шагам</em></h4>
-    <div class="actions">
-      <a href="index.html#contact" class="btn-primary">Связаться</a>
-      <button class="btn-ghost" id="restart">Начать сначала</button>
-    </div>
+  <div class="step-foot">
+    <button class="step-back" data-back="4">Назад</button>
+    <span class="selected-count" id="assetsCount">Выбрано: 0</span>
+    <button class="next-btn" data-next="6" data-from="5">Далее</button>
   </div>
 </section>
 
-<script>
-(function(){
-  // ====== STATE ======
-  var state = { goal:null, branch:null, urgency:null, budget:null };
-  var labels = {};
+<!-- ========== STEP 6: DELIVERABLES (multi) ========== -->
+<section class="step" data-step="6">
+  <div class="step-num">— Шаг 06 / 08 · Что нужно произвести</div>
+  <h2 class="step-q">Что нам <em>сделать?</em></h2>
+  <p class="step-hint">Можно выбрать несколько. Это формирует объём работ и бюджет.</p>
+  <div class="options three" id="delsBox">
+    <button class="opt multi" data-key="dels" data-value="logo" data-label="Логотип / айдентика"><span class="opt-num">01</span><span class="opt-title">Логотип / айдентика</span><span class="opt-desc">Знак, цвета, шрифты, базовый стиль. <b>$2–8K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand&nbsp;book</span><span class="opt-desc">Полный гайд + ToV. <b>$5–25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="naming" data-label="Нейминг / позиционирование"><span class="opt-num">03</span><span class="opt-title">Нейминг</span><span class="opt-desc">Название + позиционирование. <b>$2–10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="strategy" data-label="Маркетинг-стратегия"><span class="opt-num">04</span><span class="opt-title">Стратегия</span><span class="opt-desc">Маркетинг-план, GTM, сегментация. <b>$3–15K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="research" data-label="Исследование рынка"><span class="opt-num">05</span><span class="opt-title">Исследование</span><span class="opt-desc">Customer / brand / конкурент-аудит. <b>$3–20K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="landing" data-label="Лендинг"><span class="opt-num">06</span><span class="opt-title">Лендинг</span><span class="opt-desc">1 страница продаж. <b>$1–5K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="site" data-label="Корпоративный сайт"><span class="opt-num">07</span><span class="opt-title">Корп. сайт</span><span class="opt-desc">5–20 страниц + CMS. <b>$5–30K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="ecommerce" data-label="Интернет-магазин"><span class="opt-num">08</span><span class="opt-title">E-commerce</span><span class="opt-desc">Каталог + оплата + интеграции. <b>$10–80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="mobile" data-label="Мобильное приложение"><span class="opt-num">09</span><span class="opt-title">Mobile&nbsp;app</span><span class="opt-desc">iOS / Android / cross-platform. <b>$15–150K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="crm" data-label="CRM / автоматизация"><span class="opt-num">10</span><span class="opt-title">CRM / автоматизация</span><span class="opt-desc">Внедрение, интеграции. <b>$5–80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="campaign" data-label="Рекламная кампания"><span class="opt-num">11</span><span class="opt-title">Рекламная кампания</span><span class="opt-desc">Концепт + продакшн + размещение. <b>$5–80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="performance" data-label="Performance / Digital"><span class="opt-num">12</span><span class="opt-title">Performance</span><span class="opt-desc">PPC / SEO / SMM / influencer. <b>$1–10K/мес</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="ooh" data-label="Наружная реклама"><span class="opt-num">13</span><span class="opt-title">Наружка (OOH)</span><span class="opt-desc">Билборды, ситилайты, монтаж. <b>$1–50K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="print" data-label="Полиграфия"><span class="opt-num">14</span><span class="opt-title">Полиграфия</span><span class="opt-desc">Каталоги, буклеты, визитки. <b>$200–10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="pos" data-label="POS / выкладка"><span class="opt-num">15</span><span class="opt-title">POS</span><span class="opt-desc">Стенды, ценники, промо-зоны. <b>$500–20K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="souvenir" data-label="Сувенирка / мерч"><span class="opt-num">16</span><span class="opt-title">Сувенирка</span><span class="opt-desc">Брендированные носители. <b>$300–30K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="signage" data-label="Вывески / навигация"><span class="opt-num">17</span><span class="opt-title">Вывески</span><span class="opt-desc">Внешние и&nbsp;внутренние знаки. <b>$1–25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="packaging" data-label="Упаковка"><span class="opt-num">18</span><span class="opt-title">Упаковка</span><span class="opt-desc">Дизайн + производство тары. <b>$1–50K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="video" data-label="Видео-продакшен"><span class="opt-num">19</span><span class="opt-title">Видео</span><span class="opt-desc">Имидж / продуктовое / соцсети. <b>$2–80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="photo" data-label="Фото-съёмка"><span class="opt-num">20</span><span class="opt-title">Фото</span><span class="opt-desc">Продукт / lifestyle / команда. <b>$500–10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="event" data-label="Ивент / запуск"><span class="opt-num">21</span><span class="opt-title">Ивент</span><span class="opt-desc">Презентация, открытие, активация. <b>$5–150K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="loyalty" data-label="Программа лояльности"><span class="opt-num">22</span><span class="opt-title">Лояльность</span><span class="opt-desc">Концепт + механика + запуск. <b>$5–40K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="employer" data-label="HR-бренд"><span class="opt-num">23</span><span class="opt-title">HR-бренд</span><span class="opt-desc">Career-сайт, найм-кампания. <b>$2–25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="content" data-label="Контент-стратегия"><span class="opt-num">24</span><span class="opt-title">Контент</span><span class="opt-desc">Блог, соцсети, рассылки. <b>$1–8K/мес</b></span></button>
+  </div>
+  <div class="step-foot">
+    <button class="step-back" data-back="5">Назад</button>
+    <span class="selected-count" id="delsCount">Выбрано: 0</span>
+    <button class="next-btn" data-next="7" data-from="6">Далее</button>
+  </div>
+</section>
 
-  var $ = function(s){ return document.querySelector(s); };
-  var $$ = function(s){ return document.querySelectorAll(s); };
-
-  // ====== STEP 2 BRANCHES ======
-  var branches = {
-    sales: {
-      q: 'В&nbsp;чём <em>корень</em> проблемы?',
-      opts: [
-        ['traffic',     'Низкий трафик',          'Знают мало, заходят редко.',    'AUDIT · TRAFFIC'],
-        ['conversion',  'Низкая конверсия',       'Заходят, но&nbsp;не&nbsp;покупают.', 'AUDIT · FUNNEL'],
-        ['retention',   'Не&nbsp;возвращаются',   'Покупают раз и&nbsp;уходят.',    'AUDIT · RETENTION'],
-        ['offer',       'Слабый продукт-маркет',  'Сам оффер не&nbsp;цепляет аудиторию.','AUDIT · OFFER']
-      ]
-    },
-    awareness: {
-      q: 'Где <em>растим</em> узнаваемость?',
-      opts: [
-        ['local',       'Локально в&nbsp;Узбекистане','Tashkent, регионы.',           'SCOPE · LOCAL'],
-        ['regional',    'Центральная Азия',          'Узбекистан + соседние рынки.', 'SCOPE · CIS'],
-        ['professional','В&nbsp;индустрии',           'B2B / профессиональное сообщество.','SCOPE · B2B'],
-        ['premium',     'Premium-аудитория',         'Узкий сегмент с&nbsp;высоким чеком.','SCOPE · LUX']
-      ]
-    },
-    reach: {
-      q: 'Куда <em>расширяемся?</em>',
-      opts: [
-        ['geo',     'Новый регион / страна', 'Локализация, адаптация под рынок.', 'EXPAND · GEO'],
-        ['segment', 'Новый сегмент',         'Тот&nbsp;же продукт для&nbsp;другой аудитории.', 'EXPAND · SEG'],
-        ['channel', 'Новые каналы продаж',   'Маркетплейсы, retail, digital.',    'EXPAND · CHN'],
-        ['product', 'Новая линейка',         'Расширение продуктовой матрицы.',   'EXPAND · LINE']
-      ]
-    },
-    launch: {
-      q: 'На&nbsp;какой <em>стадии</em> продукт?',
-      opts: [
-        ['idea',     'Идея / концепт',     'Гипотеза без&nbsp;прототипа.',                'STAGE · IDEA'],
-        ['mvp',      'Прототип / MVP',     'Тестируем на&nbsp;узкой аудитории.',          'STAGE · MVP'],
-        ['ready',    'Готов к&nbsp;выводу','Продукт сделан, нужен go-to-market.',         'STAGE · READY'],
-        ['relaunch', 'Перезапуск',         'Был запуск, не&nbsp;взлетел&nbsp;— нужен второй.','STAGE · RELAUNCH']
-      ]
-    },
-    rebrand: {
-      q: 'Что <em>не&nbsp;так</em> с&nbsp;текущим брендом?',
-      opts: [
-        ['old',     'Образ устарел',                'Стиль 5–10 лет назад, не&nbsp;соответствует сейчас.','PROBLEM · OLD'],
-        ['unclear', 'Не&nbsp;отражает суть',         'Бренд говорит не&nbsp;то, что компания делает.',     'PROBLEM · MISMATCH'],
-        ['lost',    'Конкуренты обогнали',           'Они выглядят свежее и&nbsp;премиальнее.',           'PROBLEM · CATCHUP'],
-        ['merger',  'Объединение / реструктуризация','Слияние компаний, нужна новая архитектура.',         'PROBLEM · M&A']
-      ]
-    },
-    other: {
-      q: 'С&nbsp;чего <em>удобнее</em> начать?',
-      opts: [
-        ['audit',    'Полный discovery-аудит', 'Посмотрим бизнес целиком и&nbsp;найдём узкие места.','START · DISCOVERY'],
-        ['strategy', 'Стратегия развития',     'Куда расти 1–3 года и&nbsp;как туда дойти.',         'START · STRATEGY'],
-        ['workshop', 'Рабочая сессия',         'Полдня с&nbsp;ключевой командой&nbsp;— проблема и&nbsp;вектор.','START · WORKSHOP'],
-        ['call',     'Просто созвониться',     'Расскажете контекст&nbsp;— скажем что делать.',     'START · CALL']
-      ]
-    }
-  };
-
-  // ====== ROADMAP TEMPLATES BY GOAL+BRANCH ======
-  function buildPhases(goal, branch, urgency, budget){
-    var t = {
-      fast:     { mod:.6, label:'1–2 месяца' },
-      standard: { mod:1,  label:'3–4 месяца' },
-      strategic:{ mod:1.6,label:'6+ месяцев' }
-    }[urgency] || { mod:1, label:'3–4 месяца' };
-
-    function w(min, max){
-      var lo = Math.max(1, Math.round(min*t.mod));
-      var hi = Math.max(lo+1, Math.round(max*t.mod));
-      return lo + '–' + hi + ' нед';
-    }
-
-    // Базовые задачи по фазе
-    var disc = ['Глубинные интервью с&nbsp;командой и&nbsp;клиентами','Анализ метрик и&nbsp;воронок','Конкурентный бенчмарк','Гипотезы и&nbsp;приоритезация'];
-    var strat = ['Tone of Voice и&nbsp;позиционирование','Продуктовая стратегия и&nbsp;офферы','Сегментация и&nbsp;customer journey','План коммуникаций по&nbsp;каналам'];
-    var design = ['Айдентика и&nbsp;визуальная система','Дизайн ключевых носителей','UX / прототипы продуктовых экранов','Гайдлайны для&nbsp;команды'];
-    var prod  = ['Полиграфия и&nbsp;брендирование','POS и&nbsp;промо-материалы','Видео и&nbsp;фото-контент','Наружная реклама и&nbsp;digital'];
-    var it    = ['Сайт / лендинг','Интеграции с&nbsp;CRM/ERP','Автоматизация воронки','Аналитика и&nbsp;дашборды'];
-    var launch= ['План запуска и&nbsp;коммуникации','Перформанс-кампании','PR и&nbsp;influencer-активации','Замер KPI и&nbsp;корректировки'];
-
-    // Кастомизация по веткам
-    if (goal === 'sales') {
-      if (branch === 'traffic')     prod = ['SEO и&nbsp;контент-кластеры','Performance-кампании','Influencer-партнёрства','Запуск охватных каналов'];
-      if (branch === 'conversion')  it   = ['UX-аудит и&nbsp;ремонт воронки','A/B-тесты ключевых экранов','Сквозная аналитика','Оптимизация форм и&nbsp;CTA'];
-      if (branch === 'retention')   it   = ['Программа лояльности','Email/Telegram-цепочки','CRM-сегментация','Воронка up-sell / cross-sell'];
-      if (branch === 'offer')       strat= ['Product–market fit интервью','Переупаковка офферов','Тест ценообразования','Новые гипотезы оффера'];
-    }
-    if (goal === 'awareness') {
-      design = ['Свежая визуальная система','Кампания-обложка с&nbsp;единым визуальным кодом','Контент-форматы под&nbsp;каждый канал','Гайды и&nbsp;шаблоны'];
-      prod   = ['OOH в&nbsp;ключевых точках','POS и&nbsp;ивенты','PR и&nbsp;спецпроекты с&nbsp;медиа','Партнёрский контент'];
-    }
-    if (goal === 'reach') {
-      strat = ['Анализ нового рынка / сегмента','Локализация продукта и&nbsp;коммуникаций','Каналы дистрибуции','Партнёрская стратегия'];
-    }
-    if (goal === 'launch') {
-      strat = ['Go-to-market план','Позиционирование и&nbsp;нейминг','Ценообразование','PR / launch event план'];
-      design= ['Айдентика продукта','Упаковка и&nbsp;ключевые носители','Лендинг и&nbsp;ключевые экраны','Промо-видео и&nbsp;контент-набор'];
-    }
-    if (goal === 'rebrand') {
-      disc  = ['Brand audit текущего состояния','Интервью клиентов и&nbsp;команды','Конкурентный бенчмарк','Brief на&nbsp;ребрендинг'];
-      design= ['Brand platform (миссия / манифест)','Новая айдентика','Архитектура бренда','Brand book и&nbsp;гайды'];
-      launch= ['Внутренний запуск (команда)','Внешний rollout','Кампания «представления»','Контроль соблюдения гайдов'];
-    }
-
-    return [
-      { num:'01', title:'Discovery',  time: w(2,3),   tasks: disc.slice(0,3) },
-      { num:'02', title:'Strategy',   time: w(2,4),   tasks: strat.slice(0,3) },
-      { num:'03', title:'Design',     time: w(3,5),   tasks: design.slice(0,3) },
-      { num:'04', title:'Production / IT', time: w(4,8), tasks: (goal==='launch'||goal==='sales')? prod.slice(0,2).concat(it.slice(0,1)) : prod.slice(0,3) },
-      { num:'05', title:'Launch',     time: w(2,3),   tasks: launch.slice(0,3) }
-    ];
-  }
-
-  // ====== RENDER ======
-  function show(stepKey){
-    $$('.step').forEach(function(s){ s.classList.remove('active'); });
-    var el = document.querySelector('[data-step="'+stepKey+'"]');
-    if (el) el.classList.add('active');
-    var idx = stepKey === 'final' ? 4 : parseInt(stepKey,10);
-    $('#stepIdx').textContent = stepKey === 'final' ? 'OK' : String(idx).padStart(2,'0');
-    $('#progress').style.width = (stepKey === 'final' ? 100 : (idx*25)) + '%';
-    renderCrumbs();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function renderCrumbs(){
-    var c = $('#crumbs'); c.innerHTML = '';
-    if (state.goal)    c.innerHTML += '<span class="crumb">Цель: <b>'+labels.goal+'</b></span>';
-    if (state.branch)  c.innerHTML += '<span class="crumb">Уточн.: <b>'+labels.branch+'</b></span>';
-    if (state.urgency) c.innerHTML += '<span class="crumb">Срок: <b>'+labels.urgency+'</b></span>';
-    if (state.budget)  c.innerHTML += '<span class="crumb">Бюджет: <b>'+labels.budget+'</b></span>';
-  }
-
-  function renderStep2(){
-    var b = branches[state.goal];
-    if (!b) return;
-    $('#step2q').innerHTML = b.q;
-    var box = $('#step2opts'); box.innerHTML = '';
-    b.opts.forEach(function(o){
-      var btn = document.createElement('button');
-      btn.className = 'opt';
-      btn.dataset.key = 'branch';
-      btn.dataset.value = o[0];
-      btn.dataset.label = o[1];
-      btn.innerHTML = '<span class="opt-num">'+o[3]+'</span><span class="opt-title">'+o[1]+'</span><span class="opt-desc">'+o[2]+'</span>';
-      box.appendChild(btn);
-    });
-  }
-
-  function renderFinal(){
-    $('#sm-goal').innerHTML = labels.goal;
-    $('#sm-urgency').innerHTML = labels.urgency;
-    $('#sm-budget').innerHTML = labels.budget;
-
-    var titleByGoal = {
-      sales:    'План: РАЗОГНАТЬ <em>продажи</em>',
-      awareness:'План: ВЫРАСТИТЬ <em>узнаваемость</em>',
-      reach:    'План: ОТКРЫТЬ <em>новые рынки</em>',
-      launch:   'План: ЗАПУСТИТЬ <em>продукт</em>',
-      rebrand:  'План: ПЕРЕЗАПУСТИТЬ <em>бренд</em>',
-      other:    'План: НАЧАТЬ С <em>discovery</em>'
-    };
-    $('#rmTitle').innerHTML = titleByGoal[state.goal] || 'План <em>действий</em>';
-
-    var introByGoal = {
-      sales:    'Ремонтируем воронку и&nbsp;доводим конверсию до&nbsp;нужных цифр. Параллельно усиливаем продукт и&nbsp;коммуникацию там, где это даёт прирост.',
-      awareness:'Растим знание о&nbsp;бренде в&nbsp;нужной аудитории через сильную айдентику, точные каналы и&nbsp;узнаваемый визуальный код.',
-      reach:    'Открываем новый рынок: исследуем, локализуем, выстраиваем каналы и&nbsp;коммуникацию под&nbsp;конкретный сегмент.',
-      launch:   'Собираем go-to-market пакет: позиционирование, айдентика, лендинг, контент, кампания запуска и&nbsp;замер результата.',
-      rebrand:  'Переосмысливаем бренд: от&nbsp;манифеста до&nbsp;каждого носителя. Внутренний запуск перед&nbsp;внешним.',
-      other:    'Начинаем с&nbsp;аудита и&nbsp;стратегической сессии&nbsp;— определяем точку приложения сил, а&nbsp;дальше детальный план.'
-    };
-    $('#rmIntro').innerHTML = introByGoal[state.goal] || '';
-
-    var phases = buildPhases(state.goal, state.branch, state.urgency, state.budget);
-    var box = $('#phases'); box.innerHTML = '';
-    phases.forEach(function(p){
-      var div = document.createElement('div');
-      div.className = 'phase';
-      div.innerHTML =
-        '<div class="ph-num">'+p.num+'</div>' +
-        '<div class="ph-title"><h3>'+p.title+'</h3><span class="ph-time">'+p.time+'</span></div>' +
-        '<ul>' + p.tasks.map(function(t){ return '<li>'+t+'</li>'; }).join('') + '</ul>';
-      box.appendChild(div);
-    });
-  }
-
-  // ====== EVENTS ======
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest('.opt');
-    if (btn) {
-      var k = btn.dataset.key;
-      state[k] = btn.dataset.value;
-      labels[k] = btn.dataset.label;
-
-      if (k === 'goal') { renderStep2(); show('2'); }
-      else if (k === 'branch') { show('3'); }
-      else if (k === 'urgency') { show('4'); }
-      else if (k === 'budget') { renderFinal(); show('final'); }
-      return;
-    }
-
-    var back = e.target.closest('.step-back');
-    if (back) {
-      show(back.dataset.back);
-      return;
-    }
-
-    if (e.target.id === 'restart') {
-      state = { goal:null, branch:null, urgency:null, budget:null };
-      labels = {};
-      show('1');
-    }
-  });
-})();
-</script>
-
-</body>
-</html>
+<!-- ========== STEP 7: URGENCY + BUDGET ========== -->
+<section class="step" data-step="7">
+  <div class="step-num">— Шаг 07 / 08 · Срочность и&nbsp;бюджет</div>
+  <h2 class="step-q">Когда нужен <em>результат?</em></h2>
+  <div class="options three" style="margin-bottom: 32px;">
+    <button class="opt" data-key="urgency" data-value="fast" data-label="Срочно — 1-2 мес"><span class="opt-num">URGENCY · A</span><span class="opt-title">Срочно</span><span class="opt-desc">1–2 месяца. Сжатый scope.</span></button>
+    <button class="opt" data-key="urgency" data-value="standard" data-label="Стандарт — 3-4 мес"><span class="opt-num">URGENCY · B</span><span class="opt-title">Стандарт</span><span class="opt-desc">3–4 месяца. Полный цикл.</span></button>
+    <button class="opt" data-key="urgency" data
