@@ -335,6 +335,10 @@
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); color: rgba(255,255,255,.5);
     transition:color .35s;
+    /* Маркер-маленький номер: всегда top-right своей колонки.
+       Название и стрелка остаются по дефолту (центр по вертикали). */
+    align-self: start;
+    justify-self: end;
   }
   .dir-row:hover .dr-num { color: rgba(255,255,255,.9); }
   .dir-row .dr-name {
