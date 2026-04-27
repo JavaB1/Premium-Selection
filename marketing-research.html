@@ -97,6 +97,13 @@
     list-style:none; display:flex; gap:24px; flex-wrap:wrap;
     max-width:1480px; margin:0 auto;
   }
+  /* Прогресс-бар на дне subnav: длина = доля прокрученного контента после hero */
+  .subnav::after {
+    content:''; position:absolute; left:0; bottom:0;
+    height:2px; width:var(--scroll-progress, 0%);
+    background:var(--red);
+    transition:width .08s linear;
+  }
   .subnav a {
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
@@ -110,24 +117,52 @@
   /* === HERO === */
   .hero-direction {
     background:var(--ink); color:#fff;
-    min-height:100vh; padding:120px var(--gutter) clamp(40px, 6vw, 80px);
+    min-height:100vh; padding:120px var(--gutter) clamp(60px, 7vw, 100px);
     display:flex; flex-direction:column; justify-content:flex-end;
-    position:relative;
+    position:relative; overflow:hidden;
   }
+  /* Watermark — огромная прозрачная цифра справа сзади */
+  .hero-watermark {
+    position:absolute; right:-3vw; bottom:-2vh;
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(220px, 38vw, 720px); line-height:.85;
+    color:rgba(255,255,255,.04); letter-spacing:var(--ls-display);
+    pointer-events:none; user-select:none; z-index:0;
+  }
+  .hero-direction > * { position:relative; z-index:1; }
   .breadcrumb {
     position:absolute; top:90px; left:var(--gutter); right:var(--gutter);
     display:flex; gap:10px; flex-wrap:wrap; align-items:baseline;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:var(--dim);
+    color:var(--dim); z-index:2;
   }
   .breadcrumb a { transition:opacity .2s; }
   .breadcrumb a:hover { opacity:.6; }
   .breadcrumb .current { color:#fff; }
-  .direction-num {
+  /* Top-right meta-blok (как top-bar в hero на главной) */
+  .hero-meta {
+    position:absolute; top:90px; right:var(--gutter);
+    display:flex; flex-direction:column; gap:6px; align-items:flex-end;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:var(--dim-2); margin-bottom:24px;
+    color:var(--dim); text-align:right; z-index:2;
+  }
+  .hero-meta strong { color:#fff; font-weight:500; }
+  .hero-meta .dot { color:var(--red); }
+  /* Scroll-hint снизу справа */
+  .hero-scroll-hint {
+    position:absolute; bottom:clamp(20px, 3vw, 40px); right:var(--gutter);
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:var(--dim-2); z-index:2;
+    animation:psg-scroll-pulse 2.5s ease-in-out infinite;
+  }
+  .hero-scroll-hint::after { content:'↓'; font-size:14px; }
+  @keyframes psg-scroll-pulse {
+    0%, 100% { opacity:.5; transform:translateY(0); }
+    50% { opacity:1; transform:translateY(4px); }
   }
   .direction-title {
     font-family:var(--ff-display); font-weight:900;
@@ -152,6 +187,16 @@
   .direction-cta {
     display:flex; gap:12px; flex-wrap:wrap; align-items:center;
   }
+  /* Fade-up entrance: контент hero появляется поэтапно */
+  .direction-title, .direction-manifest, .direction-lede, .direction-cta {
+    opacity:0; transform:translateY(20px);
+    animation:psg-fade-up .8s cubic-bezier(.65,0,.35,1) forwards;
+  }
+  .direction-title    { animation-delay:.1s; }
+  .direction-manifest { animation-delay:.3s; }
+  .direction-lede     { animation-delay:.5s; }
+  .direction-cta      { animation-delay:.7s; }
+  @keyframes psg-fade-up { to { opacity:1; transform:translateY(0); } }
   .btn-primary, .btn-ghost {
     display:inline-flex; align-items:center; gap:12px;
     padding:14px 28px; border-radius:999px;
@@ -222,15 +267,25 @@
   }
   .service {
     border:1.5px solid var(--ink);
-    padding:28px;
-    display:flex; flex-direction:column; gap:14px;
-    cursor:pointer;
-    transition:background .3s, color .3s, transform .3s;
+    padding:28px; padding-top:84px; /* место под крупный номер сверху */
+    display:flex; flex-direction:column; gap:12px;
+    cursor:pointer; position:relative; overflow:hidden;
+    transition:background .35s cubic-bezier(.65,0,.35,1), color .3s, transform .3s;
   }
   .service:hover { background:var(--ink); color:#fff; transform:translateY(-4px); }
   .service .num {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase; opacity:.6;
+    position:absolute; top:24px; left:28px;
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(36px, 3.5vw, 56px); line-height:1;
+    letter-spacing:var(--ls-display); color:rgba(0,0,0,.12);
+    transition:color .35s;
+  }
+  .service:hover .num { color:rgba(255,255,255,.16); }
+  .service .num-tag {
+    position:absolute; top:32px; right:28px;
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:var(--red); transition:opacity .25s;
   }
   .service h3 {
     font-family:var(--ff-display); font-weight:800;
@@ -238,6 +293,22 @@
     letter-spacing:var(--ls-display); text-transform:uppercase;
   }
   .service p { font-size:var(--fs-body); line-height:1.5; opacity:.85; }
+  /* Раскрывающийся «что входит» при hover */
+  .service-includes {
+    list-style:none; margin-top:0;
+    max-height:0; opacity:0; overflow:hidden;
+    transition:max-height .4s cubic-bezier(.65,0,.35,1), opacity .25s, margin-top .35s;
+  }
+  .service:hover .service-includes { max-height:300px; opacity:1; margin-top:8px; }
+  .service-includes li {
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    padding:6px 0 6px 14px; position:relative;
+    border-top:1px solid rgba(255,255,255,.18);
+  }
+  .service-includes li::before {
+    content:'+'; position:absolute; left:0; color:var(--red);
+  }
 
   /* === PROCESS === */
   .process { background:var(--ink); color:#fff; }
@@ -246,8 +317,8 @@
     list-style:none; display:grid; gap:0;
   }
   .process-step {
-    display:grid; grid-template-columns:80px 1fr;
-    gap:clamp(24px, 4vw, 60px);
+    display:grid; grid-template-columns:80px 1fr clamp(220px, 24vw, 340px);
+    gap:clamp(24px, 4vw, 60px); align-items:start;
     padding:clamp(32px, 4vw, 56px) 0;
     border-bottom:1px solid rgba(255,255,255,.18);
   }
@@ -265,6 +336,27 @@
   .process-step p {
     font-size:var(--fs-body); line-height:1.55;
     color:rgba(255,255,255,.78); max-width:62ch;
+  }
+  /* Третья колонка — что клиент получает на выходе этапа */
+  .step-deliverable {
+    padding-left:24px; border-left:1px solid rgba(255,255,255,.18);
+    align-self:start;
+  }
+  .step-deliverable-label {
+    display:block;
+    font-family:var(--ff-mono); font-size:var(--fs-meta);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(255,255,255,.5); margin-bottom:10px;
+  }
+  .step-deliverable ul { list-style:none; }
+  .step-deliverable li {
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    padding:5px 0 5px 14px; position:relative;
+    color:rgba(255,255,255,.85);
+  }
+  .step-deliverable li::before {
+    content:'+'; position:absolute; left:0; color:var(--red);
   }
 
   /* === CASES === */
@@ -297,9 +389,10 @@
   .case .meta {
     position:absolute; left:0; right:0; bottom:0;
     padding:18px 20px;
-    background:linear-gradient(to top, rgba(0,0,0,.7), transparent);
-    color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.45) 60%, transparent 100%);
+    color:#fff; transition:padding .35s cubic-bezier(.65,0,.35,1);
   }
+  .case:hover .meta { padding-bottom:24px; }
   .case .meta .lbl {
     font-family:var(--ff-mono); font-size:var(--fs-cap);
     letter-spacing:var(--ls-mono); text-transform:uppercase; opacity:.85;
@@ -307,6 +400,29 @@
   .case .meta h3 {
     font-family:var(--ff-text); font-weight:700;
     font-size:clamp(16px, 1.5vw, 22px); line-height:1.15; margin-top:4px;
+  }
+  /* Hover-overlay: «что сделали» + ключевая метрика, выезжает снизу */
+  .case .case-details {
+    list-style:none; margin-top:0;
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height .4s cubic-bezier(.65,0,.35,1), opacity .25s, margin-top .35s;
+  }
+  .case:hover .case-details { max-height:160px; opacity:1; margin-top:10px; }
+  .case .case-details li {
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    padding:3px 0 3px 14px; position:relative;
+    color:rgba(255,255,255,.85);
+  }
+  .case .case-details li::before {
+    content:'+'; position:absolute; left:0; color:var(--red);
+  }
+  .case .case-details li.metric {
+    color:#fff; font-weight:500;
+    border-top:1px solid rgba(255,255,255,.25); margin-top:6px; padding-top:8px;
+  }
+  .case .case-details li.metric::before {
+    content:'→';
   }
   .case.c1 { grid-column:span 7; aspect-ratio:16/10; }
   .case.c2 { grid-column:span 5; aspect-ratio:16/10; }
@@ -439,12 +555,23 @@
     .case.c1, .case.c2 { grid-column:span 8; }
     .case.c3, .case.c4, .case.c5 { grid-column:span 4; aspect-ratio:1/1; }
   }
+  @media (max-width:1100px) {
+    .process-step { grid-template-columns:80px 1fr; }
+    .step-deliverable {
+      grid-column:2 / 3; padding-left:0;
+      border-left:0; border-top:1px solid rgba(255,255,255,.18);
+      padding-top:14px; margin-top:14px;
+    }
+  }
   @media (max-width:760px) {
     .nav-meta { display:none; }
     .subnav { padding:10px 16px; top:54px; }
     .subnav ul { gap:14px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
-    .hero-direction { padding:140px 20px 32px; min-height:90vh; }
+    .hero-direction { padding:140px 20px 60px; min-height:90vh; }
     .breadcrumb { top:80px; }
+    .hero-meta { display:none; }
+    .hero-watermark { font-size:60vw; right:-8vw; }
+    .hero-scroll-hint { right:20px; bottom:20px; }
     .services-grid { grid-template-columns:1fr; }
     .team-grid { grid-template-columns:repeat(2,1fr); }
     .numbers { grid-template-columns:repeat(2,1fr); gap:32px; }
@@ -453,6 +580,12 @@
     .case.c1, .case.c2, .case.c3, .case.c4, .case.c5 { grid-column:span 4; aspect-ratio:1/1; }
     .ftr-grid { grid-template-columns:1fr 1fr; gap:32px; }
     .process-step { grid-template-columns:60px 1fr; padding:24px 0; }
+    /* На очень малых экранах — раскрываем service-includes по умолчанию (нет hover) */
+    .service { padding-top:64px; }
+    .service-includes { max-height:none; opacity:1; margin-top:8px; }
+    .service-includes li { border-top:1px solid rgba(0,0,0,.12); }
+    .service:hover .service-includes li { border-top-color:rgba(255,255,255,.18); }
+    .case .case-details { max-height:none; opacity:1; margin-top:10px; }
   }
 
   /* === REDUCED MOTION === */
@@ -504,6 +637,8 @@
 
 <!-- ============ 01 — HERO ============ -->
 <section class="hero-direction" id="hero">
+  <span class="hero-watermark" aria-hidden="true">01</span>
+
   <nav class="breadcrumb">
     <a href="index.html">Premium Selection</a>
     <span>·</span>
@@ -512,7 +647,12 @@
     <span class="current">Marketing &amp; Research</span>
   </nav>
 
-  <span class="direction-num">— Направление 01 / 03</span>
+  <div class="hero-meta">
+    <span><span class="dot">●</span>&nbsp;<strong>NAPRAVLENIE 01</strong> / 03</span>
+    <span>STRATEGY · RESEARCH · BRAND · CREATIVE</span>
+    <span>ACTIVE SINCE&nbsp;<strong>2018</strong></span>
+  </div>
+
   <h1 class="direction-title">Marketing<br><span class="amp">&amp;</span> Research</h1>
   <p class="direction-manifest">Стратегия, проверенная&nbsp;данными.</p>
   <p class="direction-lede">
@@ -522,6 +662,8 @@
     <a href="#cases" class="btn-primary">Смотреть кейсы</a>
     <a href="discover.html?w=стратегия" class="btn-ghost">Открыть ТЗ-генератор</a>
   </div>
+
+  <span class="hero-scroll-hint">SCROLL</span>
 </section>
 
 <!-- ============ 02 — TRUST-BAR ============ -->
@@ -550,34 +692,76 @@
 
     <div class="services-grid">
       <div class="service">
-        <span class="num">01 · STRATEGY</span>
+        <span class="num">01</span>
+        <span class="num-tag">— Strategy</span>
         <h3>Маркетинг-стратегия</h3>
         <p>Позиционирование, GTM, план на&nbsp;12-36 месяцев. Работаем со&nbsp;зрелыми брендами и&nbsp;на&nbsp;старте.</p>
+        <ul class="service-includes">
+          <li>Discovery + research</li>
+          <li>Positioning workshop</li>
+          <li>GTM-документ + roadmap</li>
+          <li>KPI на&nbsp;12-36 месяцев</li>
+        </ul>
       </div>
       <div class="service">
-        <span class="num">02 · RESEARCH</span>
+        <span class="num">02</span>
+        <span class="num-tag">— Research</span>
         <h3>Исследования рынка</h3>
         <p>Customer-аудит, конкурентный анализ, brand-tracking. Качественные интервью + количественные опросы.</p>
+        <ul class="service-includes">
+          <li>Качественные глубинные интервью</li>
+          <li>Количественные опросы</li>
+          <li>Customer journey map</li>
+          <li>Конкурентный пейзаж + insights-deck</li>
+        </ul>
       </div>
       <div class="service">
-        <span class="num">03 · BRAND</span>
+        <span class="num">03</span>
+        <span class="num-tag">— Brand</span>
         <h3>Брендинг и&nbsp;нейминг</h3>
         <p>Имя, позиционирование, brand-book, ToV. От&nbsp;стартапов до&nbsp;ребрендингов 10-летних компаний.</p>
+        <ul class="service-includes">
+          <li>Нейминг + проверка</li>
+          <li>Айдентика и&nbsp;логотип</li>
+          <li>Tone of&nbsp;Voice</li>
+          <li>Brand-book + гайдлайны</li>
+        </ul>
       </div>
       <div class="service">
-        <span class="num">04 · CREATIVE</span>
+        <span class="num">04</span>
+        <span class="num-tag">— Creative</span>
         <h3>Креатив и&nbsp;кампании</h3>
         <p>Концепты для&nbsp;рекламных кампаний, контент-стратегия, big-idea на&nbsp;квартал или год.</p>
+        <ul class="service-includes">
+          <li>Big-idea на&nbsp;квартал/год</li>
+          <li>Креатив-концепты</li>
+          <li>Контент-стратегия</li>
+          <li>Brief для&nbsp;production-команды</li>
+        </ul>
       </div>
       <div class="service">
-        <span class="num">05 · PERFORMANCE</span>
+        <span class="num">05</span>
+        <span class="num-tag">— Performance</span>
         <h3>Performance-маркетинг</h3>
         <p>Performance-стратегия, медиапланирование, оптимизация воронки. Работа с&nbsp;digital-командой.</p>
+        <ul class="service-includes">
+          <li>Performance-стратегия</li>
+          <li>Медиаплан + бюджет</li>
+          <li>Funnel-аудит и&nbsp;оптимизация</li>
+          <li>Дашборд KPI</li>
+        </ul>
       </div>
       <div class="service">
-        <span class="num">06 · CONSULTING</span>
+        <span class="num">06</span>
+        <span class="num-tag">— Consulting</span>
         <h3>Маркетинг-консалтинг</h3>
         <p>Аудит маркетинг-функции компании, организационный дизайн отдела, найм маркетинг-директоров.</p>
+        <ul class="service-includes">
+          <li>Аудит маркетинг-функции</li>
+          <li>Org-дизайн отдела</li>
+          <li>Найм CMO / маркетинг-директора</li>
+          <li>Onboarding + 90-day plan</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -598,12 +782,29 @@
           <h3>Discovery</h3>
           <p>Брифинг, аналитика данных, интервью с&nbsp;командой. На&nbsp;выходе&nbsp;— карта проблем и&nbsp;гипотез.</p>
         </div>
+        <div class="step-deliverable">
+          <span class="step-deliverable-label">— Получаете</span>
+          <ul>
+            <li>Бриф проекта</li>
+            <li>Карта проблем и&nbsp;гипотез</li>
+            <li>Календарь этапов</li>
+          </ul>
+        </div>
       </li>
       <li class="process-step">
         <span class="step-num">02</span>
         <div>
           <h3>Insights</h3>
           <p>Качественные и&nbsp;количественные исследования. Сегментация, customer journey, конкурентный пейзаж.</p>
+        </div>
+        <div class="step-deliverable">
+          <span class="step-deliverable-label">— Получаете</span>
+          <ul>
+            <li>Insights-deck</li>
+            <li>Сегментация ЦА</li>
+            <li>Customer journey map</li>
+            <li>Конкурентный пейзаж</li>
+          </ul>
         </div>
       </li>
       <li class="process-step">
@@ -612,6 +813,15 @@
           <h3>Strategy</h3>
           <p>Позиционирование, value proposition, GTM-план. Документ, который команда сможет реально использовать.</p>
         </div>
+        <div class="step-deliverable">
+          <span class="step-deliverable-label">— Получаете</span>
+          <ul>
+            <li>Strategy-документ</li>
+            <li>Value proposition</li>
+            <li>GTM-план</li>
+            <li>Roadmap на&nbsp;12&nbsp;месяцев</li>
+          </ul>
+        </div>
       </li>
       <li class="process-step">
         <span class="step-num">04</span>
@@ -619,12 +829,29 @@
           <h3>Activation</h3>
           <p>Креатив-концепт, кампания, brand-book. От&nbsp;стратегии&nbsp;— к&nbsp;конкретным носителям и&nbsp;каналам.</p>
         </div>
+        <div class="step-deliverable">
+          <span class="step-deliverable-label">— Получаете</span>
+          <ul>
+            <li>Креатив-концепт</li>
+            <li>Brand-book + ToV</li>
+            <li>Brief для&nbsp;production</li>
+            <li>Кампания «под ключ»</li>
+          </ul>
+        </div>
       </li>
       <li class="process-step">
         <span class="step-num">05</span>
         <div>
           <h3>Measure</h3>
           <p>KPI, brand-tracking, корректировка курса. Работаем не&nbsp;на&nbsp;«сдали и&nbsp;ушли», а&nbsp;на&nbsp;долгий результат.</p>
+        </div>
+        <div class="step-deliverable">
+          <span class="step-deliverable-label">— Получаете</span>
+          <ul>
+            <li>Дашборд KPI</li>
+            <li>Brand-tracking отчёт</li>
+            <li>Quarterly review</li>
+          </ul>
         </div>
       </li>
     </ol>
@@ -650,23 +877,65 @@
     <div class="cases-grid">
       <a href="#" class="case c1" data-tag="fmcg">
         <picture><source srcset="images/13.webp" type="image/webp"><img src="images/13.jpg" alt="" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">CASE 01 · FMCG · 2025</div><h3>Бренд-стратегия — Bayan</h3></div>
+        <div class="meta">
+          <div class="lbl">CASE 01 · FMCG · 2025</div>
+          <h3>Бренд-стратегия — Bayan</h3>
+          <ul class="case-details">
+            <li>Customer research + brand-tracking</li>
+            <li>Позиционирование и&nbsp;tone of&nbsp;voice</li>
+            <li>Packaging redesign</li>
+            <li class="metric">+40% awareness за&nbsp;6&nbsp;месяцев</li>
+          </ul>
+        </div>
       </a>
       <a href="#" class="case c2" data-tag="retail">
         <picture><source srcset="images/12.webp" type="image/webp"><img src="images/12.jpg" alt="" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">CASE 02 · RETAIL · 2024</div><h3>Запуск линейки — Kapsula</h3></div>
+        <div class="meta">
+          <div class="lbl">CASE 02 · RETAIL · 2024</div>
+          <h3>Запуск линейки — Kapsula</h3>
+          <ul class="case-details">
+            <li>GTM-стратегия + сегментация аудитории</li>
+            <li>Креатив-концепт кампании</li>
+            <li>Performance-медиаплан</li>
+            <li class="metric">90% sell-through в&nbsp;первый квартал</li>
+          </ul>
+        </div>
       </a>
       <a href="#" class="case c3" data-tag="horeca">
         <picture><source srcset="images/15.webp" type="image/webp"><img src="images/15.jpg" alt="" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">CASE 03 · HORECA</div><h3>Ребрендинг сети ресторанов</h3></div>
+        <div class="meta">
+          <div class="lbl">CASE 03 · HORECA</div>
+          <h3>Ребрендинг сети ресторанов</h3>
+          <ul class="case-details">
+            <li>Brand-аудит 12&nbsp;точек</li>
+            <li>Новый нейминг + айдентика</li>
+            <li class="metric">NPS 38 → 67</li>
+          </ul>
+        </div>
       </a>
       <a href="#" class="case c4" data-tag="finance">
         <picture><source srcset="images/14.webp" type="image/webp"><img src="images/14.jpg" alt="" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">CASE 04 · FINANCE</div><h3>Позиционирование fintech-стартапа</h3></div>
+        <div class="meta">
+          <div class="lbl">CASE 04 · FINANCE</div>
+          <h3>Позиционирование fintech-стартапа</h3>
+          <ul class="case-details">
+            <li>Конкурентный анализ ЦА</li>
+            <li>Value proposition + pitch-deck</li>
+            <li class="metric">Series A закрыт за&nbsp;4&nbsp;месяца</li>
+          </ul>
+        </div>
       </a>
       <a href="#" class="case c5" data-tag="fmcg">
         <picture><source srcset="images/1.webp" type="image/webp"><img src="images/1.jpg" alt="" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">CASE 05 · FMCG</div><h3>Research-аудит для&nbsp;FMCG-производителя</h3></div>
+        <div class="meta">
+          <div class="lbl">CASE 05 · FMCG</div>
+          <h3>Research-аудит для&nbsp;FMCG-производителя</h3>
+          <ul class="case-details">
+            <li>4&nbsp;качественных интервью + 800&nbsp;count.</li>
+            <li>Customer journey mapping</li>
+            <li class="metric">Найдены 3&nbsp;точки роста дистрибуции</li>
+          </ul>
+        </div>
       </a>
     </div>
   </div>
@@ -812,6 +1081,29 @@
     }
     log('[PSG-MR] subnav ok');
   } catch(e) { console.error('[PSG-MR] subnav error:', e); }
+
+  // 1b. Progress-bar в subnav: % прокрутки страницы после hero
+  try {
+    var heroEl = document.getElementById('hero');
+    var ticking = false;
+    function updateProgress(){
+      if (!heroEl) return;
+      var heroH = heroEl.offsetHeight;
+      var totalH = document.documentElement.scrollHeight - window.innerHeight - heroH;
+      if (totalH <= 0) return;
+      var scrolled = Math.max(0, window.scrollY - heroH);
+      var pct = Math.min(100, Math.max(0, (scrolled / totalH) * 100));
+      document.documentElement.style.setProperty('--scroll-progress', pct.toFixed(2) + '%');
+    }
+    window.addEventListener('scroll', function(){
+      if (!ticking) {
+        requestAnimationFrame(function(){ updateProgress(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+    updateProgress();
+    log('[PSG-MR] progress ok');
+  } catch(e) { console.error('[PSG-MR] progress error:', e); }
 
   // 2. Scroll-spy: подсвечиваем активный пункт sub-nav
   try {
