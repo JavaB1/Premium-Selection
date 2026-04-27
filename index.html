@@ -319,8 +319,25 @@
 
   /* === DIRECTIONS === */
   .directions { background: var(--ink); color:#fff; }
-  .directions .section-head { padding: 0 clamp(20px, 4vw, 56px) 24px; max-width:1480px; margin:0 auto; }
-  .dir-rows { border-top: 1px solid rgba(255,255,255,.18); }
+  .directions .section-head {
+    padding: 0 clamp(20px, 4vw, 56px) 24px; max-width:1480px; margin:0 auto;
+  }
+  /* Heading секции делаем явно меньше .dr-name (которое 6vw/92px), */
+  /* чтобы заголовок не сливался в один список с направлениями ниже. */
+  .directions .section-head h2 {
+    font-size: clamp(28px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+  .directions .section-head h2 em {
+    font-style: italic; font-weight: 600;
+    color: var(--red);
+  }
+  /* Воздух между шапкой секции и первой строкой направления */
+  .dir-rows {
+    border-top: 1px solid rgba(255,255,255,.18);
+    margin-top: clamp(24px, 3vw, 48px);
+  }
   .dir-row {
     display:grid; grid-template-columns: 80px 1fr auto;
     align-items:center; gap: clamp(24px, 4vw, 60px);
@@ -920,7 +937,7 @@
 <section class="directions section-pad" id="directions" style="padding-bottom:0;">
   <div class="section-head">
     <span class="label">02 — Направления</span>
-    <h2>Выбери&nbsp;своё</h2>
+    <h2>Выбери&nbsp;<em>своё</em></h2>
   </div>
 
   <div class="dir-rows">
