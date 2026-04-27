@@ -178,7 +178,10 @@
     letter-spacing:var(--ls-display);
     margin-bottom:clamp(16px, 2vw, 24px); max-width:24ch;
     color:#fff;
+    transition:opacity .35s ease, transform .35s ease;
   }
+  /* Cycling manifest: фраза меняется каждые ~4с, плавный crossfade */
+  .direction-manifest.swap { opacity:0; transform:translateY(-6px); }
   .direction-lede {
     font-size:var(--fs-body); line-height:1.55;
     color:var(--dim); max-width:62ch;
@@ -235,7 +238,7 @@
     text-transform:uppercase; text-align:left;
   }
 
-  /* === TRUST-BAR === */
+  /* === TRUST-BAR (marquee bay) === */
   .trust {
     background:var(--paper); color:var(--ink);
     padding: clamp(48px, 6vw, 80px) var(--gutter);
@@ -243,22 +246,44 @@
   }
   .trust-row {
     max-width:1480px; margin:0 auto;
-    display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:center;
+    display:flex; gap:32px; align-items:center;
+    overflow:hidden; position:relative;
   }
+  /* Fade-маски по краям — логи как-будто вплывают/уплывают */
+  .trust-row::before, .trust-row::after {
+    content:''; position:absolute; top:0; bottom:0; width:80px;
+    pointer-events:none; z-index:2;
+  }
+  .trust-row::before { left:0;  background:linear-gradient(to right, var(--paper), transparent); }
+  .trust-row::after  { right:0; background:linear-gradient(to left,  var(--paper), transparent); }
   .trust-label {
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.5);
+    color:rgba(0,0,0,.5); flex-shrink:0; z-index:3; position:relative;
+    background:var(--paper); padding-right:8px;
   }
-  .trust-logos {
-    display:flex; gap: clamp(24px, 4vw, 64px); flex-wrap:wrap; align-items:center;
+  .trust-marquee {
+    flex:1; overflow:hidden; mask:none;
+  }
+  /* Track — двойной набор лого, бесконечный скролл влево */
+  .trust-track {
+    display:flex; gap: clamp(24px, 4vw, 64px); align-items:center;
+    width:max-content;
+    animation:psg-marquee 32s linear infinite;
+  }
+  .trust-marquee:hover .trust-track { animation-play-state:paused; }
+  .trust-track span {
     font-family:var(--ff-display); font-weight:800;
     font-size:clamp(18px, 1.6vw, 24px);
     letter-spacing:.04em; text-transform:uppercase;
-    color:rgba(0,0,0,.55);
+    color:rgba(0,0,0,.55); transition:color .25s;
+    white-space:nowrap;
   }
-  .trust-logos span { transition:color .25s; }
-  .trust-logos span:hover { color:var(--ink); }
+  .trust-track span:hover { color:var(--ink); }
+  @keyframes psg-marquee {
+    0%   { transform:translateX(0); }
+    100% { transform:translateX(-50%); }
+  }
 
   /* === SERVICES === */
   .services { background:var(--paper); color:var(--ink); }
@@ -445,9 +470,17 @@
     font-variant-numeric:tabular-nums;
   }
   .stat .lbl {
+    display:block;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
     color:rgba(255,255,255,.78);
+  }
+  /* Sub-label под основным — даёт контекст числу */
+  .stat .lbl-sub {
+    display:block; margin-top:6px; max-width:24ch;
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(255,255,255,.5); line-height:1.4;
   }
 
   /* === TEAM === */
@@ -463,6 +496,28 @@
     display:flex; align-items:center; justify-content:center;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); color:rgba(0,0,0,.35);
+    position:relative; overflow:hidden;
+    cursor:default;
+  }
+  /* Quote-overlay: появляется при hover, фраза-манифест эксперта */
+  .person .photo .quote {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(218,41,28,.94) 0%, rgba(10,10,10,.92) 70%);
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(16px, 1.6vw, 28px);
+    opacity:0; transition:opacity .35s cubic-bezier(.65,0,.35,1);
+  }
+  .person .photo:hover .quote { opacity:1; }
+  .person .photo .quote::before {
+    content:'“'; position:absolute; top:6px; left:14px;
+    font-family:var(--ff-display); font-weight:900;
+    font-size:64px; line-height:1; color:rgba(255,255,255,.35);
+  }
+  .person .photo .quote blockquote {
+    font-family:var(--ff-display); font-weight:700;
+    font-size:clamp(13px, 1.15vw, 17px); line-height:1.32;
+    color:#fff; text-align:center; max-width:22ch;
+    letter-spacing:-.005em;
   }
   .person .name {
     font-family:var(--ff-display); font-weight:800;
@@ -596,6 +651,7 @@
       transition-duration: .01ms !important;
       scroll-behavior: auto !important;
     }
+    .trust-track { animation:none !important; transform:none !important; }
   }
 </style>
 </head>
@@ -654,7 +710,7 @@
   </div>
 
   <h1 class="direction-title">Marketing<br><span class="amp">&amp;</span> Research</h1>
-  <p class="direction-manifest">Стратегия, проверенная&nbsp;данными.</p>
+  <p class="direction-manifest" data-rotate='["Стратегия, проверенная&nbsp;данными.","Идеи, проверенные на&nbsp;людях.","Маркетинг, который не&nbsp;угадывает.","Бренд, который запоминают."]'>Стратегия, проверенная&nbsp;данными.</p>
   <p class="direction-lede">
     Собираем команды, которые превращают догадки в&nbsp;инсайты, а&nbsp;инсайты&nbsp;— в&nbsp;стратегию для&nbsp;роста бизнеса. Узбекистан, СНГ, профессиональные ниши.
   </p>
@@ -666,18 +722,28 @@
   <span class="hero-scroll-hint">SCROLL</span>
 </section>
 
-<!-- ============ 02 — TRUST-BAR ============ -->
+<!-- ============ 02 — TRUST-BAR (marquee) ============ -->
 <section class="trust" id="trust">
   <div class="trust-row">
     <span class="trust-label">— Нам доверяют</span>
-    <div class="trust-logos">
-      <span>BAYAN</span>
-      <span>KAPSULA</span>
-      <span>CLIENT&nbsp;03</span>
-      <span>CLIENT&nbsp;04</span>
-      <span>CLIENT&nbsp;05</span>
-      <span>CLIENT&nbsp;06</span>
-      <span>CLIENT&nbsp;07</span>
+    <div class="trust-marquee" aria-hidden="true">
+      <div class="trust-track">
+        <span>BAYAN</span>
+        <span>KAPSULA</span>
+        <span>CLIENT&nbsp;03</span>
+        <span>CLIENT&nbsp;04</span>
+        <span>CLIENT&nbsp;05</span>
+        <span>CLIENT&nbsp;06</span>
+        <span>CLIENT&nbsp;07</span>
+        <!-- дублируем для seamless loop -->
+        <span>BAYAN</span>
+        <span>KAPSULA</span>
+        <span>CLIENT&nbsp;03</span>
+        <span>CLIENT&nbsp;04</span>
+        <span>CLIENT&nbsp;05</span>
+        <span>CLIENT&nbsp;06</span>
+        <span>CLIENT&nbsp;07</span>
+      </div>
     </div>
   </div>
 </section>
@@ -946,18 +1012,22 @@
   <div class="stat">
     <span class="num" data-target="07">00</span>
     <span class="lbl">Лет на&nbsp;рынке</span>
+    <span class="lbl-sub">с&nbsp;2018, Tashkent + Dubai</span>
   </div>
   <div class="stat">
     <span class="num" data-target="60">00</span>
     <span class="lbl">M&amp;R-проектов</span>
+    <span class="lbl-sub">FMCG, финансы, HoReCa, ритейл</span>
   </div>
   <div class="stat">
     <span class="num" data-target="12">00</span>
     <span class="lbl">Стран присутствия</span>
+    <span class="lbl-sub">CIS + GCC + Türkiye</span>
   </div>
   <div class="stat">
     <span class="num" data-target="08">00</span>
     <span class="lbl">Экспертов в&nbsp;команде</span>
+    <span class="lbl-sub">strategy · research · brand · creative</span>
   </div>
 </section>
 
@@ -971,22 +1041,34 @@
 
     <div class="team-grid">
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Стратегия начинается там, где заканчивается мнение&nbsp;собственника.</blockquote></div>
+        </div>
         <span class="role">Strategy Director</span>
         <span class="name">Алишер Рахимов</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Хорошее исследование — то, что меняет решение, а&nbsp;не подтверждает его.</blockquote></div>
+        </div>
         <span class="role">Head of Research</span>
         <span class="name">Малика Юсупова</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Бренд — это обещание, которое компания держит даже когда&nbsp;никто не&nbsp;смотрит.</blockquote></div>
+        </div>
         <span class="role">Brand Lead</span>
         <span class="name">Дмитрий Каримов</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Креатив без стратегии — это шум. Стратегия без креатива — таблица.</blockquote></div>
+        </div>
         <span class="role">Creative Director</span>
         <span class="name">Сабина Назарова</span>
       </div>
@@ -1182,23 +1264,65 @@
     log('[PSG-MR] counters ok');
   } catch(e) { console.error('[PSG-MR] counters error:', e); }
 
-  // 5. Cases-фильтр: переключение тегов
+  // 5. Cases multi-select фильтр: можно выбрать несколько тегов одновременно
+  // Логика: «Все» — exclusive (сбрасывает прочие); любой другой — toggle
   try {
     var filterBtns = document.querySelectorAll('.cases-filter button');
     var caseEls = document.querySelectorAll('.case');
+    var active = new Set(['all']);
+    function applyFilter(){
+      filterBtns.forEach(function(b){
+        b.classList.toggle('active', active.has(b.getAttribute('data-filter')));
+      });
+      caseEls.forEach(function(c){
+        var ct = c.getAttribute('data-tag');
+        var show = active.has('all') || active.has(ct);
+        c.style.display = show ? '' : 'none';
+      });
+    }
     filterBtns.forEach(function(btn){
       btn.addEventListener('click', function(){
         var tag = btn.getAttribute('data-filter');
-        filterBtns.forEach(function(b){ b.classList.toggle('active', b === btn); });
-        caseEls.forEach(function(c){
-          var ct = c.getAttribute('data-tag');
-          var show = tag === 'all' || ct === tag;
-          c.style.display = show ? '' : 'none';
-        });
+        if (tag === 'all') {
+          active.clear(); active.add('all');
+        } else {
+          active.delete('all');
+          if (active.has(tag)) {
+            active.delete(tag);
+            if (active.size === 0) active.add('all');
+          } else {
+            active.add(tag);
+          }
+        }
+        applyFilter();
       });
     });
-    log('[PSG-MR] filter ok');
+    applyFilter();
+    log('[PSG-MR] multi-filter ok');
   } catch(e) { console.error('[PSG-MR] filter error:', e); }
+
+  // 7. Hero manifest cycling: фразы с crossfade каждые ~4с
+  // textContent (не innerHTML) — &nbsp; превращаем в реальный U+00A0
+  try {
+    var manifestEl = document.querySelector('.direction-manifest[data-rotate]');
+    if (manifestEl && !prefersReduce) {
+      var raw = manifestEl.getAttribute('data-rotate');
+      var phrases = JSON.parse(raw).map(function(s){ return s.replace(/&nbsp;/g, ' '); });
+      if (Array.isArray(phrases) && phrases.length > 1) {
+        var idx = 0;
+        manifestEl.textContent = phrases[0];
+        setInterval(function(){
+          manifestEl.classList.add('swap');
+          setTimeout(function(){
+            idx = (idx + 1) % phrases.length;
+            manifestEl.textContent = phrases[idx];
+            manifestEl.classList.remove('swap');
+          }, 380);
+        }, 4200);
+      }
+    }
+    log('[PSG-MR] manifest cycling ok');
+  } catch(e) { console.error('[PSG-MR] manifest cycling error:', e); }
 
   // 6. Заглушка для "#" якорей
   try {

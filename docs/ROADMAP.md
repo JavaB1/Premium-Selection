@@ -2,7 +2,7 @@
 
 Активный план разработки. Обновлять по мере работы.
 
-> Last updated: 2026-04-27
+> Last updated: 2026-04-27 (evening)
 
 ---
 
@@ -50,10 +50,16 @@
 
 ---
 
+### Production + IT direction pages
+- Полный шаблон M&R перенесён 1:1 на Production (`02`) и IT (`03`) со всеми polish #1–5 внутри (watermark + hero meta + scroll-hint pulse + fade-up; cases hover-overlay + метрики; subnav progress-bar; services hover с раскрытием; process 3-я колонка «Получаете»)
+- Контент переработан под направление: услуги, кейсы, числа, команда, breadcrumb, watermark `02`/`03`
+- Связи: dir-rows главной → новые URL; футер всех 4 страниц подсвечивает все 3 направления; sitemap.xml обновлён
+
+---
+
 ## 🔄 In Progress
 
-- **Production** direction-страница (по шаблону M&R)
-- **IT** direction-страница (по шаблону M&R)
+— нет активных задач, выбираем следующую из backlog —
 
 ---
 
@@ -72,9 +78,8 @@
 - [ ] **13.** Case modal на клик (full case study overlay)
 - [ ] **14.** Sticky «Связаться» FAB после 50% scroll
 
-### После Production + IT
-- [ ] Перенести polish #1–5 на Production и IT
-- [ ] Применить #6–10 ко всем 3 страницам параллельно
+### После M&R polish #6–10
+- [ ] Применить #6–10 ко всем 3 страницам параллельно (Production + IT)
 
 ### Backend integration (separate sprint)
 - [ ] Admin-панель для лидов
