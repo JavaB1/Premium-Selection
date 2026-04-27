@@ -922,4 +922,38 @@
           if (e.isIntersecting) nav.classList.add('dark');
         });
       }, { rootMargin: '-60px 0px -85% 0px' });
-      lightSections.forEach(function(s){ lightObs.observe(
+      lightSections.forEach(function(s){ lightObs.observe(s); });
+
+      var darkSections = document.querySelectorAll('.hero, .directions, .stats, .contact, .site-footer');
+      var darkObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) nav.classList.remove('dark');
+        });
+      }, { rootMargin: '-60px 0px -85% 0px' });
+      darkSections.forEach(function(s){ darkObs.observe(s); });
+    }
+    console.log('[PSG] nav ok');
+  } catch(e) { console.error('[PSG] nav error:', e); }
+
+  // ============== 4. SYNONYM ROTATION ==============
+  try {
+    var synonyms = ['грандиозные','масштабные','амбициозные','выдающиеся','впечатляющие','легендарные','мощные','смелые','значимые','большие'];
+    var rot = document.getElementById('rotWord');
+    if (rot) {
+      var ri = 0;
+      setInterval(function(){
+        rot.classList.add('fade');
+        setTimeout(function(){
+          ri = (ri + 1) % synonyms.length;
+          rot.textContent = synonyms[ri];
+          rot.classList.remove('fade');
+        }, 350);
+      }, 2400);
+    }
+    console.log('[PSG] synonyms ok');
+  } catch(e) { console.error('[PSG] synonyms error:', e); }
+})();
+</script>
+
+</body>
+</html>
