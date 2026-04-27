@@ -458,6 +458,42 @@
   .case.c4 { grid-column:span 4; aspect-ratio:1/1; }
   .case.c5 { grid-column:span 4; aspect-ratio:1/1; }
 
+  /* === PAINS (почему маркетинг не работает — 3 боли) === */
+  .pains { background: var(--ink); color: #fff; }
+  .pains .section-head { color: #fff; border-bottom-color: rgba(255,255,255,.22); }
+  .pains-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(24px, 3vw, 48px);
+    margin-bottom: clamp(40px, 5vw, 64px);
+  }
+  .pain {
+    border-top: 2px solid var(--red);
+    padding: clamp(20px, 2vw, 28px) 0 0;
+  }
+  .pain-meta {
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+  }
+  .pain-meta .num { color: var(--red); }
+  .pain-meta .tag { color: rgba(255,255,255,.55); margin-left: 8px; }
+  .pain h3 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(22px, 2vw, 30px); line-height: 1.05;
+    letter-spacing: var(--ls-display); text-transform: uppercase;
+    margin-top: 14px;
+  }
+  .pain p {
+    margin-top: 12px; font-size: var(--fs-body); line-height: 1.55;
+    color: rgba(255,255,255,.78); max-width: 38ch;
+  }
+  .pain-bottom-line {
+    font-family: var(--ff-display); font-weight: 700;
+    font-size: clamp(22px, 2.4vw, 36px); line-height: 1.3;
+    color: #fff; max-width: 60ch;
+    border-left: 3px solid var(--red); padding-left: clamp(20px, 2vw, 28px);
+  }
+  .pain-bottom-line em { color: var(--red); font-style: normal; font-weight: 800; }
+
   /* === NUMBERS === */
   .numbers {
     background:var(--red); color:#fff;
@@ -465,13 +501,24 @@
     display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
   }
   .stat .num {
-    display:block;
+    display:inline-block;
     font-family:var(--ff-display); font-weight:900;
     font-size:clamp(48px, 6.5vw, 132px);
     line-height:.9; letter-spacing:var(--ls-display);
-    margin-bottom:14px;
     font-variant-numeric:tabular-nums;
   }
+  /* Префикс/суффикс рядом с цифрой (например «%» или «до») */
+  .stat .num-suffix, .stat .num-prefix {
+    display:inline-block;
+    font-family:var(--ff-display); font-weight:900;
+    font-size:clamp(28px, 3.5vw, 64px);
+    line-height:.9; letter-spacing:var(--ls-display);
+    color:rgba(255,255,255,.78);
+    vertical-align:top; margin-top:6px;
+  }
+  .stat .num-prefix { margin-right:6px; }
+  .stat .num-suffix { margin-left:4px; }
+  .stat .num-row { display:block; margin-bottom:14px; }
   .stat .lbl {
     display:block;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
@@ -686,6 +733,7 @@
 
 <aside class="subnav" id="subnav" aria-label="Разделы страницы">
   <ul>
+    <li><a href="#pains">Почему</a></li>
     <li><a href="#services">Услуги</a></li>
     <li><a href="#process">Подход</a></li>
     <li><a href="#cases">Кейсы</a></li>
@@ -708,17 +756,17 @@
 
   <div class="hero-meta">
     <span><span class="dot">●</span>&nbsp;<strong>NAPRAVLENIE 01</strong> / 03</span>
-    <span>STRATEGY · RESEARCH · BRAND · CREATIVE</span>
+    <span>STRATEGY · RESEARCH · BRAND · CREATIVE · PERFORMANCE · ANALYTICS</span>
     <span>ACTIVE SINCE&nbsp;<strong>2018</strong></span>
   </div>
 
   <h1 class="direction-title">Marketing<br><span class="amp">&amp;</span> Research</h1>
-  <p class="direction-manifest" data-rotate='["Стратегия, проверенная&nbsp;данными.","Идеи, проверенные на&nbsp;людях.","Маркетинг, который не&nbsp;угадывает.","Бренд, который запоминают."]'>Стратегия, проверенная&nbsp;данными.</p>
+  <p class="direction-manifest" data-rotate='["Маркетинг как система&nbsp;роста.","Внешняя CMO-функция и&nbsp;senior-команда.","Стратегия. Исполнение. ROI.","Маркетинг как функция, не&nbsp;головная&nbsp;боль."]'>Маркетинг как система&nbsp;роста.</p>
   <p class="direction-lede">
-    Собираем команды, которые превращают догадки в&nbsp;инсайты, а&nbsp;инсайты&nbsp;— в&nbsp;стратегию для&nbsp;роста бизнеса. Узбекистан, СНГ, профессиональные ниши.
+    Полноценная маркетинговая функция без&nbsp;необходимости найма. Берём на&nbsp;себя стратегию, реализацию и&nbsp;контроль показателей&nbsp;— до&nbsp;40% дешевле, чем in-house CMO + 3-4 специалиста.
   </p>
   <div class="direction-cta">
-    <a href="#cases" class="btn-primary">Смотреть кейсы</a>
+    <a href="#pains" class="btn-primary">Почему не&nbsp;работает</a>
     <a href="discover.html?w=стратегия" class="btn-ghost">Открыть ТЗ-генератор</a>
   </div>
 
@@ -751,85 +799,119 @@
   </div>
 </section>
 
-<!-- ============ 03 — SERVICES ============ -->
+<!-- ============ 03 — PAINS (3 проблемы маркетинга) ============ -->
+<section class="pains section-pad" id="pains">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">02 — Почему</span>
+      <h2>Маркетинг не&nbsp;даёт прогнозируемого&nbsp;результата</h2>
+    </div>
+    <div class="pains-grid">
+      <div class="pain">
+        <span class="pain-meta"><span class="num">01</span><span class="tag">— Расходы</span></span>
+        <h3>Высокие&nbsp;расходы</h3>
+        <p>Зарплата CMO + команда + подрядчики. Прирост результата не&nbsp;гарантирован, а&nbsp;ФОТ растёт каждый&nbsp;месяц.</p>
+      </div>
+      <div class="pain">
+        <span class="pain-meta"><span class="num">02</span><span class="tag">— Система</span></span>
+        <h3>Отсутствие&nbsp;системы</h3>
+        <p>Разрозненные каналы, хаотичная активность, отсутствие единой стратегии и&nbsp;процессов.</p>
+      </div>
+      <div class="pain">
+        <span class="pain-meta"><span class="num">03</span><span class="tag">— Прозрачность</span></span>
+        <h3>Отсутствие&nbsp;прозрачности</h3>
+        <p>Непонятно, куда уходят деньги. Нет чётких KPI или регулярной отчётности по&nbsp;ROI.</p>
+      </div>
+    </div>
+    <p class="pain-bottom-line">Маркетинг становится <em>статьёй расходов</em>, а&nbsp;не&nbsp;инструментом роста.</p>
+  </div>
+</section>
+
+<!-- ============ 04 — SERVICES ============ -->
 <section class="services section-pad" id="services">
   <div class="container">
     <div class="section-head">
-      <span class="label">02 — Услуги</span>
+      <span class="label">03 — Услуги</span>
       <h2>Что мы&nbsp;делаем</h2>
     </div>
 
     <div class="services-grid">
       <div class="service">
         <span class="num">01</span>
-        <span class="num-tag">— Strategy</span>
-        <h3>Маркетинг-стратегия</h3>
-        <p>Позиционирование, GTM, план на&nbsp;12-36 месяцев. Работаем со&nbsp;зрелыми брендами и&nbsp;на&nbsp;старте.</p>
+        <span class="num-tag">— Research</span>
+        <h3>Исследования</h3>
+        <p>Анализ рынка, аудитории, конкурентов. Customer insights и&nbsp;Brand Health Tracking как опора для решений.</p>
         <ul class="service-includes">
-          <li>Discovery + research</li>
-          <li>Positioning workshop</li>
-          <li>GTM-документ + roadmap</li>
-          <li>KPI на&nbsp;12-36 месяцев</li>
+          <li>Анализ рынка и&nbsp;категории</li>
+          <li>Исследование аудитории</li>
+          <li>Анализ конкурентов</li>
+          <li>Customer insights</li>
+          <li>Brand Health Tracking</li>
         </ul>
       </div>
       <div class="service">
         <span class="num">02</span>
-        <span class="num-tag">— Research</span>
-        <h3>Исследования рынка</h3>
-        <p>Customer-аудит, конкурентный анализ, brand-tracking. Качественные интервью + количественные опросы.</p>
+        <span class="num-tag">— Strategy</span>
+        <h3>Стратегия</h3>
+        <p>Позиционирование, GTM, customer journey. Документ, который команда сможет реально использовать на&nbsp;12-36&nbsp;месяцев.</p>
         <ul class="service-includes">
-          <li>Качественные глубинные интервью</li>
-          <li>Количественные опросы</li>
-          <li>Customer journey map</li>
-          <li>Конкурентный пейзаж + insights-deck</li>
+          <li>Маркетинговая стратегия</li>
+          <li>Коммуникационная стратегия</li>
+          <li>Продуктовое позиционирование</li>
+          <li>Go-to-market стратегия</li>
+          <li>Customer Journey Map</li>
         </ul>
       </div>
       <div class="service">
         <span class="num">03</span>
         <span class="num-tag">— Brand</span>
-        <h3>Брендинг и&nbsp;нейминг</h3>
-        <p>Имя, позиционирование, brand-book, ToV. От&nbsp;стартапов до&nbsp;ребрендингов 10-летних компаний.</p>
+        <h3>Бренд</h3>
+        <p>От&nbsp;нейминга до&nbsp;брендбука. Создаём бренд-платформу, ToV, айдентику&nbsp;— то, что команда применяет на&nbsp;каждом носителе.</p>
         <ul class="service-includes">
-          <li>Нейминг + проверка</li>
-          <li>Айдентика и&nbsp;логотип</li>
-          <li>Tone of&nbsp;Voice</li>
-          <li>Brand-book + гайдлайны</li>
+          <li>Позиционирование бренда</li>
+          <li>Нейминг</li>
+          <li>Бренд-платформа</li>
+          <li>Айдентика</li>
+          <li>Брендбук</li>
         </ul>
       </div>
       <div class="service">
         <span class="num">04</span>
         <span class="num-tag">— Creative</span>
-        <h3>Креатив и&nbsp;кампании</h3>
-        <p>Концепты для&nbsp;рекламных кампаний, контент-стратегия, big-idea на&nbsp;квартал или год.</p>
+        <h3>Креатив</h3>
+        <p>Концепты, кампании, big-idea. От&nbsp;стратегического брифа до&nbsp;выхода в&nbsp;каналы&nbsp;— под&nbsp;бюджет, под&nbsp;аудиторию.</p>
         <ul class="service-includes">
-          <li>Big-idea на&nbsp;квартал/год</li>
-          <li>Креатив-концепты</li>
-          <li>Контент-стратегия</li>
-          <li>Brief для&nbsp;production-команды</li>
+          <li>Креативные концепции</li>
+          <li>Рекламные кампании</li>
+          <li>360° кампании</li>
+          <li>PR и&nbsp;спецпроекты</li>
+          <li>Influencer-кампании</li>
         </ul>
       </div>
       <div class="service">
         <span class="num">05</span>
-        <span class="num-tag">— Performance</span>
-        <h3>Performance-маркетинг</h3>
-        <p>Performance-стратегия, медиапланирование, оптимизация воронки. Работа с&nbsp;digital-командой.</p>
+        <span class="num-tag">— Channels</span>
+        <h3>Каналы</h3>
+        <p>Медиа-стратегия, performance, SMM, сайты, воронки. Носители и&nbsp;площадки выбираем по&nbsp;метрикам, не&nbsp;по&nbsp;вкусу.</p>
         <ul class="service-includes">
-          <li>Performance-стратегия</li>
-          <li>Медиаплан + бюджет</li>
-          <li>Funnel-аудит и&nbsp;оптимизация</li>
-          <li>Дашборд KPI</li>
+          <li>Медиа-стратегия</li>
+          <li>Performance-маркетинг</li>
+          <li>SMM и&nbsp;контент</li>
+          <li>Сайты и&nbsp;лендинги</li>
+          <li>Воронки продаж</li>
         </ul>
       </div>
       <div class="service">
         <span class="num">06</span>
-        <span class="num-tag">— Consulting</span>
-        <h3>Маркетинг-консалтинг</h3>
-        <p>Аудит маркетинг-функции компании, организационный дизайн отдела, найм маркетинг-директоров.</p>
+        <span class="num-tag">— Growth</span>
+        <h3>Рост</h3>
+        <p>Аналитика, KPI-дашборды, автоматизация, retention. Цикл от&nbsp;запуска к&nbsp;масштабированию&nbsp;— без потери контроля.</p>
         <ul class="service-includes">
-          <li>Аудит маркетинг-функции</li>
-          <li>Org-дизайн отдела</li>
-          <li>Найм CMO / маркетинг-директора</li>
-          <li>Onboarding + 90-day plan</li>
+          <li>Маркетинговая аналитика</li>
+          <li>KPI и&nbsp;дашборды</li>
+          <li>Системы автоматизации</li>
+          <li>Программы удержания</li>
+          <li>Оптимизация и&nbsp;масштабирование</li>
         </ul>
       </div>
     </div>
@@ -840,86 +922,56 @@
 <section class="process section-pad" id="process">
   <div class="container">
     <div class="section-head">
-      <span class="label">03 — Подход</span>
+      <span class="label">04 — Подход</span>
       <h2>Как работаем</h2>
     </div>
 
     <ol class="process-steps">
       <li class="process-step">
-        <span class="step-num">01</span>
+        <span class="step-num">DAY 30</span>
         <div>
-          <h3>Discovery</h3>
-          <p>Брифинг, аналитика данных, интервью с&nbsp;командой. На&nbsp;выходе&nbsp;— карта проблем и&nbsp;гипотез.</p>
+          <h3>Полный аудит</h3>
+          <p>Анализ текущего маркетинга, конкурентов, аудитории. Стратегия. План на&nbsp;квартал. Тех.документация и&nbsp;настройка аналитики.</p>
         </div>
         <div class="step-deliverable">
           <span class="step-deliverable-label">— Получаете</span>
           <ul>
-            <li>Бриф проекта</li>
-            <li>Карта проблем и&nbsp;гипотез</li>
-            <li>Календарь этапов</li>
+            <li>Аудит маркетинга и&nbsp;конкурентов</li>
+            <li>Стратегия + план на&nbsp;квартал</li>
+            <li>Настроенная аналитика и&nbsp;KPI</li>
+            <li>Запуск первых кампаний</li>
           </ul>
         </div>
       </li>
       <li class="process-step">
-        <span class="step-num">02</span>
+        <span class="step-num">DAY 60</span>
         <div>
-          <h3>Insights</h3>
-          <p>Качественные и&nbsp;количественные исследования. Сегментация, customer journey, конкурентный пейзаж.</p>
+          <h3>Сбор данных и&nbsp;оптимизация</h3>
+          <p>Накопление статистики по&nbsp;запущенным кампаниям. Корректировки на&nbsp;основе первичных результатов. Работа над креативами и&nbsp;посадочными.</p>
         </div>
         <div class="step-deliverable">
           <span class="step-deliverable-label">— Получаете</span>
           <ul>
-            <li>Insights-deck</li>
-            <li>Сегментация ЦА</li>
-            <li>Customer journey map</li>
-            <li>Конкурентный пейзаж</li>
+            <li>Статистику по&nbsp;каналам и&nbsp;креативам</li>
+            <li>A/B тесты и&nbsp;оптимизации</li>
+            <li>Улучшенные посадочные</li>
+            <li>Скорректированную стратегию</li>
           </ul>
         </div>
       </li>
       <li class="process-step">
-        <span class="step-num">03</span>
+        <span class="step-num">DAY 90</span>
         <div>
-          <h3>Strategy</h3>
-          <p>Позиционирование, value proposition, GTM-план. Документ, который команда сможет реально использовать.</p>
+          <h3>Масштабирование</h3>
+          <p>Увеличение бюджетов на&nbsp;работающих каналах. Прогноз ROMI и&nbsp;точный расчёт окупаемости на&nbsp;год. Стратегия на&nbsp;следующий квартал.</p>
         </div>
         <div class="step-deliverable">
           <span class="step-deliverable-label">— Получаете</span>
           <ul>
-            <li>Strategy-документ</li>
-            <li>Value proposition</li>
-            <li>GTM-план</li>
-            <li>Roadmap на&nbsp;12&nbsp;месяцев</li>
-          </ul>
-        </div>
-      </li>
-      <li class="process-step">
-        <span class="step-num">04</span>
-        <div>
-          <h3>Activation</h3>
-          <p>Креатив-концепт, кампания, brand-book. От&nbsp;стратегии&nbsp;— к&nbsp;конкретным носителям и&nbsp;каналам.</p>
-        </div>
-        <div class="step-deliverable">
-          <span class="step-deliverable-label">— Получаете</span>
-          <ul>
-            <li>Креатив-концепт</li>
-            <li>Brand-book + ToV</li>
-            <li>Brief для&nbsp;production</li>
-            <li>Кампания «под ключ»</li>
-          </ul>
-        </div>
-      </li>
-      <li class="process-step">
-        <span class="step-num">05</span>
-        <div>
-          <h3>Measure</h3>
-          <p>KPI, brand-tracking, корректировка курса. Работаем не&nbsp;на&nbsp;«сдали и&nbsp;ушли», а&nbsp;на&nbsp;долгий результат.</p>
-        </div>
-        <div class="step-deliverable">
-          <span class="step-deliverable-label">— Получаете</span>
-          <ul>
-            <li>Дашборд KPI</li>
-            <li>Brand-tracking отчёт</li>
-            <li>Quarterly review</li>
+            <li>Прогноз ROMI на&nbsp;год</li>
+            <li>План масштабирования</li>
+            <li>Стратегия на&nbsp;следующий квартал</li>
+            <li>Регулярные отчёты и&nbsp;review</li>
           </ul>
         </div>
       </li>
@@ -931,7 +983,7 @@
 <section class="cases section-pad" id="cases">
   <div class="container">
     <div class="section-head">
-      <span class="label">04 — Кейсы</span>
+      <span class="label">05 — Кейсы</span>
       <h2>Что сделали</h2>
     </div>
 
@@ -1010,27 +1062,35 @@
   </div>
 </section>
 
-<!-- ============ 06 — NUMBERS ============ -->
+<!-- ============ 06 — NUMBERS (research-backed эффект) ============ -->
 <section class="numbers" id="numbers">
   <div class="stat">
-    <span class="num" data-target="07">00</span>
-    <span class="lbl">Лет на&nbsp;рынке</span>
-    <span class="lbl-sub">с&nbsp;2018, Tashkent + Dubai</span>
+    <span class="num-row">
+      <span class="num-prefix">до</span><span class="num" data-target="40">00</span><span class="num-suffix">%</span>
+    </span>
+    <span class="lbl">Снижение затрат</span>
+    <span class="lbl-sub">vs in-house CMO + 3-4&nbsp;специалиста</span>
   </div>
   <div class="stat">
-    <span class="num" data-target="60">00</span>
-    <span class="lbl">M&amp;R-проектов</span>
-    <span class="lbl-sub">FMCG, финансы, HoReCa, ритейл</span>
+    <span class="num-row">
+      <span class="num-prefix">+</span><span class="num" data-target="60">00</span><span class="num-suffix">%</span>
+    </span>
+    <span class="lbl">Узнаваемость бренда</span>
+    <span class="lbl-sub">McKinsey 2022 · Building Brands</span>
   </div>
   <div class="stat">
-    <span class="num" data-target="12">00</span>
-    <span class="lbl">Стран присутствия</span>
-    <span class="lbl-sub">CIS + GCC + Türkiye</span>
+    <span class="num-row">
+      <span class="num-prefix">+</span><span class="num" data-target="40">00</span><span class="num-suffix">%</span>
+    </span>
+    <span class="lbl">NPS лояльность</span>
+    <span class="lbl-sub">Forrester 2021 · Customer Experience</span>
   </div>
   <div class="stat">
-    <span class="num" data-target="08">00</span>
-    <span class="lbl">Экспертов в&nbsp;команде</span>
-    <span class="lbl-sub">strategy · research · brand · creative</span>
+    <span class="num-row">
+      <span class="num-prefix">+</span><span class="num" data-target="20">00</span><span class="num-suffix">%</span>
+    </span>
+    <span class="lbl">Продажи в&nbsp;первый&nbsp;год</span>
+    <span class="lbl-sub">Deloitte 2023 · Global Marketing</span>
   </div>
 </section>
 
@@ -1038,7 +1098,7 @@
 <section class="team section-pad" id="team">
   <div class="container">
     <div class="section-head">
-      <span class="label">05 — Команда</span>
+      <span class="label">06 — Команда</span>
       <h2>Кто работает</h2>
     </div>
 
@@ -1083,7 +1143,7 @@
 <section class="cta-section section-pad" id="contact">
   <div class="container">
     <div class="section-head">
-      <span class="label">06 — Связаться</span>
+      <span class="label">07 — Связаться</span>
       <h2>Обсудим вашу задачу</h2>
     </div>
 
