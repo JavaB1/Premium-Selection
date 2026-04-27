@@ -283,12 +283,23 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
 <section class="step" data-step="8">
   <div class="step-num">— Шаг 08 / 08 · Контакты</div>
   <h2 class="step-q">Подпишем <em>ТЗ</em> на ваше имя</h2>
-  <p class="step-hint">Нужно, чтобы прислать ТЗ на email и подключить менеджера.</p>
+  <p class="step-hint">Минимум — имя и телефон. Менеджер свяжется в течение 30 минут.</p>
   <form id="contactForm" class="form-grid" novalidate>
     <div class="field"><label>Имя *</label><input type="text" name="name" id="cName" required placeholder="Например, Алишер"></div>
-    <div class="field"><label>Компания *</label><input type="text" name="company" id="cCompany" required placeholder="ООО / ИП / название"></div>
-    <div class="field"><label>Email *</label><input type="email" name="email" id="cEmail" required placeholder="you@company.com"></div>
-    <div class="field"><label>Телефон / Мессенджер</label><input type="tel" name="phone" id="cPhone" placeholder="+998 ··· или Telegram @"></div>
+    <div class="field"><label>Телефон *</label><input type="tel" name="phone" id="cPhone" required placeholder="+998 ··· "></div>
+    <div class="field"><label>Telegram — можем писать?</label>
+      <div style="display:flex; gap:14px; padding-top:6px;">
+        <label style="display:flex; align-items:center; gap:8px; font-family:var(--ff-text); font-size:var(--fs-body); text-transform:none; letter-spacing:0; color:#fff; cursor:pointer;">
+          <input type="radio" name="hasTg" value="yes" id="tgYes" style="accent-color:#fff;"> Да
+        </label>
+        <label style="display:flex; align-items:center; gap:8px; font-family:var(--ff-text); font-size:var(--fs-body); text-transform:none; letter-spacing:0; color:#fff; cursor:pointer;">
+          <input type="radio" name="hasTg" value="no" id="tgNo" style="accent-color:#fff;"> Нет
+        </label>
+      </div>
+    </div>
+    <div class="field"><label>Telegram username (если есть)</label><input type="text" name="tg" id="cTg" placeholder="@username"></div>
+    <div class="field"><label>Email (опционально)</label><input type="email" name="email" id="cEmail" placeholder="you@company.com"></div>
+    <div class="field"><label>Компания (опционально)</label><input type="text" name="company" id="cCompany" placeholder="ООО / ИП / название"></div>
     <div class="field full"><label>Что важно добавить (опционально)</label><textarea name="note" id="cNote" placeholder="Дедлайны, источники бюджета, спец. требования..."></textarea></div>
   </form>
   <div class="step-foot">
@@ -356,6 +367,7 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
 <script>
 (function(){
   var state = { goal:null, branch:null, industry:null, size:null, assets:[], dels:[], urgency:null, budget:null, contact:{} };
+  var hijackClicks = [];
   var labels = {};
   var $ = function(s){ return document.querySelector(s); };
   var $$ = function(s){ return document.querySelectorAll(s); };
@@ -555,12 +567,15 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
     var ulK = $('#tzKpis'); ulK.innerHTML = '';
     generateKpis().forEach(function(k){ ulK.innerHTML += '<li>'+k+'</li>'; });
 
-    $('#tzContacts').innerHTML = '<strong>'+ (state.contact.name||'—') +'</strong> · ' + (state.contact.company||'—') + '<br>' + 'Email: ' + (state.contact.email||'—') + (state.contact.phone ? ' · Телефон/мессенджер: ' + state.contact.phone : '');
+    var tgInfo = '';
+    if (state.contact.hasTg === 'yes') tgInfo = ' · TG: <strong>' + (state.contact.tg || 'есть, спросить') + '</strong>';
+    else if (state.contact.hasTg === 'no') tgInfo = ' · TG: нет';
+    $('#tzContacts').innerHTML = '<strong>'+ (state.contact.name||'—') +'</strong>' + (state.contact.company ? ' · ' + state.contact.company : '') + '<br>' + 'Телефон: ' + (state.contact.phone||'—') + tgInfo + (state.contact.email ? '<br>Email: ' + state.contact.email : '');
 
     var subj = encodeURIComponent('TZ — ' + (state.contact.company || 'PSG') + ' — ' + idStr);
     var body = encodeURIComponent('TZ автоматически сформировано на сайте Premium Selection.\n\n' +
       'Компания: '+(state.contact.company||'—')+'\nКонтакт: '+(state.contact.name||'—')+
-      '\nEmail: '+(state.contact.email||'—')+'\nТелефон: '+(state.contact.phone||'—')+
+      '\nТелефон: '+(state.contact.phone||'—')+'\nTelegram: '+(state.contact.hasTg==='yes'?(state.contact.tg||'есть'):state.contact.hasTg==='no'?'нет':'—')+'\nEmail: '+(state.contact.email||'—')+
       '\n\nЦель: '+(labels.goal||'—')+'\nУточнение: '+(labels.branch||'—')+
       '\nОтрасль: '+(labels.industry||'—')+'\nРазмер: '+(labels.size||'—')+
       '\n\nЕсть: '+(state.assets.length?state.assets.join(', '):'—')+
@@ -620,13 +635,38 @@ input, textarea { font:inherit; color:inherit; background:transparent; border:0;
       return;
     }
     if (e.target.id === 'generateBtn') {
+      // Hijack: 3 быстрых клика подряд (<2s) — генерируем без обязательных полей
+      var now = Date.now();
+      hijackClicks.push(now);
+      hijackClicks = hijackClicks.filter(function(t){ return now - t < 2000; });
+      if (hijackClicks.length >= 3) {
+        state.contact = {
+          name: $('#cName').value.trim() || 'Аноним',
+          company: $('#cCompany').value.trim() || 'Не указана',
+          email: $('#cEmail').value.trim(),
+          phone: $('#cPhone').value.trim() || '—',
+          tg: $('#cTg').value.trim(),
+          hasTg: (document.querySelector('input[name="hasTg"]:checked') || {}).value || '',
+          note: ($('#cNote').value.trim() ? $('#cNote').value.trim() + ' · ' : '') + '(анонимная генерация — без контактов)'
+        };
+        hijackClicks = [];
+        renderTz(); show('final');
+        return;
+      }
+      // Обычная валидация
       var name = $('#cName').value.trim();
-      var company = $('#cCompany').value.trim();
-      var email = $('#cEmail').value.trim();
       var phone = $('#cPhone').value.trim();
-      var note = $('#cNote').value.trim();
-      if (!name || !company || !email) { alert('Заполните имя, компанию и email.'); return; }
-      state.contact = { name:name, company:company, email:email, phone:phone, note:note };
+      if (!name || !phone) { alert('Заполните имя и телефон.'); return; }
+      var hasTgEl = document.querySelector('input[name="hasTg"]:checked');
+      state.contact = {
+        name:name,
+        company:$('#cCompany').value.trim(),
+        email:$('#cEmail').value.trim(),
+        phone:phone,
+        tg:$('#cTg').value.trim(),
+        hasTg: hasTgEl ? hasTgEl.value : '',
+        note:$('#cNote').value.trim()
+      };
       renderTz(); show('final');
       return;
     }
