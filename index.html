@@ -385,6 +385,53 @@
   .ghost-btn:hover span { color: var(--paper); }
   .ghost-btn::after { content:'→'; }
 
+  /* === NEWS / BLOG === */
+  .news { background: var(--paper); color: var(--ink); }
+  .news .section-head { color: var(--ink); border-bottom-color: var(--ink); }
+  .news-head { margin-bottom: clamp(40px, 5vw, 72px); }
+  .news-grid {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .post {
+    display:flex; flex-direction:column; gap: 16px;
+    cursor:pointer; transition: transform .4s cubic-bezier(.65,0,.35,1);
+    text-decoration:none; color:var(--ink);
+  }
+  .post:hover { transform: translateY(-4px); }
+  .post .cover {
+    aspect-ratio: 16 / 11; overflow:hidden; border-radius: 2px;
+    background: #eee;
+  }
+  .post .cover img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .6s; }
+  .post:hover .cover img { transform: scale(1.04); }
+  .post .meta {
+    display:flex; gap: 16px; align-items:center;
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: rgba(0,0,0,.5);
+  }
+  .post .meta .cat { color: var(--red); font-weight: 500; }
+  .post h3 {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(20px, 1.8vw, 26px);
+    line-height: 1.15; letter-spacing: -.015em;
+    color: var(--ink);
+  }
+  .post p {
+    font-size: var(--fs-body); line-height: 1.55;
+    color: rgba(0,0,0,.65); max-width: 42ch;
+  }
+  .post .read {
+    margin-top: auto;
+    font-family: var(--ff-mono); font-size: var(--fs-cap);
+    letter-spacing: var(--ls-mono); text-transform: uppercase;
+    color: var(--ink); border-bottom: 1px solid var(--ink);
+    width: fit-content; padding-bottom: 2px;
+    transition: color .3s, border-color .3s;
+  }
+  .post:hover .read { color: var(--red); border-color: var(--red); }
+  .news-cta { margin-top: clamp(40px, 4vw, 56px); display:flex; justify-content:center; }
+
   /* === CONTACT === */
   .contact { background: var(--ink); color: #fff; }
   .contact-grid {
@@ -465,6 +512,7 @@
 
   /* === Responsive section adjustments === */
   @media (max-width: 1100px) {
+    .news-grid { grid-template-columns: repeat(2, 1fr); }
     .works-grid { grid-template-columns: repeat(8, 1fr); }
     .work.w1, .work.w2, .work.w6 { grid-column: span 8; }
     .work.w3, .work.w4, .work.w5 { grid-column: span 4; }
@@ -473,6 +521,7 @@
   @media (max-width: 760px) {
     .stats { grid-template-columns: repeat(2, 1fr); gap: 32px; }
     .about-grid { grid-template-columns: 1fr; }
+    .news-grid { grid-template-columns: 1fr; gap: 32px; }
     .contact-grid { grid-template-columns: 1fr; }
     .contact-card { min-height: auto; }
     .ftr-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -553,7 +602,8 @@
   </a>
   <div class="nav-meta">
     <a href="#works">Работы</a>
-    <a href="#about">О нас</a>
+    <a href="#news">Новости</a>
+    <a href="#about">О&nbsp;нас</a>
     <a href="#contact">Контакты</a>
     <a href="#">RU · EN · UZ</a>
   </div>
@@ -750,12 +800,63 @@
 </section>
 
 <!-- ============================================================
-     ============ 06 — КОНТАКТЫ =================================
+     ============ 06 — НОВОСТИ СФЕРЫ ============================
+     ============================================================ -->
+<section class="news section-pad" id="news">
+  <div class="container">
+    <div class="section-head news-head">
+      <span class="label">06 — Новости сферы</span>
+      <h2>Что мы&nbsp;читаем</h2>
+    </div>
+
+    <div class="news-grid">
+      <a href="#" class="post">
+        <div class="cover"><img src="images/13.jpg" alt="" loading="lazy"></div>
+        <div class="meta">
+          <span class="cat">BRANDING</span>
+          <span>22 АПР 2026</span>
+        </div>
+        <h3>Как локальные бренды Узбекистана выигрывают в&nbsp;2026</h3>
+        <p>Разбор кейсов: что происходит с&nbsp;брендами FMCG и&nbsp;ритейла, когда они уходят от&nbsp;«копий» международных и&nbsp;строят собственный визуальный язык.</p>
+        <span class="read">Читать →</span>
+      </a>
+
+      <a href="#" class="post">
+        <div class="cover"><img src="images/14.jpg" alt="" loading="lazy"></div>
+        <div class="meta">
+          <span class="cat">PRODUCTION</span>
+          <span>15 АПР 2026</span>
+        </div>
+        <h3>POS-материалы будущего: AR, NFC и&nbsp;интерактивные витрины</h3>
+        <p>Технологии, которые меняют опыт покупателя в&nbsp;точке продаж. От&nbsp;дополненной реальности до&nbsp;умных стендов с&nbsp;аналитикой.</p>
+        <span class="read">Читать →</span>
+      </a>
+
+      <a href="#" class="post">
+        <div class="cover"><img src="images/12.jpg" alt="" loading="lazy"></div>
+        <div class="meta">
+          <span class="cat">RESEARCH</span>
+          <span>08 АПР 2026</span>
+        </div>
+        <h3>AI в&nbsp;маркетинговых исследованиях: что меняется</h3>
+        <p>Большие языковые модели в&nbsp;кодировании интервью, кластеризации сегментов и&nbsp;генерации гипотез&nbsp;— практика, не&nbsp;маркетинг.</p>
+        <span class="read">Читать →</span>
+      </a>
+    </div>
+
+    <div class="news-cta">
+      <a href="#" class="ghost-btn"><span>Все материалы</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ============ 07 — КОНТАКТЫ =================================
      ============================================================ -->
 <section class="contact section-pad" id="contact">
   <div class="container">
     <div class="section-head" style="border-bottom-color: rgba(255,255,255,.22); margin-bottom: clamp(32px, 4vw, 56px);">
-      <span class="label">06 — Контакты</span>
+      <span class="label">07 — Контакты</span>
       <h2>Связаться с&nbsp;направлением</h2>
     </div>
 
@@ -810,6 +911,7 @@
       <ul>
         <li><a href="#about">О&nbsp;нас</a></li>
         <li><a href="#works">Работы</a></li>
+        <li><a href="#news">Новости</a></li>
         <li><a href="#contact">Контакты</a></li>
         <li><a href="#">Карьера</a></li>
       </ul>
@@ -827,7 +929,7 @@
   <div class="ftr-bottom">
     <span>© 2026 Premium Selection Group. All rights reserved.</span>
     <span>RU · EN · UZ</span>
-    <span>SECTION 07 / FOOTER</span>
+    <span>SECTION 08 / FOOTER</span>
   </div>
 </footer>
 
@@ -916,7 +1018,7 @@
   try {
     var nav = document.querySelector('.nav');
     if (nav && 'IntersectionObserver' in window) {
-      var lightSections = document.querySelectorAll('.about, .works');
+      var lightSections = document.querySelectorAll('.about, .works, .news');
       var lightObs = new IntersectionObserver(function(entries){
         entries.forEach(function(e){
           if (e.isIntersecting) nav.classList.add('dark');
