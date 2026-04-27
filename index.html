@@ -98,8 +98,11 @@
 
   .cell {
     position:relative; overflow:hidden; border-radius:2px;
-    transition: transform .55s cubic-bezier(.65,0,.35,1);
+    transition: transform .55s cubic-bezier(.65,0,.35,1),
+                background-color .9s cubic-bezier(.65,0,.35,1);
   }
+  /* Во время паузы между фото — ячейка прозрачна, красный фон страницы виден */
+  .cell.void { background-color: transparent !important; }
   .cell:hover { transform: translateY(-3px); }
   .cell .frame {
     position:absolute; inset:0; opacity:0;
@@ -981,20 +984,22 @@
       var frames = cell.querySelectorAll('.frame');
       if (frames.length < 2) return;
       var cur = 0;
-      var SHOW = 5000;     // фото висит 5 сек
-      var GAP  = 900;      // 0.9 сек пустой фон между фото
+      var SHOW = 5000;      // фото висит 5 сек
+      var GAP  = 3000;      // 3 сек воздуха — виден красный фон страницы
       function step(){
-        // спрятать текущее
+        // прячем фото и убираем фон ячейки — пусть просвечивает красный
         frames[cur].classList.remove('active');
+        cell.classList.add('void');
         setTimeout(function(){
-          // показать следующее
+          // возвращаем фон ячейки и показываем следующее фото
+          cell.classList.remove('void');
           cur = (cur + 1) % frames.length;
           frames[cur].classList.add('active');
           setTimeout(step, SHOW);
         }, GAP);
       }
-      // Стартовый сдвиг по индексу — чтобы соседи не дышали в унисон
-      setTimeout(step, SHOW + i * 380);
+      // Стартовый сдвиг — соседи не дышат в унисон
+      setTimeout(step, SHOW + i * 480);
     });
     console.log('[PSG] cells ok:', cells.length);
   } catch(e) { console.error('[PSG] cells error:', e); }
