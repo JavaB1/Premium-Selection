@@ -65,12 +65,12 @@
 
 ## 📋 Backlog
 
-### M&R polish — medium (#6–10)
-- [ ] **6.** Team hover-card с цитатой эксперта (1 фраза-манифест на каждого)
-- [ ] **7.** Numbers с подзаголовком («07 лет» → «с 2018 года в Tashkent + Dubai»)
-- [ ] **8.** Trust-bar marquee-анимация (бегущая строка клиентов)
-- [ ] **9.** Cases multi-select фильтр (FMCG + Финансы одновременно)
-- [ ] **10.** Hero manifest cycling (по образцу синонимов на главной)
+### ✅ M&R + Production + IT polish #6–10 (done на всех 3 страницах)
+- [x] **6.** Team hover-card с цитатой эксперта — 4 уникальных фразы на каждой странице
+- [x] **7.** Numbers с подзаголовком — direction-specific subs (полиграфия/web/исследования)
+- [x] **8.** Trust-bar marquee — бегущая строка лого, 32s loop, fade на краях, pause on hover
+- [x] **9.** Cases multi-select фильтр — Set-based logic, «Все» exclusive, остальные toggle
+- [x] **10.** Hero manifest cycling — 4-фразовый crossfade каждые 4.2s, прокидывается в textContent
 
 ### M&R polish — nice-to-have (#11–14)
 - [ ] **11.** Real SVG line-style иконки услуг
@@ -78,8 +78,9 @@
 - [ ] **13.** Case modal на клик (full case study overlay)
 - [ ] **14.** Sticky «Связаться» FAB после 50% scroll
 
-### После M&R polish #6–10
-- [ ] Применить #6–10 ко всем 3 страницам параллельно (Production + IT)
+### Top nav — done
+- [x] mix-blend-mode: difference + isolation на .nav (4 страницы) — эффект «фон влияет», без JS-свопа
+- [x] Красная линия-разделитель в .directions section-head (index.html)
 
 ### Backend integration (separate sprint)
 - [ ] Admin-панель для лидов

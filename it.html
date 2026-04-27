@@ -181,7 +181,9 @@
     letter-spacing:var(--ls-display);
     margin-bottom:clamp(16px, 2vw, 24px); max-width:24ch;
     color:#fff;
+    transition:opacity .35s ease, transform .35s ease;
   }
+  .direction-manifest.swap { opacity:0; transform:translateY(-6px); }
   .direction-lede {
     font-size:var(--fs-body); line-height:1.55;
     color:var(--dim); max-width:62ch;
@@ -238,7 +240,7 @@
     text-transform:uppercase; text-align:left;
   }
 
-  /* === TRUST-BAR === */
+  /* === TRUST-BAR (marquee bay) === */
   .trust {
     background:var(--paper); color:var(--ink);
     padding: clamp(48px, 6vw, 80px) var(--gutter);
@@ -246,22 +248,40 @@
   }
   .trust-row {
     max-width:1480px; margin:0 auto;
-    display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:center;
+    display:flex; gap:32px; align-items:center;
+    overflow:hidden; position:relative;
   }
+  .trust-row::before, .trust-row::after {
+    content:''; position:absolute; top:0; bottom:0; width:80px;
+    pointer-events:none; z-index:2;
+  }
+  .trust-row::before { left:0;  background:linear-gradient(to right, var(--paper), transparent); }
+  .trust-row::after  { right:0; background:linear-gradient(to left,  var(--paper), transparent); }
   .trust-label {
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.5);
+    color:rgba(0,0,0,.5); flex-shrink:0; z-index:3; position:relative;
+    background:var(--paper); padding-right:8px;
   }
-  .trust-logos {
-    display:flex; gap: clamp(24px, 4vw, 64px); flex-wrap:wrap; align-items:center;
+  .trust-marquee { flex:1; overflow:hidden; }
+  .trust-track {
+    display:flex; gap: clamp(24px, 4vw, 64px); align-items:center;
+    width:max-content;
+    animation:psg-marquee 32s linear infinite;
+  }
+  .trust-marquee:hover .trust-track { animation-play-state:paused; }
+  .trust-track span {
     font-family:var(--ff-display); font-weight:800;
     font-size:clamp(18px, 1.6vw, 24px);
     letter-spacing:.04em; text-transform:uppercase;
-    color:rgba(0,0,0,.55);
+    color:rgba(0,0,0,.55); transition:color .25s;
+    white-space:nowrap;
   }
-  .trust-logos span { transition:color .25s; }
-  .trust-logos span:hover { color:var(--ink); }
+  .trust-track span:hover { color:var(--ink); }
+  @keyframes psg-marquee {
+    0%   { transform:translateX(0); }
+    100% { transform:translateX(-50%); }
+  }
 
   /* === SERVICES === */
   .services { background:var(--paper); color:var(--ink); }
@@ -448,9 +468,16 @@
     font-variant-numeric:tabular-nums;
   }
   .stat .lbl {
+    display:block;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); text-transform:uppercase;
     color:rgba(255,255,255,.78);
+  }
+  .stat .lbl-sub {
+    display:block; margin-top:6px; max-width:24ch;
+    font-family:var(--ff-mono); font-size:var(--fs-cap);
+    letter-spacing:var(--ls-mono); text-transform:uppercase;
+    color:rgba(255,255,255,.5); line-height:1.4;
   }
 
   /* === TEAM === */
@@ -466,6 +493,26 @@
     display:flex; align-items:center; justify-content:center;
     font-family:var(--ff-mono); font-size:var(--fs-meta);
     letter-spacing:var(--ls-mono); color:rgba(0,0,0,.35);
+    position:relative; overflow:hidden; cursor:default;
+  }
+  .person .photo .quote {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(218,41,28,.94) 0%, rgba(10,10,10,.92) 70%);
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(16px, 1.6vw, 28px);
+    opacity:0; transition:opacity .35s cubic-bezier(.65,0,.35,1);
+  }
+  .person .photo:hover .quote { opacity:1; }
+  .person .photo .quote::before {
+    content:'“'; position:absolute; top:6px; left:14px;
+    font-family:var(--ff-display); font-weight:900;
+    font-size:64px; line-height:1; color:rgba(255,255,255,.35);
+  }
+  .person .photo .quote blockquote {
+    font-family:var(--ff-display); font-weight:700;
+    font-size:clamp(13px, 1.15vw, 17px); line-height:1.32;
+    color:#fff; text-align:center; max-width:22ch;
+    letter-spacing:-.005em;
   }
   .person .name {
     font-family:var(--ff-display); font-weight:800;
@@ -599,6 +646,7 @@
       transition-duration: .01ms !important;
       scroll-behavior: auto !important;
     }
+    .trust-track { animation:none !important; transform:none !important; }
   }
 </style>
 </head>
@@ -657,7 +705,7 @@
   </div>
 
   <h1 class="direction-title">Information<br><span class="amp">/</span> Technology</h1>
-  <p class="direction-manifest">Цифровизация без&nbsp;боли.</p>
+  <p class="direction-manifest" data-rotate='["Цифровизация без&nbsp;боли.","От&nbsp;бумажных процессов к&nbsp;цифровым.","Технологии, которые работают.","Системы, которые масштабируются."]'>Цифровизация без&nbsp;боли.</p>
   <p class="direction-lede">
     Web-разработка, мобильные приложения, CRM-системы, интеграции, автоматизация процессов, IT-аутсорс. От&nbsp;стартапов до&nbsp;зрелых компаний&nbsp;— стек, методология, поддержка.
   </p>
@@ -669,18 +717,27 @@
   <span class="hero-scroll-hint">SCROLL</span>
 </section>
 
-<!-- ============ 02 — TRUST-BAR ============ -->
+<!-- ============ 02 — TRUST-BAR (marquee) ============ -->
 <section class="trust" id="trust">
   <div class="trust-row">
     <span class="trust-label">— Нам доверяют</span>
-    <div class="trust-logos">
-      <span>BAYAN</span>
-      <span>KAPSULA</span>
-      <span>CLIENT&nbsp;03</span>
-      <span>CLIENT&nbsp;04</span>
-      <span>CLIENT&nbsp;05</span>
-      <span>CLIENT&nbsp;06</span>
-      <span>CLIENT&nbsp;07</span>
+    <div class="trust-marquee" aria-hidden="true">
+      <div class="trust-track">
+        <span>BAYAN</span>
+        <span>KAPSULA</span>
+        <span>CLIENT&nbsp;03</span>
+        <span>CLIENT&nbsp;04</span>
+        <span>CLIENT&nbsp;05</span>
+        <span>CLIENT&nbsp;06</span>
+        <span>CLIENT&nbsp;07</span>
+        <span>BAYAN</span>
+        <span>KAPSULA</span>
+        <span>CLIENT&nbsp;03</span>
+        <span>CLIENT&nbsp;04</span>
+        <span>CLIENT&nbsp;05</span>
+        <span>CLIENT&nbsp;06</span>
+        <span>CLIENT&nbsp;07</span>
+      </div>
     </div>
   </div>
 </section>
@@ -952,18 +1009,22 @@
   <div class="stat">
     <span class="num" data-target="07">00</span>
     <span class="lbl">Лет на&nbsp;рынке</span>
+    <span class="lbl-sub">с&nbsp;2018, Tashkent + Dubai</span>
   </div>
   <div class="stat">
     <span class="num" data-target="80">00</span>
     <span class="lbl">IT-проектов</span>
+    <span class="lbl-sub">web, mobile, CRM, интеграции</span>
   </div>
   <div class="stat">
     <span class="num" data-target="6">0</span>
     <span class="lbl">Инженеров in-house</span>
+    <span class="lbl-sub">core team + сетевые партнёры</span>
   </div>
   <div class="stat">
     <span class="num" data-target="12">00</span>
     <span class="lbl">Стран в&nbsp;deploy</span>
+    <span class="lbl-sub">CIS + GCC + EU</span>
   </div>
 </section>
 
@@ -977,22 +1038,34 @@
 
     <div class="team-grid">
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Хороший код — тот, который не&nbsp;нужно читать, чтобы&nbsp;понять.</blockquote></div>
+        </div>
         <span class="role">CTO</span>
         <span class="name">Дамир Каримов</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Сайт — это не&nbsp;картинка, это инструмент бизнеса.</blockquote></div>
+        </div>
         <span class="role">Head of Web</span>
         <span class="name">Жасур Турсунов</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>На мобильном у&nbsp;вас 3&nbsp;секунды до&nbsp;ухода. Не&nbsp;тратьте их на&nbsp;анимации.</blockquote></div>
+        </div>
         <span class="role">Mobile Lead</span>
         <span class="name">Никита Соколов</span>
       </div>
       <div class="person">
-        <div class="photo">PHOTO</div>
+        <div class="photo">
+          PHOTO
+          <div class="quote"><blockquote>Падать должно так, чтобы клиент не&nbsp;заметил. Желательно — не&nbsp;падать.</blockquote></div>
+        </div>
         <span class="role">DevOps Lead</span>
         <span class="name">Камила Усманова</span>
       </div>
@@ -1188,23 +1261,63 @@
     log('[PSG-IT] counters ok');
   } catch(e) { console.error('[PSG-IT] counters error:', e); }
 
-  // 5. Cases-фильтр: переключение тегов
+  // 5. Cases multi-select фильтр: можно выбрать несколько тегов одновременно
   try {
     var filterBtns = document.querySelectorAll('.cases-filter button');
     var caseEls = document.querySelectorAll('.case');
+    var active = new Set(['all']);
+    function applyFilter(){
+      filterBtns.forEach(function(b){
+        b.classList.toggle('active', active.has(b.getAttribute('data-filter')));
+      });
+      caseEls.forEach(function(c){
+        var ct = c.getAttribute('data-tag');
+        var show = active.has('all') || active.has(ct);
+        c.style.display = show ? '' : 'none';
+      });
+    }
     filterBtns.forEach(function(btn){
       btn.addEventListener('click', function(){
         var tag = btn.getAttribute('data-filter');
-        filterBtns.forEach(function(b){ b.classList.toggle('active', b === btn); });
-        caseEls.forEach(function(c){
-          var ct = c.getAttribute('data-tag');
-          var show = tag === 'all' || ct === tag;
-          c.style.display = show ? '' : 'none';
-        });
+        if (tag === 'all') {
+          active.clear(); active.add('all');
+        } else {
+          active.delete('all');
+          if (active.has(tag)) {
+            active.delete(tag);
+            if (active.size === 0) active.add('all');
+          } else {
+            active.add(tag);
+          }
+        }
+        applyFilter();
       });
     });
-    log('[PSG-IT] filter ok');
+    applyFilter();
+    log('[PSG-IT] multi-filter ok');
   } catch(e) { console.error('[PSG-IT] filter error:', e); }
+
+  // 7. Hero manifest cycling: фразы с crossfade каждые ~4с
+  try {
+    var manifestEl = document.querySelector('.direction-manifest[data-rotate]');
+    if (manifestEl && !prefersReduce) {
+      var raw = manifestEl.getAttribute('data-rotate');
+      var phrases = JSON.parse(raw).map(function(s){ return s.replace(/&nbsp;/g, ' '); });
+      if (Array.isArray(phrases) && phrases.length > 1) {
+        var idx = 0;
+        manifestEl.textContent = phrases[0];
+        setInterval(function(){
+          manifestEl.classList.add('swap');
+          setTimeout(function(){
+            idx = (idx + 1) % phrases.length;
+            manifestEl.textContent = phrases[idx];
+            manifestEl.classList.remove('swap');
+          }, 380);
+        }, 4200);
+      }
+    }
+    log('[PSG-IT] manifest cycling ok');
+  } catch(e) { console.error('[PSG-IT] manifest cycling error:', e); }
 
   // 6. Заглушка для "#" якорей
   try {
