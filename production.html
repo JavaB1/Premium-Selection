@@ -66,7 +66,10 @@
     padding:20px var(--gutter);
     display:flex; justify-content:space-between; align-items:center;
     color:#fff;
-    transition: color .35s cubic-bezier(.65,0,.35,1);
+    /* Контент навбара инвертируется относительно текущего фона за ним.
+       Над белой секцией → чёрный, над чёрной → белый. Без JS-свопа. */
+    mix-blend-mode: difference;
+    isolation: isolate;
   }
   .nav-logo { display:flex; align-items:center; gap:10px; }
   .nav-logo svg { width:34px; height:36px; display:block; }
@@ -80,7 +83,7 @@
     letter-spacing:var(--ls-mono); text-transform:uppercase;
   }
   .nav-meta a:hover { opacity:.6; }
-  .nav.dark { color: var(--ink); }
+  /* .nav.dark — no-op, blend-mode сам инвертирует относительно фона. */
 
   /* === STICKY SUB-NAV === */
   /* Появляется при выходе hero из вьюпорта; scroll-spy подсвечивает текущую секцию */

@@ -96,7 +96,11 @@
     padding:20px var(--gutter);
     display:flex; justify-content:space-between; align-items:center;
     color:#fff;
-    transition: color .35s cubic-bezier(.65,0,.35,1);
+    /* Контент навбара инвертируется относительно текущего фона за ним.
+       Над белой секцией → чёрный, над чёрной → белый, над красной → циан.
+       Без JS-свопа — фон сам "влияет" на читаемость. */
+    mix-blend-mode: difference;
+    isolation: isolate;
   }
   .nav-logo { display:flex; align-items:center; gap:10px; }
   .nav-logo svg { width:34px; height:36px; display:block; }
@@ -110,8 +114,8 @@
     letter-spacing:var(--ls-mono); text-transform:uppercase;
   }
   .nav-meta a:hover { opacity:.6; }
-  /* Инверсия для светлых секций (about / works / news) — JS добавляет .dark */
-  .nav.dark { color: var(--ink); }
+  /* .nav.dark больше не нужен — blend-mode на .nav сам даёт контраст. */
+  /* Класс может оставаться от JS — он визуально no-op. */
 
   /* ============ HERO ============ */
   .hero {
