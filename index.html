@@ -832,81 +832,94 @@
 </footer>
 
 <script>
-  // Все фото-мокапы из workspace, сгруппированы по соотношению сторон
-  const ALL = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
-  const SQUARE = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
-  const WIDE   = ['13.jpg','14.jpg'];
-  const TALL   = ['12.jpg'];
+(function(){
+  console.log('[PSG] init');
 
-  // Аспект каждой ячейки определяется по data-атрибуту или по классу b*
-  // Маппинг: какие ячейки какого аспекта — берём из CSS-расклада
-  const aspectMap = {
-    b1:'sq', b2:'wide', b3:'tall', b4:'wide', b5:'tall',
-    b6:'sq', b7:'sq', b8:'wide', b9:'tall', b10:'tall',
-    b11:'sq', b12:'tall', b13:'sq', b14:'wide',
-    b15:'sq', b16:'sq', b17:'wide', b18:'sq'
-  };
+  // ============== 1. PHOTO CYCLING IN HERO CELLS ==============
+  try {
+    var SQUARE = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
+    var WIDE   = ['13.jpg','14.jpg'];
+    var TALL   = ['12.jpg'];
+    var ALL    = SQUARE.concat(WIDE, TALL);
 
-  const cells = Array.from(document.querySelectorAll('.cell'));
+    var aspectMap = {
+      b1:'sq', b2:'wide', b3:'tall', b4:'wide', b5:'tall',
+      b6:'sq', b7:'sq', b8:'wide', b9:'tall', b10:'tall',
+      b11:'sq', b12:'tall', b13:'sq', b14:'wide',
+      b15:'sq', b16:'sq', b17:'wide', b18:'sq'
+    };
 
-  function makeFrame(src) {
-    const wrap = document.createElement('div');
-    wrap.className = 'frame';
-    wrap.innerHTML = `<img src="images/${src}" loading="lazy" alt="">`;
-    return wrap;
-  }
+    var cells = Array.prototype.slice.call(document.querySelectorAll('.cell'));
 
-  // Раздаём 3 фото в каждую ячейку, отдавая приоритет матчу аспекта
-  cells.forEach((cell, i) => {
-    const cls = [...cell.classList].find(c => c.match(/^b\d+$/));
-    const aspect = aspectMap[cls] || 'sq';
-    let pool;
-    if (aspect === 'wide')      pool = [...WIDE, ...SQUARE];
-    else if (aspect === 'tall') pool = [...TALL, ...ALL];
-    else                        pool = [...SQUARE, ...WIDE, ...TALL];
+    cells.forEach(function(cell, i){
+      var cls = '';
+      for (var j = 0; j < cell.classList.length; j++) {
+        if (/^b\d+$/.test(cell.classList[j])) { cls = cell.classList[j]; break; }
+      }
+      var aspect = aspectMap[cls] || 'sq';
+      var pool;
+      if (aspect === 'wide')      pool = WIDE.concat(SQUARE);
+      else if (aspect === 'tall') pool = TALL.concat(ALL);
+      else                        pool = SQUARE.concat(WIDE, TALL);
 
-    // 3 разных индекса со сдвигом по i — чтобы соседи не показывали одно и то же
-    for (let k = 0; k < 3; k++) {
-      const src = pool[(i * 2 + k * 5) % pool.length];
-      const f = makeFrame(src);
-      if (k === 0) f.classList.add('active');
-      cell.appendChild(f);
+      for (var k = 0; k < 3; k++) {
+        var src = pool[(i * 2 + k * 5) % pool.length];
+        var wrap = document.createElement('div');
+        wrap.className = 'frame' + (k === 0 ? ' active' : '');
+        var img = document.createElement('img');
+        img.src = 'images/' + src;
+        img.alt = '';
+        img.loading = 'lazy';
+        wrap.appendChild(img);
+        cell.appendChild(wrap);
+      }
+    });
+
+    cells.forEach(function(cell, i){
+      var frames = cell.querySelectorAll('.frame');
+      if (frames.length < 2) return;
+      var cur = 0;
+      setInterval(function(){
+        frames[cur].classList.remove('active');
+        cur = (cur + 1) % frames.length;
+        frames[cur].classList.add('active');
+      }, 3200 + i * 470);
+    });
+    console.log('[PSG] cells ok:', cells.length);
+  } catch(e) { console.error('[PSG] cells error:', e); }
+
+  // ============== 2. LIVE CLOCK ==============
+  try {
+    var dateEl = document.getElementById('liveDate');
+    var timeEl = document.getElementById('liveTime');
+    var days = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+    var months = ['ЯНВ','ФЕВ','МАР','АПР','МАЙ','ИЮН','ИЮЛ','АВГ','СЕН','ОКТ','НОЯ','ДЕК'];
+    function tick(){
+      var now = new Date();
+      var tsh = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 3600000));
+      var d  = days[tsh.getDay()];
+      var dd = String(tsh.getDate()).padStart(2,'0');
+      var mm = months[tsh.getMonth()];
+      var yy = tsh.getFullYear();
+      var hh = String(tsh.getHours()).padStart(2,'0');
+      var mi = String(tsh.getMinutes()).padStart(2,'0');
+      var ss = String(tsh.getSeconds()).padStart(2,'0');
+      if (dateEl) dateEl.innerHTML = '<span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · ' + d + ' ' + dd + '&nbsp;' + mm + ' ' + yy;
+      if (timeEl) timeEl.innerHTML = '<strong>' + hh + ':' + mi + ':' + ss + '</strong>';
     }
-  });
+    tick();
+    setInterval(tick, 1000);
+    console.log('[PSG] clock ok');
+  } catch(e) { console.error('[PSG] clock error:', e); }
 
-  // Циклы — у каждой ячейки свой период, чтобы композиция жила
-  cells.forEach((cell, i) => {
-    const frames = cell.querySelectorAll('.frame');
-    let cur = 0;
-    setInterval(() => {
-      frames[cur].classList.remove('active');
-      cur = (cur + 1) % frames.length;
-      frames[cur].classList.add('active');
-    }, 3200 + i * 470);
-  });
-
-  // Живые часы и дата — Ташкент (UTC+5)
-  const dateEl = document.getElementById('liveDate');
-  const timeEl = document.getElementById('liveTime');
-  const days = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
-  const months = ['ЯНВ','ФЕВ','МАР','АПР','МАЙ','ИЮН','ИЮЛ','АВГ','СЕН','ОКТ','НОЯ','ДЕК'];
-  function tick() {
-    const now = new Date();
-    const tsh = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 3600000));
-    const d  = days[tsh.getDay()];
-    const dd = String(tsh.getDate()).padStart(2,'0');
-    const mm = months[tsh.getMonth()];
-    const yy = tsh.getFullYear();
-    const hh = String(tsh.getHours()).padStart(2,'0');
-    const mi = String(tsh.getMinutes()).padStart(2,'0');
-    const ss = String(tsh.getSeconds()).padStart(2,'0');
-    dateEl.innerHTML = `<span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · ${d} ${dd}&nbsp;${mm} ${yy}`;
-    timeEl.innerHTML = `<strong>${hh}:${mi}:${ss}</strong>`;
-  }
-  tick();
-  setInterval(tick, 1000);
-
-  // Авто-переключение цвета nav в зависимости от секции под ним
-  const nav = document.querySelector('.nav');
-  // На светлых секциях (paper) — тёмный текст
-  const lightSections = document.querySelectorAll('.about, .works')
+  // ============== 3. NAV COLOR ON SCROLL ==============
+  try {
+    var nav = document.querySelector('.nav');
+    if (nav && 'IntersectionObserver' in window) {
+      var lightSections = document.querySelectorAll('.about, .works');
+      var lightObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) nav.classList.add('dark');
+        });
+      }, { rootMargin: '-60px 0px -85% 0px' });
+      lightSections.forEach(function(s){ lightObs.observe(
