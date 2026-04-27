@@ -4,314 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Premium Selection — Определение задачи (ТЗ-генератор)</title>
-<meta name="description" content="Интерактивное определение задачи. 8 шагов — и у вас на руках готовое ТЗ с объёмом работ, бюджетом и сроками.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --red:#DA291C; --ink:#0A0A0A; --paper:#FFFFFF;
-    --dim:rgba(255,255,255,.78); --dim-2:rgba(255,255,255,.55);
-    --line:rgba(255,255,255,.18);
-    --fs-display: clamp(32px, 5vw, 72px);
-    --fs-body-l: clamp(17px, 1.5vw, 22px);
-    --fs-body: clamp(14px, 1.05vw, 16px);
-    --fs-meta: 11px; --fs-cap: 10px;
-    --ff-display:'Commissioner',system-ui,sans-serif;
-    --ff-text:'Commissioner',system-ui,sans-serif;
-    --ff-mono:'JetBrains Mono',ui-monospace,monospace;
-    --ls-display:-.025em; --ls-body:0; --ls-mono:.12em;
-    --gutter: clamp(20px, 3vw, 40px);
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  html, body {
-    background:var(--red); color:#fff; min-height:100vh;
-    font-family:var(--ff-text); font-size:var(--fs-body);
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  }
-  a { color:inherit; text-decoration:none; }
-  button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
-  input, textarea { font:inherit; color:inherit; background:transparent; border:0; outline:none; }
-
-  .nav {
-    position:fixed; top:0; left:0; right:0; z-index:30;
-    padding:20px var(--gutter);
-    display:flex; justify-content:space-between; align-items:center;
-  }
-  .nav-logo { display:flex; align-items:center; gap:10px; }
-  .nav-logo svg { width:34px; height:36px; }
-  .nav-logo .wm { font-weight:700; font-size:var(--fs-cap); letter-spacing:.18em; line-height:1.05; font-family:var(--ff-text); }
-  .nav-back { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; }
-  .nav-back:hover { opacity:.6; }
-
-  .scene-head {
-    padding: 90px var(--gutter) 24px;
-    border-bottom: 1px solid var(--line);
-    display:grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items:end;
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim);
-  }
-  .scene-head strong { color:#fff; font-weight:500; }
-  .progress-bar {
-    height: 2px; background: rgba(255,255,255,.22);
-    margin-top: 14px; overflow:hidden; grid-column: 1 / -1;
-  }
-  .progress-fill {
-    height: 100%; background: #fff;
-    transition: width .55s cubic-bezier(.65,0,.35,1);
-    width: 12.5%;
-  }
-  .crumbs {
-    display:flex; gap: 8px; flex-wrap: wrap;
-  }
-  .crumb {
-    padding: 4px 10px; border:1px solid var(--line); border-radius: 999px;
-  }
-  .crumb b { color:#fff; font-weight:500; }
-
-  .step {
-    padding: clamp(40px, 6vw, 80px) var(--gutter) 60px;
-    display:none;
-    max-width: 1480px; margin: 0 auto;
-  }
-  .step.active { display:block; animation: fade .5s ease; }
-  @keyframes fade {
-    from { opacity:0; transform: translateY(12px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
-  .step-num {
-    font-family: var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color: var(--dim); margin-bottom: 16px;
-  }
-  .step-q {
-    font-family: var(--ff-display); font-weight: 900;
-    font-size: var(--fs-display);
-    line-height: .96; letter-spacing: var(--ls-display);
-    text-transform: uppercase;
-    max-width: 22ch; margin-bottom: clamp(28px, 4vw, 48px);
-  }
-  .step-q em { font-style:normal; color:var(--ink); background:#fff; padding: 0 .15em; }
-  .step-hint {
-    font-size: var(--fs-body); line-height: 1.45; max-width: 64ch;
-    color: rgba(255,255,255,.85); margin-bottom: clamp(24px, 3vw, 40px);
-    margin-top: -16px;
-  }
-
-  .options { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .options.three { grid-template-columns: repeat(3, 1fr); }
-  .options.four  { grid-template-columns: repeat(4, 1fr); }
-
-  .opt {
-    text-align: left; border: 1.5px solid var(--line); padding: 22px 24px;
-    border-radius: 4px; transition: all .35s cubic-bezier(.65,0,.35,1);
-    display:flex; flex-direction:column; gap: 8px; color: #fff;
-    position: relative;
-  }
-  .opt:hover, .opt:focus-visible {
-    background:#fff; color:var(--ink); border-color:#fff;
-    transform: translateY(-2px); outline: none;
-  }
-  .opt.selected {
-    background:#fff; color:var(--ink); border-color:#fff;
-  }
-  .opt.selected::after {
-    content: '✓'; position:absolute; top: 16px; right: 18px;
-    font-weight: 700; color: var(--red); font-size: 18px;
-  }
-  .opt .opt-num {
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    opacity: .65;
-  }
-  .opt .opt-title {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(18px, 1.7vw, 24px); line-height: 1.05;
-    letter-spacing: var(--ls-display);
-  }
-  .opt .opt-desc { font-size: var(--fs-body); line-height: 1.45; opacity: .85; }
-
-  .step-foot {
-    margin-top: 32px; display:flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 16px;
-  }
-  .step-back {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim); cursor:pointer;
-  }
-  .step-back:hover { color: #fff; }
-  .step-back::before { content: '←'; }
-  .next-btn {
-    display:inline-flex; align-items:center; gap: 12px;
-    padding: 14px 28px; border: 1.5px solid #fff; border-radius: 999px;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color:#fff; transition: all .3s; cursor: pointer;
-  }
-  .next-btn:hover { background:#fff; color:var(--red); }
-  .next-btn::after { content:'→'; }
-  .next-btn[disabled] { opacity:.4; cursor: not-allowed; }
-  .selected-count {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim);
-  }
-
-  /* Form (step 8) */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; max-width: 880px; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--dim);
-  }
-  .field input, .field textarea {
-    border-bottom: 1.5px solid rgba(255,255,255,.4);
-    padding: 10px 0; font-size: var(--fs-body-l); color:#fff;
-    transition: border-color .3s;
-  }
-  .field input:focus, .field textarea:focus { border-bottom-color: #fff; }
-  .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,.45); }
-  .field.full { grid-column: 1 / -1; }
-  .field textarea { resize: vertical; min-height: 80px; font-family: var(--ff-text); }
-
-  /* === FINAL: TZ Document === */
-  #stepFinal { padding: 0; max-width: none; }
-  .tz {
-    background: #fff; color: var(--ink);
-    padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px);
-    margin: clamp(40px, 6vw, 80px) var(--gutter);
-    max-width: 1280px; margin-left:auto; margin-right:auto;
-    border-radius: 4px;
-  }
-  .tz-head {
-    border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 32px;
-    display:grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px;
-  }
-  .tz-head .tz-mark {
-    font-family: var(--ff-display); font-weight: 900;
-    font-size: clamp(36px, 5vw, 76px); line-height: .9;
-    letter-spacing: var(--ls-display); text-transform: uppercase;
-  }
-  .tz-head .tz-mark .red { color: var(--red); }
-  .tz-head .tz-meta {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(0,0,0,.55); text-align: right; line-height: 1.6;
-  }
-  .tz-head .tz-meta strong { color: var(--ink); font-weight: 500; }
-
-  .tz-section { padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,.12); }
-  .tz-section:last-child { border-bottom: none; }
-  .tz-section h3 {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--red); font-weight: 500; margin-bottom: 14px;
-  }
-  .tz-section h2 {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(24px, 2.6vw, 38px); line-height: 1.1;
-    letter-spacing: var(--ls-display); margin-bottom: 12px;
-  }
-  .tz-section p {
-    font-size: var(--fs-body-l); line-height: 1.5; color: var(--ink); max-width: 70ch;
-  }
-  .tz-section ul {
-    list-style: none; padding: 0; margin-top: 8px;
-  }
-  .tz-section ul li {
-    padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.08);
-    font-size: var(--fs-body); line-height: 1.4;
-    display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: baseline;
-  }
-  .tz-section ul li:last-child { border-bottom: none; }
-  .tz-section ul li::before {
-    content: '+'; font-family: var(--ff-mono); color: rgba(0,0,0,.35); font-size: 14px;
-  }
-  .tz-section ul li .est {
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); color: rgba(0,0,0,.55);
-  }
-  .tz-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  .tz-stat { padding: 20px 0; border-top: 1px solid rgba(0,0,0,.12); }
-  .tz-stat .v {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(28px, 3.2vw, 44px); line-height: 1; letter-spacing: var(--ls-display);
-    color: var(--ink); margin-bottom: 6px;
-  }
-  .tz-stat .k {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(0,0,0,.55);
-  }
-  .budget-warn {
-    margin-top: 12px; padding: 12px 16px; background: var(--red); color:#fff;
-    font-size: var(--fs-body); border-radius: 2px;
-    font-weight: 500;
-  }
-  .budget-ok {
-    margin-top: 12px; padding: 12px 16px; background: rgba(0,0,0,.06); color: var(--ink);
-    font-size: var(--fs-body); border-radius: 2px; border-left: 3px solid var(--red);
-  }
-
-  .tz-actions {
-    display:flex; gap: 12px; flex-wrap: wrap;
-    margin: 24px var(--gutter) 80px; max-width: 1280px;
-    margin-left: auto; margin-right: auto;
-    padding: 0 clamp(24px, 5vw, 80px);
-  }
-  .btn-primary {
-    display:inline-flex; align-items:center; gap: 12px;
-    padding: 16px 28px; background:#fff; color:var(--ink);
-    border-radius: 999px; font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    transition: all .3s;
-  }
-  .btn-primary:hover { background: var(--ink); color:#fff; }
-  .btn-ghost {
-    display:inline-flex; align-items:center; gap: 12px;
-    padding: 16px 28px; border: 1.5px solid #fff; border-radius: 999px;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color:#fff; transition: all .3s;
-  }
-  .btn-ghost:hover { background:#fff; color:var(--red); }
-
-  /* === Print styles for PDF === */
-  @media print {
-    @page { size: A4; margin: 16mm; }
-    body { background: #fff !important; color: #000 !important; }
-    .nav, .scene-head, .step:not(#stepFinal), .tz-actions, .step-foot, .step-back, .next-btn { display: none !important; }
-    #stepFinal { display: block !important; padding: 0 !important; }
-    .tz {
-      box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important;
-    }
-    .tz-section { page-break-inside: avoid; }
-  }
-
-  @media (max-width: 760px) {
-    .scene-head { grid-template-columns: 1fr; gap: 12px; padding-top: 76px; }
-    .options, .options.three, .options.four { grid-template-columns: 1fr; }
-    .step-q { font-size: clamp(28px, 9vw, 44px); }
-    .form-grid { grid-template-columns: 1fr; }
-    .tz-grid2 { grid-template-columns: 1fr; }
-    .tz-head { grid-template-columns: 1fr; }
-    .tz-head .tz-meta { text-align: left; }
-  }
+:root {
+  --red:#DA291C; --ink:#0A0A0A; --paper:#FFFFFF;
+  --dim:rgba(255,255,255,.78); --line:rgba(255,255,255,.18);
+  --fs-display: clamp(32px, 5vw, 72px);
+  --fs-body-l: clamp(17px, 1.5vw, 22px);
+  --fs-body: clamp(14px, 1.05vw, 16px);
+  --fs-meta: 11px; --fs-cap: 10px;
+  --ff-display:'Commissioner',system-ui,sans-serif;
+  --ff-text:'Commissioner',system-ui,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+  --ls-display:-.025em; --ls-body:0; --ls-mono:.12em;
+  --gutter: clamp(20px, 3vw, 40px);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { background:var(--red); color:#fff; min-height:100vh; font-family:var(--ff-text); font-size:var(--fs-body); -webkit-font-smoothing:antialiased; }
+a { color:inherit; text-decoration:none; }
+button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input, textarea { font:inherit; color:inherit; background:transparent; border:0; outline:none; }
+.nav { position:fixed; top:0; left:0; right:0; z-index:30; padding:20px var(--gutter); display:flex; justify-content:space-between; align-items:center; }
+.nav-logo { display:flex; align-items:center; gap:10px; }
+.nav-logo svg { width:34px; height:36px; }
+.nav-logo .wm { font-weight:700; font-size:var(--fs-cap); letter-spacing:.18em; line-height:1.05; }
+.nav-back { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; }
+.nav-back:hover { opacity:.6; }
+.scene-head { padding:90px var(--gutter) 24px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); }
+.scene-head strong { color:#fff; font-weight:500; }
+.progress-bar { height:2px; background:rgba(255,255,255,.22); margin-top:14px; overflow:hidden; grid-column:1/-1; }
+.progress-fill { height:100%; background:#fff; transition:width .55s cubic-bezier(.65,0,.35,1); width:12.5%; }
+.crumbs { display:flex; gap:8px; flex-wrap:wrap; }
+.crumb { padding:4px 10px; border:1px solid var(--line); border-radius:999px; }
+.crumb b { color:#fff; font-weight:500; }
+.step { padding:clamp(40px, 6vw, 80px) var(--gutter) 60px; display:none; max-width:1480px; margin:0 auto; }
+.step.active { display:block; animation:fade .5s ease; }
+@keyframes fade { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.step-num { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); margin-bottom:16px; }
+.step-q { font-family:var(--ff-display); font-weight:900; font-size:var(--fs-display); line-height:.96; letter-spacing:var(--ls-display); text-transform:uppercase; max-width:22ch; margin-bottom:clamp(28px, 4vw, 48px); }
+.step-q em { font-style:normal; color:var(--ink); background:#fff; padding:0 .15em; }
+.step-hint { font-size:var(--fs-body); line-height:1.45; max-width:64ch; color:rgba(255,255,255,.85); margin:-16px 0 clamp(24px, 3vw, 40px); }
+.options { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.options.three { grid-template-columns:repeat(3,1fr); }
+.options.four { grid-template-columns:repeat(4,1fr); }
+.opt { text-align:left; border:1.5px solid var(--line); padding:22px 24px; border-radius:4px; transition:all .35s cubic-bezier(.65,0,.35,1); display:flex; flex-direction:column; gap:8px; color:#fff; position:relative; }
+.opt:hover, .opt:focus-visible { background:#fff; color:var(--ink); border-color:#fff; transform:translateY(-2px); outline:none; }
+.opt.selected { background:#fff; color:var(--ink); border-color:#fff; }
+.opt.selected::after { content:"OK"; position:absolute; top:14px; right:18px; font-weight:700; color:var(--red); font-size:11px; font-family:var(--ff-mono); letter-spacing:.12em; }
+.opt .opt-num { font-family:var(--ff-mono); font-size:var(--fs-cap); letter-spacing:var(--ls-mono); text-transform:uppercase; opacity:.65; }
+.opt .opt-title { font-family:var(--ff-display); font-weight:800; font-size:clamp(18px, 1.7vw, 24px); line-height:1.05; letter-spacing:var(--ls-display); }
+.opt .opt-desc { font-size:var(--fs-body); line-height:1.45; opacity:.85; }
+.step-foot { margin-top:32px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.step-back { display:inline-flex; align-items:center; gap:8px; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); cursor:pointer; }
+.step-back:hover { color:#fff; }
+.step-back::before { content:"<-"; }
+.next-btn { display:inline-flex; align-items:center; gap:12px; padding:14px 28px; border:1.5px solid #fff; border-radius:999px; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:#fff; transition:all .3s; cursor:pointer; }
+.next-btn:hover { background:#fff; color:var(--red); }
+.next-btn::after { content:"->"; }
+.selected-count { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; max-width:880px; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.field label { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--dim); }
+.field input, .field textarea { border-bottom:1.5px solid rgba(255,255,255,.4); padding:10px 0; font-size:var(--fs-body-l); color:#fff; transition:border-color .3s; }
+.field input:focus, .field textarea:focus { border-bottom-color:#fff; }
+.field input::placeholder, .field textarea::placeholder { color:rgba(255,255,255,.45); }
+.field.full { grid-column:1/-1; }
+.field textarea { resize:vertical; min-height:80px; font-family:var(--ff-text); }
+#stepFinal { padding:0; max-width:none; }
+.tz { background:#fff; color:var(--ink); padding:clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px); margin:clamp(40px, 6vw, 80px) auto; max-width:1280px; border-radius:4px; }
+.tz-head { border-bottom:2px solid var(--ink); padding-bottom:24px; margin-bottom:32px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:24px; }
+.tz-head .tz-mark { font-family:var(--ff-display); font-weight:900; font-size:clamp(36px, 5vw, 76px); line-height:.9; letter-spacing:var(--ls-display); text-transform:uppercase; }
+.tz-head .tz-mark .red { color:var(--red); }
+.tz-head .tz-meta { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:rgba(0,0,0,.55); text-align:right; line-height:1.6; }
+.tz-head .tz-meta strong { color:var(--ink); font-weight:500; }
+.tz-section { padding:24px 0; border-bottom:1px solid rgba(0,0,0,.12); }
+.tz-section:last-child { border-bottom:none; }
+.tz-section h3 { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:14px; }
+.tz-section h2 { font-family:var(--ff-display); font-weight:800; font-size:clamp(24px, 2.6vw, 38px); line-height:1.1; letter-spacing:var(--ls-display); margin-bottom:12px; }
+.tz-section p { font-size:var(--fs-body-l); line-height:1.5; color:var(--ink); max-width:70ch; }
+.tz-section ul { list-style:none; padding:0; margin-top:8px; }
+.tz-section ul li { padding:10px 0; border-bottom:1px solid rgba(0,0,0,.08); font-size:var(--fs-body); line-height:1.4; display:grid; grid-template-columns:24px 1fr auto; gap:12px; align-items:baseline; }
+.tz-section ul li:last-child { border-bottom:none; }
+.tz-section ul li::before { content:"+"; font-family:var(--ff-mono); color:rgba(0,0,0,.35); font-size:14px; }
+.tz-section ul li .est { font-family:var(--ff-mono); font-size:var(--fs-cap); letter-spacing:var(--ls-mono); color:rgba(0,0,0,.55); }
+.tz-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.tz-stat { padding:20px 0; border-top:1px solid rgba(0,0,0,.12); }
+.tz-stat .v { font-family:var(--ff-display); font-weight:800; font-size:clamp(28px, 3.2vw, 44px); line-height:1; letter-spacing:var(--ls-display); color:var(--ink); margin-bottom:6px; }
+.tz-stat .k { font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:rgba(0,0,0,.55); }
+.budget-warn { margin-top:12px; padding:12px 16px; background:var(--red); color:#fff; font-size:var(--fs-body); border-radius:2px; font-weight:500; }
+.budget-ok { margin-top:12px; padding:12px 16px; background:rgba(0,0,0,.06); color:var(--ink); font-size:var(--fs-body); border-radius:2px; border-left:3px solid var(--red); }
+.tz-actions { display:flex; gap:12px; flex-wrap:wrap; margin:24px auto 80px; max-width:1280px; padding:0 clamp(24px, 5vw, 80px); }
+.btn-primary { display:inline-flex; align-items:center; gap:12px; padding:16px 28px; background:#fff; color:var(--ink); border-radius:999px; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; transition:all .3s; }
+.btn-primary:hover { background:var(--ink); color:#fff; }
+.btn-ghost { display:inline-flex; align-items:center; gap:12px; padding:16px 28px; border:1.5px solid #fff; border-radius:999px; font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono); text-transform:uppercase; color:#fff; transition:all .3s; }
+.btn-ghost:hover { background:#fff; color:var(--red); }
+@media print {
+  @page { size:A4; margin:16mm; }
+  body { background:#fff !important; color:#000 !important; }
+  .nav, .scene-head, .step:not(#stepFinal), .tz-actions, .step-foot, .step-back, .next-btn { display:none !important; }
+  #stepFinal { display:block !important; padding:0 !important; }
+  .tz { box-shadow:none !important; padding:0 !important; margin:0 !important; max-width:100% !important; }
+  .tz-section { page-break-inside:avoid; }
+}
+@media (max-width: 760px) {
+  .scene-head { grid-template-columns:1fr; gap:12px; padding-top:76px; }
+  .options, .options.three, .options.four { grid-template-columns:1fr; }
+  .step-q { font-size:clamp(28px, 9vw, 44px); }
+  .form-grid { grid-template-columns:1fr; }
+  .tz-grid2 { grid-template-columns:1fr; }
+  .tz-head { grid-template-columns:1fr; }
+  .tz-head .tz-meta { text-align:left; }
+}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="logo-ps-mini" viewBox="0 0 80 90">
-      <text x="0" y="62" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">P</text>
-      <text x="34" y="86" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">S</text>
-      <line x1="52" y1="4" x2="22" y2="88" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
-    </symbol>
-  </defs>
+<defs>
+<symbol id="logo-ps-mini" viewBox="0 0 80 90">
+<text x="0" y="62" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">P</text>
+<text x="34" y="86" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">S</text>
+<line x1="52" y1="4" x2="22" y2="88" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
+</symbol>
+</defs>
 </svg>
 
 <nav class="nav">
@@ -319,57 +136,36 @@
     <svg><use href="#logo-ps-mini"/></svg>
     <span class="wm">PREMIUM<br>SELECTION</span>
   </a>
-  <a href="index.html" class="nav-back">← На&nbsp;главную</a>
+  <a href="index.html" class="nav-back">На главную</a>
 </nav>
 
 <div class="scene-head">
-  <span><strong>ТЗ-генератор</strong> · 8 шагов</span>
+  <span><strong>ТЗ-генератор</strong> — 8 шагов</span>
   <span><div class="crumbs" id="crumbs"></div></span>
   <span><strong id="stepIdx">01</strong> / 08</span>
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 </div>
 
-<!-- ========== STEP 1: GOAL ========== -->
 <section class="step active" data-step="1">
   <div class="step-num">— Шаг 01 / 08 · Главная цель</div>
-  <h2 class="step-q">Что вы&nbsp;хотите <em>получить?</em></h2>
+  <h2 class="step-q">Что вы хотите <em>получить?</em></h2>
   <div class="options">
-    <button class="opt" data-key="goal" data-value="sales" data-label="Повысить продажи">
-      <span class="opt-num">A · SALES</span><span class="opt-title">Повысить продажи</span>
-      <span class="opt-desc">Конверсия не&nbsp;там, где должна быть. Нужен ремонт воронки и/или продукта.</span>
-    </button>
-    <button class="opt" data-key="goal" data-value="awareness" data-label="Поднять узнаваемость">
-      <span class="opt-num">B · AWARENESS</span><span class="opt-title">Поднять узнаваемость</span>
-      <span class="opt-desc">Хороший продукт, но&nbsp;о&nbsp;нём мало знают.</span>
-    </button>
-    <button class="opt" data-key="goal" data-value="reach" data-label="Расширить охват">
-      <span class="opt-num">C · REACH</span><span class="opt-title">Расширить охват</span>
-      <span class="opt-desc">Новый рынок, регион или сегмент.</span>
-    </button>
-    <button class="opt" data-key="goal" data-value="launch" data-label="Запустить продукт">
-      <span class="opt-num">D · LAUNCH</span><span class="opt-title">Запустить продукт</span>
-      <span class="opt-desc">Новый продукт или направление. Go-to-market.</span>
-    </button>
-    <button class="opt" data-key="goal" data-value="rebrand" data-label="Ребрендинг">
-      <span class="opt-num">E · REBRAND</span><span class="opt-title">Ребрендинг</span>
-      <span class="opt-desc">Бренд устарел, не&nbsp;отражает суть.</span>
-    </button>
-    <button class="opt" data-key="goal" data-value="other" data-label="Не знаем точно">
-      <span class="opt-num">F · NOT SURE</span><span class="opt-title">Не&nbsp;знаем точно</span>
-      <span class="opt-desc">Поможем определиться через discovery-аудит.</span>
-    </button>
+    <button class="opt" data-key="goal" data-value="sales" data-label="Повысить продажи"><span class="opt-num">A · SALES</span><span class="opt-title">Повысить продажи</span><span class="opt-desc">Конверсия не там, где должна быть. Нужен ремонт воронки и/или продукта.</span></button>
+    <button class="opt" data-key="goal" data-value="awareness" data-label="Поднять узнаваемость"><span class="opt-num">B · AWARENESS</span><span class="opt-title">Поднять узнаваемость</span><span class="opt-desc">Хороший продукт, но о нём мало знают.</span></button>
+    <button class="opt" data-key="goal" data-value="reach" data-label="Расширить охват"><span class="opt-num">C · REACH</span><span class="opt-title">Расширить охват</span><span class="opt-desc">Новый рынок, регион или сегмент.</span></button>
+    <button class="opt" data-key="goal" data-value="launch" data-label="Запустить продукт"><span class="opt-num">D · LAUNCH</span><span class="opt-title">Запустить продукт</span><span class="opt-desc">Новый продукт. Go-to-market.</span></button>
+    <button class="opt" data-key="goal" data-value="rebrand" data-label="Ребрендинг"><span class="opt-num">E · REBRAND</span><span class="opt-title">Ребрендинг</span><span class="opt-desc">Бренд устарел.</span></button>
+    <button class="opt" data-key="goal" data-value="other" data-label="Не знаем точно"><span class="opt-num">F · NOT SURE</span><span class="opt-title">Не знаем точно</span><span class="opt-desc">Поможем определиться через discovery-аудит.</span></button>
   </div>
 </section>
 
-<!-- ========== STEP 2: BRANCH (dynamic) ========== -->
 <section class="step" data-step="2">
-  <div class="step-num" id="step2num">— Шаг 02 / 08 · Уточнение</div>
-  <h2 class="step-q" id="step2q">В&nbsp;чём корень?</h2>
+  <div class="step-num">— Шаг 02 / 08 · Уточнение</div>
+  <h2 class="step-q" id="step2q">В чём корень?</h2>
   <div class="options" id="step2opts"></div>
   <div class="step-foot"><button class="step-back" data-back="1">Назад</button></div>
 </section>
 
-<!-- ========== STEP 3: INDUSTRY ========== -->
 <section class="step" data-step="3">
   <div class="step-num">— Шаг 03 / 08 · Отрасль</div>
   <h2 class="step-q">Какая <em>отрасль?</em></h2>
@@ -377,49 +173,47 @@
   <div class="options three">
     <button class="opt" data-key="industry" data-value="fmcg" data-label="FMCG"><span class="opt-num">01</span><span class="opt-title">FMCG</span><span class="opt-desc">Продукты, напитки, бытовая химия.</span></button>
     <button class="opt" data-key="industry" data-value="retail" data-label="Retail"><span class="opt-num">02</span><span class="opt-title">Ритейл</span><span class="opt-desc">Магазины, сети, e-commerce.</span></button>
-    <button class="opt" data-key="industry" data-value="manufacturing" data-label="Производство"><span class="opt-num">03</span><span class="opt-title">Производство</span><span class="opt-desc">Промышленность, сырьё, B2B-производство.</span></button>
-    <button class="opt" data-key="industry" data-value="services" data-label="Услуги"><span class="opt-num">04</span><span class="opt-title">Услуги</span><span class="opt-desc">B2B-сервисы, консалтинг, агентства.</span></button>
-    <button class="opt" data-key="industry" data-value="tech" data-label="IT / SaaS"><span class="opt-num">05</span><span class="opt-title">IT / SaaS</span><span class="opt-desc">Технологические продукты, платформы.</span></button>
+    <button class="opt" data-key="industry" data-value="manufacturing" data-label="Производство"><span class="opt-num">03</span><span class="opt-title">Производство</span><span class="opt-desc">Промышленность, B2B-производство.</span></button>
+    <button class="opt" data-key="industry" data-value="services" data-label="Услуги"><span class="opt-num">04</span><span class="opt-title">Услуги</span><span class="opt-desc">B2B-сервисы, консалтинг.</span></button>
+    <button class="opt" data-key="industry" data-value="tech" data-label="IT / SaaS"><span class="opt-num">05</span><span class="opt-title">IT / SaaS</span><span class="opt-desc">Технологические продукты.</span></button>
     <button class="opt" data-key="industry" data-value="finance" data-label="Финансы"><span class="opt-num">06</span><span class="opt-title">Финансы</span><span class="opt-desc">Банки, fintech, страхование.</span></button>
     <button class="opt" data-key="industry" data-value="medical" data-label="Медицина"><span class="opt-num">07</span><span class="opt-title">Медицина</span><span class="opt-desc">Клиники, аптеки, фарма.</span></button>
     <button class="opt" data-key="industry" data-value="education" data-label="Образование"><span class="opt-num">08</span><span class="opt-title">Образование</span><span class="opt-desc">Школы, курсы, EdTech.</span></button>
-    <button class="opt" data-key="industry" data-value="hospitality" data-label="HoReCa / гостеприимство"><span class="opt-num">09</span><span class="opt-title">HoReCa</span><span class="opt-desc">Рестораны, отели, кафе.</span></button>
+    <button class="opt" data-key="industry" data-value="hospitality" data-label="HoReCa"><span class="opt-num">09</span><span class="opt-title">HoReCa</span><span class="opt-desc">Рестораны, отели, кафе.</span></button>
     <button class="opt" data-key="industry" data-value="realestate" data-label="Недвижимость"><span class="opt-num">10</span><span class="opt-title">Недвижимость</span><span class="opt-desc">Девелопмент, агентства.</span></button>
-    <button class="opt" data-key="industry" data-value="culture" data-label="Культура / Медиа"><span class="opt-num">11</span><span class="opt-title">Культура / Медиа</span><span class="opt-desc">Музеи, медиа-проекты, ивенты.</span></button>
-    <button class="opt" data-key="industry" data-value="other" data-label="Другое"><span class="opt-num">12</span><span class="opt-title">Другое</span><span class="opt-desc">Не подходит ни один пункт — уточним позже.</span></button>
+    <button class="opt" data-key="industry" data-value="culture" data-label="Культура / Медиа"><span class="opt-num">11</span><span class="opt-title">Культура / Медиа</span><span class="opt-desc">Музеи, медиа-проекты.</span></button>
+    <button class="opt" data-key="industry" data-value="other" data-label="Другое"><span class="opt-num">12</span><span class="opt-title">Другое</span><span class="opt-desc">Уточним позже.</span></button>
   </div>
   <div class="step-foot"><button class="step-back" data-back="2">Назад</button></div>
 </section>
 
-<!-- ========== STEP 4: SIZE ========== -->
 <section class="step" data-step="4">
   <div class="step-num">— Шаг 04 / 08 · Размер бизнеса</div>
   <h2 class="step-q">Какой <em>размер</em> бизнеса?</h2>
   <div class="options four">
-    <button class="opt" data-key="size" data-value="startup" data-label="Стартап"><span class="opt-num">XS</span><span class="opt-title">Стартап</span><span class="opt-desc">До&nbsp;10 человек. Ищем product–market fit.</span></button>
-    <button class="opt" data-key="size" data-value="small" data-label="Малый"><span class="opt-num">S</span><span class="opt-title">Малый</span><span class="opt-desc">10–50 чел. Локальный рынок, расширяемся.</span></button>
-    <button class="opt" data-key="size" data-value="medium" data-label="Средний"><span class="opt-num">M</span><span class="opt-title">Средний</span><span class="opt-desc">50–500 чел. Выход на&nbsp;CIS / новые сегменты.</span></button>
-    <button class="opt" data-key="size" data-value="enterprise" data-label="Корпорация"><span class="opt-num">L</span><span class="opt-title">Корпорация</span><span class="opt-desc">500+ чел. Холдинг, мульти-бренд, регуляторика.</span></button>
+    <button class="opt" data-key="size" data-value="startup" data-label="Стартап"><span class="opt-num">XS</span><span class="opt-title">Стартап</span><span class="opt-desc">До 10 человек.</span></button>
+    <button class="opt" data-key="size" data-value="small" data-label="Малый"><span class="opt-num">S</span><span class="opt-title">Малый</span><span class="opt-desc">10–50 чел.</span></button>
+    <button class="opt" data-key="size" data-value="medium" data-label="Средний"><span class="opt-num">M</span><span class="opt-title">Средний</span><span class="opt-desc">50–500 чел.</span></button>
+    <button class="opt" data-key="size" data-value="enterprise" data-label="Корпорация"><span class="opt-num">L</span><span class="opt-title">Корпорация</span><span class="opt-desc">500+ чел.</span></button>
   </div>
   <div class="step-foot"><button class="step-back" data-back="3">Назад</button></div>
 </section>
 
-<!-- ========== STEP 5: ASSETS (multi) ========== -->
 <section class="step" data-step="5">
   <div class="step-num">— Шаг 05 / 08 · Что уже есть</div>
-  <h2 class="step-q">Что у&nbsp;вас <em>уже&nbsp;есть?</em></h2>
+  <h2 class="step-q">Что у вас <em>уже есть?</em></h2>
   <p class="step-hint">Можно выбрать несколько. Это покажет, с какой точки начинаем.</p>
   <div class="options three" id="assetsBox">
-    <button class="opt multi" data-key="assets" data-value="brand" data-label="Бренд / лого"><span class="opt-num">01</span><span class="opt-title">Бренд / лого</span><span class="opt-desc">Есть логотип и&nbsp;базовый стиль.</span></button>
-    <button class="opt multi" data-key="assets" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand&nbsp;book</span><span class="opt-desc">Полное описание стиля и&nbsp;коммуникации.</span></button>
-    <button class="opt multi" data-key="assets" data-value="site" data-label="Сайт"><span class="opt-num">03</span><span class="opt-title">Сайт</span><span class="opt-desc">Корпоративный сайт или лендинг.</span></button>
-    <button class="opt multi" data-key="assets" data-value="ecommerce" data-label="E-commerce"><span class="opt-num">04</span><span class="opt-title">E-commerce</span><span class="opt-desc">Интернет-магазин или маркетплейс.</span></button>
-    <button class="opt multi" data-key="assets" data-value="socials" data-label="Соцсети"><span class="opt-num">05</span><span class="opt-title">Соцсети</span><span class="opt-desc">Активные Instagram / Telegram / TikTok.</span></button>
-    <button class="opt multi" data-key="assets" data-value="team" data-label="Маркетинг-команда"><span class="opt-num">06</span><span class="opt-title">Маркетинг-команда</span><span class="opt-desc">Маркетолог / SMM / дизайнер in-house.</span></button>
-    <button class="opt multi" data-key="assets" data-value="data" data-label="Аналитика / данные"><span class="opt-num">07</span><span class="opt-title">Аналитика</span><span class="opt-desc">GA4 / Я.Метрика / BI / отчёты.</span></button>
-    <button class="opt multi" data-key="assets" data-value="crm" data-label="CRM"><span class="opt-num">08</span><span class="opt-title">CRM</span><span class="opt-desc">База клиентов с&nbsp;историей покупок.</span></button>
-    <button class="opt multi" data-key="assets" data-value="content" data-label="Фото / видео контент"><span class="opt-num">09</span><span class="opt-title">Контент</span><span class="opt-desc">Профессиональные фото и&nbsp;видео продукта.</span></button>
-    <button class="opt multi" data-key="assets" data-value="nothing" data-label="Ничего из этого"><span class="opt-num">⌀</span><span class="opt-title">Ничего из&nbsp;этого</span><span class="opt-desc">Стартуем с&nbsp;чистого листа.</span></button>
+    <button class="opt multi" data-key="assets" data-value="brand" data-label="Бренд / лого"><span class="opt-num">01</span><span class="opt-title">Бренд / лого</span><span class="opt-desc">Есть логотип и базовый стиль.</span></button>
+    <button class="opt multi" data-key="assets" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand book</span><span class="opt-desc">Полное описание стиля.</span></button>
+    <button class="opt multi" data-key="assets" data-value="site" data-label="Сайт"><span class="opt-num">03</span><span class="opt-title">Сайт</span><span class="opt-desc">Корпоративный сайт.</span></button>
+    <button class="opt multi" data-key="assets" data-value="ecommerce" data-label="E-commerce"><span class="opt-num">04</span><span class="opt-title">E-commerce</span><span class="opt-desc">Интернет-магазин.</span></button>
+    <button class="opt multi" data-key="assets" data-value="socials" data-label="Соцсети"><span class="opt-num">05</span><span class="opt-title">Соцсети</span><span class="opt-desc">Активные Instagram / Telegram.</span></button>
+    <button class="opt multi" data-key="assets" data-value="team" data-label="Маркетинг-команда"><span class="opt-num">06</span><span class="opt-title">Маркетинг-команда</span><span class="opt-desc">Маркетолог / SMM in-house.</span></button>
+    <button class="opt multi" data-key="assets" data-value="data" data-label="Аналитика / данные"><span class="opt-num">07</span><span class="opt-title">Аналитика</span><span class="opt-desc">GA4 / BI / отчёты.</span></button>
+    <button class="opt multi" data-key="assets" data-value="crm" data-label="CRM"><span class="opt-num">08</span><span class="opt-title">CRM</span><span class="opt-desc">База клиентов.</span></button>
+    <button class="opt multi" data-key="assets" data-value="content" data-label="Фото / видео контент"><span class="opt-num">09</span><span class="opt-title">Контент</span><span class="opt-desc">Профессиональные фото и видео.</span></button>
+    <button class="opt multi" data-key="assets" data-value="nothing" data-label="Ничего из этого"><span class="opt-num">N</span><span class="opt-title">Ничего из этого</span><span class="opt-desc">Стартуем с чистого листа.</span></button>
   </div>
   <div class="step-foot">
     <button class="step-back" data-back="4">Назад</button>
@@ -428,36 +222,35 @@
   </div>
 </section>
 
-<!-- ========== STEP 6: DELIVERABLES (multi) ========== -->
 <section class="step" data-step="6">
   <div class="step-num">— Шаг 06 / 08 · Что нужно произвести</div>
   <h2 class="step-q">Что нам <em>сделать?</em></h2>
-  <p class="step-hint">Можно выбрать несколько. Это формирует объём работ и бюджет.</p>
+  <p class="step-hint">Можно выбрать несколько. Формирует объём работ и бюджет.</p>
   <div class="options three" id="delsBox">
-    <button class="opt multi" data-key="dels" data-value="logo" data-label="Логотип / айдентика"><span class="opt-num">01</span><span class="opt-title">Логотип / айдентика</span><span class="opt-desc">Знак, цвета, шрифты, базовый стиль. <b>$2–8K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand&nbsp;book</span><span class="opt-desc">Полный гайд + ToV. <b>$5–25K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="naming" data-label="Нейминг / позиционирование"><span class="opt-num">03</span><span class="opt-title">Нейминг</span><span class="opt-desc">Название + позиционирование. <b>$2–10K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="strategy" data-label="Маркетинг-стратегия"><span class="opt-num">04</span><span class="opt-title">Стратегия</span><span class="opt-desc">Маркетинг-план, GTM, сегментация. <b>$3–15K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="research" data-label="Исследование рынка"><span class="opt-num">05</span><span class="opt-title">Исследование</span><span class="opt-desc">Customer / brand / конкурент-аудит. <b>$3–20K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="landing" data-label="Лендинг"><span class="opt-num">06</span><span class="opt-title">Лендинг</span><span class="opt-desc">1 страница продаж. <b>$1–5K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="site" data-label="Корпоративный сайт"><span class="opt-num">07</span><span class="opt-title">Корп. сайт</span><span class="opt-desc">5–20 страниц + CMS. <b>$5–30K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="ecommerce" data-label="Интернет-магазин"><span class="opt-num">08</span><span class="opt-title">E-commerce</span><span class="opt-desc">Каталог + оплата + интеграции. <b>$10–80K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="mobile" data-label="Мобильное приложение"><span class="opt-num">09</span><span class="opt-title">Mobile&nbsp;app</span><span class="opt-desc">iOS / Android / cross-platform. <b>$15–150K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="crm" data-label="CRM / автоматизация"><span class="opt-num">10</span><span class="opt-title">CRM / автоматизация</span><span class="opt-desc">Внедрение, интеграции. <b>$5–80K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="campaign" data-label="Рекламная кампания"><span class="opt-num">11</span><span class="opt-title">Рекламная кампания</span><span class="opt-desc">Концепт + продакшн + размещение. <b>$5–80K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="performance" data-label="Performance / Digital"><span class="opt-num">12</span><span class="opt-title">Performance</span><span class="opt-desc">PPC / SEO / SMM / influencer. <b>$1–10K/мес</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="ooh" data-label="Наружная реклама"><span class="opt-num">13</span><span class="opt-title">Наружка (OOH)</span><span class="opt-desc">Билборды, ситилайты, монтаж. <b>$1–50K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="print" data-label="Полиграфия"><span class="opt-num">14</span><span class="opt-title">Полиграфия</span><span class="opt-desc">Каталоги, буклеты, визитки. <b>$200–10K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="pos" data-label="POS / выкладка"><span class="opt-num">15</span><span class="opt-title">POS</span><span class="opt-desc">Стенды, ценники, промо-зоны. <b>$500–20K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="souvenir" data-label="Сувенирка / мерч"><span class="opt-num">16</span><span class="opt-title">Сувенирка</span><span class="opt-desc">Брендированные носители. <b>$300–30K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="signage" data-label="Вывески / навигация"><span class="opt-num">17</span><span class="opt-title">Вывески</span><span class="opt-desc">Внешние и&nbsp;внутренние знаки. <b>$1–25K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="packaging" data-label="Упаковка"><span class="opt-num">18</span><span class="opt-title">Упаковка</span><span class="opt-desc">Дизайн + производство тары. <b>$1–50K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="video" data-label="Видео-продакшен"><span class="opt-num">19</span><span class="opt-title">Видео</span><span class="opt-desc">Имидж / продуктовое / соцсети. <b>$2–80K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="photo" data-label="Фото-съёмка"><span class="opt-num">20</span><span class="opt-title">Фото</span><span class="opt-desc">Продукт / lifestyle / команда. <b>$500–10K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="event" data-label="Ивент / запуск"><span class="opt-num">21</span><span class="opt-title">Ивент</span><span class="opt-desc">Презентация, открытие, активация. <b>$5–150K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="loyalty" data-label="Программа лояльности"><span class="opt-num">22</span><span class="opt-title">Лояльность</span><span class="opt-desc">Концепт + механика + запуск. <b>$5–40K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="employer" data-label="HR-бренд"><span class="opt-num">23</span><span class="opt-title">HR-бренд</span><span class="opt-desc">Career-сайт, найм-кампания. <b>$2–25K</b></span></button>
-    <button class="opt multi" data-key="dels" data-value="content" data-label="Контент-стратегия"><span class="opt-num">24</span><span class="opt-title">Контент</span><span class="opt-desc">Блог, соцсети, рассылки. <b>$1–8K/мес</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="logo" data-label="Логотип / айдентика"><span class="opt-num">01</span><span class="opt-title">Логотип / айдентика</span><span class="opt-desc">Знак, цвета, шрифты. <b>$2-8K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="brandbook" data-label="Brand book"><span class="opt-num">02</span><span class="opt-title">Brand book</span><span class="opt-desc">Полный гайд + ToV. <b>$5-25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="naming" data-label="Нейминг / позиционирование"><span class="opt-num">03</span><span class="opt-title">Нейминг</span><span class="opt-desc">Название + позиционирование. <b>$2-10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="strategy" data-label="Маркетинг-стратегия"><span class="opt-num">04</span><span class="opt-title">Стратегия</span><span class="opt-desc">Маркетинг-план, GTM. <b>$3-15K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="research" data-label="Исследование рынка"><span class="opt-num">05</span><span class="opt-title">Исследование</span><span class="opt-desc">Customer / brand-аудит. <b>$3-20K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="landing" data-label="Лендинг"><span class="opt-num">06</span><span class="opt-title">Лендинг</span><span class="opt-desc">1 страница продаж. <b>$1-5K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="site" data-label="Корпоративный сайт"><span class="opt-num">07</span><span class="opt-title">Корп. сайт</span><span class="opt-desc">5-20 страниц + CMS. <b>$5-30K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="ecommerce" data-label="Интернет-магазин"><span class="opt-num">08</span><span class="opt-title">E-commerce</span><span class="opt-desc">Каталог + оплата. <b>$10-80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="mobile" data-label="Мобильное приложение"><span class="opt-num">09</span><span class="opt-title">Mobile app</span><span class="opt-desc">iOS / Android. <b>$15-150K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="crm" data-label="CRM / автоматизация"><span class="opt-num">10</span><span class="opt-title">CRM</span><span class="opt-desc">Внедрение, интеграции. <b>$5-80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="campaign" data-label="Рекламная кампания"><span class="opt-num">11</span><span class="opt-title">Рекламная кампания</span><span class="opt-desc">Концепт + продакшн. <b>$5-80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="performance" data-label="Performance / Digital"><span class="opt-num">12</span><span class="opt-title">Performance</span><span class="opt-desc">PPC / SEO / SMM. <b>$1-10K/мес</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="ooh" data-label="Наружная реклама"><span class="opt-num">13</span><span class="opt-title">Наружка</span><span class="opt-desc">Билборды, монтаж. <b>$1-50K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="print" data-label="Полиграфия"><span class="opt-num">14</span><span class="opt-title">Полиграфия</span><span class="opt-desc">Каталоги, буклеты. <b>$200-10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="pos" data-label="POS"><span class="opt-num">15</span><span class="opt-title">POS</span><span class="opt-desc">Стенды, ценники. <b>$500-20K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="souvenir" data-label="Сувенирка / мерч"><span class="opt-num">16</span><span class="opt-title">Сувенирка</span><span class="opt-desc">Брендированные носители. <b>$300-30K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="signage" data-label="Вывески"><span class="opt-num">17</span><span class="opt-title">Вывески</span><span class="opt-desc">Внешние и внутренние. <b>$1-25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="packaging" data-label="Упаковка"><span class="opt-num">18</span><span class="opt-title">Упаковка</span><span class="opt-desc">Дизайн + производство. <b>$1-50K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="video" data-label="Видео-продакшен"><span class="opt-num">19</span><span class="opt-title">Видео</span><span class="opt-desc">Имидж / продуктовое. <b>$2-80K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="photo" data-label="Фото-съёмка"><span class="opt-num">20</span><span class="opt-title">Фото</span><span class="opt-desc">Продукт / lifestyle. <b>$500-10K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="event" data-label="Ивент"><span class="opt-num">21</span><span class="opt-title">Ивент</span><span class="opt-desc">Презентация, открытие. <b>$5-150K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="loyalty" data-label="Программа лояльности"><span class="opt-num">22</span><span class="opt-title">Лояльность</span><span class="opt-desc">Концепт + запуск. <b>$5-40K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="employer" data-label="HR-бренд"><span class="opt-num">23</span><span class="opt-title">HR-бренд</span><span class="opt-desc">Career-сайт, кампания. <b>$2-25K</b></span></button>
+    <button class="opt multi" data-key="dels" data-value="content" data-label="Контент-стратегия"><span class="opt-num">24</span><span class="opt-title">Контент</span><span class="opt-desc">Блог, соцсети. <b>$1-8K/мес</b></span></button>
   </div>
   <div class="step-foot">
     <button class="step-back" data-back="5">Назад</button>
@@ -466,11 +259,389 @@
   </div>
 </section>
 
-<!-- ========== STEP 7: URGENCY + BUDGET ========== -->
 <section class="step" data-step="7">
-  <div class="step-num">— Шаг 07 / 08 · Срочность и&nbsp;бюджет</div>
+  <div class="step-num">— Шаг 07 / 08 · Срочность и бюджет</div>
   <h2 class="step-q">Когда нужен <em>результат?</em></h2>
   <div class="options three" style="margin-bottom: 32px;">
-    <button class="opt" data-key="urgency" data-value="fast" data-label="Срочно — 1-2 мес"><span class="opt-num">URGENCY · A</span><span class="opt-title">Срочно</span><span class="opt-desc">1–2 месяца. Сжатый scope.</span></button>
-    <button class="opt" data-key="urgency" data-value="standard" data-label="Стандарт — 3-4 мес"><span class="opt-num">URGENCY · B</span><span class="opt-title">Стандарт</span><span class="opt-desc">3–4 месяца. Полный цикл.</span></button>
-    <button class="opt" data-key="urgency" data
+    <button class="opt" data-key="urgency" data-value="fast" data-label="Срочно — 1-2 мес"><span class="opt-num">URGENCY · A</span><span class="opt-title">Срочно</span><span class="opt-desc">1-2 месяца.</span></button>
+    <button class="opt" data-key="urgency" data-value="standard" data-label="Стандарт — 3-4 мес"><span class="opt-num">URGENCY · B</span><span class="opt-title">Стандарт</span><span class="opt-desc">3-4 месяца.</span></button>
+    <button class="opt" data-key="urgency" data-value="strategic" data-label="Стратегически — 6+ мес"><span class="opt-num">URGENCY · C</span><span class="opt-title">Стратегически</span><span class="opt-desc">6+ месяцев.</span></button>
+  </div>
+  <h2 class="step-q" style="font-size: clamp(24px,3.4vw,52px);">И какой <em>бюджет?</em></h2>
+  <div class="options four">
+    <button class="opt" data-key="budget" data-value="lite" data-label="До $10K"><span class="opt-num">BUDGET · S</span><span class="opt-title">До $10K</span><span class="opt-desc">Точечная задача.</span></button>
+    <button class="opt" data-key="budget" data-value="mid" data-label="$10-50K"><span class="opt-num">BUDGET · M</span><span class="opt-title">$10-50K</span><span class="opt-desc">Связка направлений.</span></button>
+    <button class="opt" data-key="budget" data-value="large" data-label="$50-200K"><span class="opt-num">BUDGET · L</span><span class="opt-title">$50-200K</span><span class="opt-desc">Полный цикл.</span></button>
+    <button class="opt" data-key="budget" data-value="xl" data-label="$200K+"><span class="opt-num">BUDGET · XL</span><span class="opt-title">$200K+</span><span class="opt-desc">Многолетняя программа.</span></button>
+  </div>
+  <div class="step-foot">
+    <button class="step-back" data-back="6">Назад</button>
+    <button class="next-btn" data-next="8" data-from="7">Далее</button>
+  </div>
+</section>
+
+<section class="step" data-step="8">
+  <div class="step-num">— Шаг 08 / 08 · Контакты</div>
+  <h2 class="step-q">Подпишем <em>ТЗ</em> на ваше имя</h2>
+  <p class="step-hint">Нужно, чтобы прислать ТЗ на email и подключить менеджера.</p>
+  <form id="contactForm" class="form-grid" novalidate>
+    <div class="field"><label>Имя *</label><input type="text" name="name" id="cName" required placeholder="Например, Алишер"></div>
+    <div class="field"><label>Компания *</label><input type="text" name="company" id="cCompany" required placeholder="ООО / ИП / название"></div>
+    <div class="field"><label>Email *</label><input type="email" name="email" id="cEmail" required placeholder="you@company.com"></div>
+    <div class="field"><label>Телефон / Мессенджер</label><input type="tel" name="phone" id="cPhone" placeholder="+998 ··· или Telegram @"></div>
+    <div class="field full"><label>Что важно добавить (опционально)</label><textarea name="note" id="cNote" placeholder="Дедлайны, источники бюджета, спец. требования..."></textarea></div>
+  </form>
+  <div class="step-foot">
+    <button class="step-back" data-back="7">Назад</button>
+    <button class="next-btn" id="generateBtn">Сгенерировать ТЗ</button>
+  </div>
+</section>
+
+<section class="step" id="stepFinal" data-step="final">
+  <div class="tz" id="tzContent">
+    <div class="tz-head">
+      <div class="tz-mark">ТЗ <span class="red">·</span><br>Premium<br>Selection</div>
+      <div class="tz-meta">
+        <strong id="tzCompany">—</strong><br>
+        <span id="tzClient">—</span><br>
+        <span id="tzDate">—</span> · <span id="tzId">—</span>
+      </div>
+    </div>
+    <div class="tz-section">
+      <h3>01 — Бриф</h3>
+      <h2 id="tzBriefTitle">—</h2>
+      <p id="tzBriefText">—</p>
+    </div>
+    <div class="tz-section">
+      <h3>02 — Контекст</h3>
+      <div class="tz-grid2">
+        <div><p style="font-size:var(--fs-body); color: rgba(0,0,0,.6); margin-bottom:8px;">Отрасль и размер</p><p id="tzContext1">—</p></div>
+        <div><p style="font-size:var(--fs-body); color: rgba(0,0,0,.6); margin-bottom:8px;">Что уже есть</p><p id="tzContext2">—</p></div>
+      </div>
+    </div>
+    <div class="tz-section"><h3>03 — Объём работ</h3><ul id="tzDels"></ul></div>
+    <div class="tz-section"><h3>04 — Фазы и сроки</h3><ul id="tzPhases"></ul></div>
+    <div class="tz-section">
+      <h3>05 — Бюджет</h3>
+      <div class="tz-grid2">
+        <div class="tz-stat"><div class="v" id="tzBudgetEst">—</div><div class="k">Оценка по deliverables</div></div>
+        <div class="tz-stat"><div class="v" id="tzBudgetClient">—</div><div class="k">Указанный бюджет клиента</div></div>
+      </div>
+      <div id="tzBudgetNote"></div>
+    </div>
+    <div class="tz-section"><h3>06 — KPI / что считаем успехом</h3><ul id="tzKpis"></ul></div>
+    <div class="tz-section">
+      <h3>07 — Что нужно от клиента</h3>
+      <ul>
+        <li>Брифинг с ключевой командой (1-2 часа) <span class="est">обязательно</span></li>
+        <li>Доступ к историческим данным <span class="est">для discovery</span></li>
+        <li>Контактное лицо для оперативных вопросов <span class="est">обязательно</span></li>
+        <li>Существующие материалы: лого, гайды, контент <span class="est">если есть</span></li>
+        <li>Согласование решений в течение 2 рабочих дней <span class="est">критично</span></li>
+      </ul>
+    </div>
+    <div class="tz-section"><h3>08 — Контакты</h3><p id="tzContacts">—</p></div>
+    <div class="tz-section">
+      <p style="font-size:var(--fs-cap); color: rgba(0,0,0,.5); font-family:var(--ff-mono); letter-spacing:var(--ls-mono); text-transform:uppercase;">Документ сформирован автоматически. Финальная оценка после discovery может отличаться на ±20%.</p>
+    </div>
+  </div>
+  <div class="tz-actions">
+    <button class="btn-primary" id="downloadBtn">Скачать PDF</button>
+    <a class="btn-primary" id="emailBtn" href="#" style="background:transparent;color:#fff;border:1.5px solid #fff;">Отправить на email</a>
+    <a class="btn-primary" id="sendPsgBtn" href="#" style="background:transparent;color:#fff;border:1.5px solid #fff;">Отправить в PSG</a>
+    <button class="btn-ghost" id="restartBtn">Начать сначала</button>
+  </div>
+</section>
+
+<script>
+(function(){
+  var state = { goal:null, branch:null, industry:null, size:null, assets:[], dels:[], urgency:null, budget:null, contact:{} };
+  var labels = {};
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return document.querySelectorAll(s); };
+  var TOTAL = 8;
+
+  var branches = {
+    sales: { q:'В чём <em>корень</em> проблемы?', opts:[
+      ['traffic','Низкий трафик','Знают мало, заходят редко.','AUDIT TRAFFIC'],
+      ['conversion','Низкая конверсия','Заходят, но не покупают.','AUDIT FUNNEL'],
+      ['retention','Не возвращаются','Покупают раз и уходят.','AUDIT RETENTION'],
+      ['offer','Слабый продукт-маркет','Сам оффер не цепляет.','AUDIT OFFER']
+    ]},
+    awareness: { q:'Где <em>растим</em> узнаваемость?', opts:[
+      ['local','Локально в Узбекистане','Tashkent, регионы.','SCOPE LOCAL'],
+      ['regional','Центральная Азия','Узбекистан + соседи.','SCOPE CIS'],
+      ['professional','В индустрии','B2B / профсообщество.','SCOPE B2B'],
+      ['premium','Premium-аудитория','Узкий сегмент, высокий чек.','SCOPE LUX']
+    ]},
+    reach: { q:'Куда <em>расширяемся?</em>', opts:[
+      ['geo','Новый регион / страна','Локализация.','EXPAND GEO'],
+      ['segment','Новый сегмент','Тот же продукт, другая аудитория.','EXPAND SEG'],
+      ['channel','Новые каналы','Маркетплейсы, retail, digital.','EXPAND CHN'],
+      ['product','Новая линейка','Расширение матрицы.','EXPAND LINE']
+    ]},
+    launch: { q:'На какой <em>стадии</em> продукт?', opts:[
+      ['idea','Идея / концепт','Гипотеза без прототипа.','STAGE IDEA'],
+      ['mvp','Прототип / MVP','Тестируем на узкой аудитории.','STAGE MVP'],
+      ['ready','Готов к выводу','Продукт сделан, нужен GTM.','STAGE READY'],
+      ['relaunch','Перезапуск','Был запуск, нужен второй.','STAGE RELAUNCH']
+    ]},
+    rebrand: { q:'Что <em>не так</em> с текущим брендом?', opts:[
+      ['old','Образ устарел','5-10 лет назад.','OLD'],
+      ['unclear','Не отражает суть','Бренд не равно компания.','MISMATCH'],
+      ['lost','Конкуренты обогнали','Они выглядят свежее.','CATCHUP'],
+      ['merger','Слияние / реструктуризация','Новая архитектура.','M&A']
+    ]},
+    other: { q:'С чего <em>удобнее</em> начать?', opts:[
+      ['audit','Discovery-аудит','Найдём узкие места.','START DISCOVERY'],
+      ['strategy','Стратегия развития','План на 1-3 года.','START STRATEGY'],
+      ['workshop','Воркшоп','Полдня с командой.','START WORKSHOP'],
+      ['call','Просто созвон','Контекст, потом план.','START CALL']
+    ]}
+  };
+
+  var delsPricing = {
+    logo:[2,8,'design'], brandbook:[5,25,'design'], naming:[2,10,'strategy'],
+    strategy:[3,15,'strategy'], research:[3,20,'discovery'],
+    landing:[1,5,'production'], site:[5,30,'production'], ecommerce:[10,80,'production'],
+    mobile:[15,150,'production'], crm:[5,80,'production'],
+    campaign:[5,80,'launch'], performance:[3,30,'launch'],
+    ooh:[1,50,'production'], print:[0.5,10,'production'], pos:[0.5,20,'production'],
+    souvenir:[0.3,30,'production'], signage:[1,25,'production'], packaging:[1,50,'design'],
+    video:[2,80,'production'], photo:[0.5,10,'production'], event:[5,150,'launch'],
+    loyalty:[5,40,'strategy'], employer:[2,25,'design'], content:[1,8,'launch']
+  };
+  var delsTitle = {
+    logo:'Логотип / айдентика', brandbook:'Brand book', naming:'Нейминг / позиционирование',
+    strategy:'Маркетинг-стратегия', research:'Исследование рынка',
+    landing:'Лендинг', site:'Корпоративный сайт', ecommerce:'Интернет-магазин',
+    mobile:'Мобильное приложение', crm:'CRM / автоматизация',
+    campaign:'Рекламная кампания', performance:'Performance / Digital',
+    ooh:'Наружная реклама', print:'Полиграфия', pos:'POS / выкладка',
+    souvenir:'Сувенирка / мерч', signage:'Вывески / навигация', packaging:'Упаковка',
+    video:'Видео-продакшен', photo:'Фото-съёмка', event:'Ивент / запуск',
+    loyalty:'Программа лояльности', employer:'HR-бренд', content:'Контент-стратегия'
+  };
+  var budgetRanges = { lite:[0,10], mid:[10,50], large:[50,200], xl:[200,2000] };
+
+  function show(stepKey){
+    $$('.step').forEach(function(s){ s.classList.remove('active'); });
+    var el = document.querySelector('[data-step="'+stepKey+'"]');
+    if (el) el.classList.add('active');
+    var idx = stepKey === 'final' ? TOTAL : parseInt(stepKey,10);
+    $('#stepIdx').textContent = stepKey === 'final' ? 'OK' : (idx<10?'0'+idx:''+idx);
+    $('#progress').style.width = (stepKey === 'final' ? 100 : (idx/TOTAL*100)) + '%';
+    renderCrumbs();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderCrumbs(){
+    var c = $('#crumbs'); c.innerHTML = '';
+    if (state.goal)     c.innerHTML += '<span class="crumb">Цель: <b>'+labels.goal+'</b></span>';
+    if (state.branch)   c.innerHTML += '<span class="crumb">Уточн.: <b>'+labels.branch+'</b></span>';
+    if (state.industry) c.innerHTML += '<span class="crumb">Отрасль: <b>'+labels.industry+'</b></span>';
+    if (state.size)     c.innerHTML += '<span class="crumb">Размер: <b>'+labels.size+'</b></span>';
+    if (state.assets.length) c.innerHTML += '<span class="crumb">Уже есть: <b>'+state.assets.length+'</b></span>';
+    if (state.dels.length)   c.innerHTML += '<span class="crumb">Сделать: <b>'+state.dels.length+'</b></span>';
+    if (state.urgency)  c.innerHTML += '<span class="crumb">Срок: <b>'+labels.urgency+'</b></span>';
+    if (state.budget)   c.innerHTML += '<span class="crumb">Бюджет: <b>'+labels.budget+'</b></span>';
+  }
+
+  function renderStep2(){
+    var b = branches[state.goal]; if (!b) return;
+    $('#step2q').innerHTML = b.q;
+    var box = $('#step2opts'); box.innerHTML = '';
+    b.opts.forEach(function(o){
+      var btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.dataset.key = 'branch'; btn.dataset.value = o[0]; btn.dataset.label = o[1];
+      btn.innerHTML = '<span class="opt-num">'+o[3]+'</span><span class="opt-title">'+o[1]+'</span><span class="opt-desc">'+o[2]+'</span>';
+      box.appendChild(btn);
+    });
+  }
+
+  function fmtMoney(k){ if (k >= 1000) return '$'+(k/1000).toFixed(1)+'M'; return '$'+k+'K'; }
+  function calcEstimate(){
+    var lo = 0, hi = 0;
+    state.dels.forEach(function(d){ var p = delsPricing[d]; if (p) { lo += p[0]; hi += p[1]; } });
+    return [Math.round(lo), Math.round(hi)];
+  }
+
+  function buildTzPhases(){
+    var t = { fast:0.65, standard:1, strategic:1.6 }[state.urgency] || 1;
+    function w(min, max){ return Math.max(1, Math.round(min*t)) + '-' + Math.max(2, Math.round(max*t)) + ' нед'; }
+    var byPhase = { discovery:[], strategy:[], design:[], production:[], launch:[] };
+    state.dels.forEach(function(d){ var p = delsPricing[d]; if (!p) return; byPhase[p[2]].push(delsTitle[d]); });
+    if (byPhase.discovery.length === 0) byPhase.discovery = ['Аналитика и интервью'];
+    if (byPhase.strategy.length === 0)  byPhase.strategy  = ['Позиционирование и план'];
+    if (byPhase.design.length === 0)    byPhase.design    = ['Визуальная концепция'];
+    if (byPhase.launch.length === 0)    byPhase.launch    = ['План вывода и замер KPI'];
+    return [
+      { num:'01', title:'Discovery', time:w(2,3), tasks:byPhase.discovery },
+      { num:'02', title:'Strategy',  time:w(2,4), tasks:byPhase.strategy },
+      { num:'03', title:'Design',    time:w(3,5), tasks:byPhase.design },
+      { num:'04', title:'Production / IT', time:w(4,8), tasks: byPhase.production.length? byPhase.production : ['Производство по выбранным каналам'] },
+      { num:'05', title:'Launch',    time:w(2,3), tasks:byPhase.launch }
+    ];
+  }
+
+  function generateKpis(){
+    var k = {
+      sales:['Рост конверсии воронки на 30-50%','Повышение среднего чека или повторных покупок','Снижение CAC на 15-25%'],
+      awareness:['Рост unaided awareness на 20-40%','Охват в каналах больше 1М контактов','Положительный шифт по атрибутам бренда'],
+      reach:['Запуск в новой географии в первые 90 дней','Доля сегмента 10%+ за 6-12 мес','Узнаваемость на новом рынке 15%+'],
+      launch:['Запуск в срок без переноса','Достижение sales-таргета первого квартала','NPS 50+ у первых 200 клиентов'],
+      rebrand:['Положительная reception нового бренда 70%+','Полная замена носителей за 60 дней','Узнаваемость переходит без провала'],
+      other:['Готовая стратегия с приоритетами на 12 мес','Документ с 5 ключевыми инициативами','Roadmap для следующих этапов']
+    };
+    return k[state.goal] || k.other;
+  }
+
+  function renderTz(){
+    var d = new Date();
+    var pad = function(n){ return n<10? '0'+n : ''+n; };
+    var dateStr = pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear();
+    var idStr = 'PSG-' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+    $('#tzCompany').textContent = state.contact.company || '—';
+    $('#tzClient').textContent = state.contact.name || '—';
+    $('#tzDate').textContent = dateStr;
+    $('#tzId').textContent = idStr;
+
+    var goalTitles = { sales:'Разогнать продажи', awareness:'Вырастить узнаваемость', reach:'Открыть новые рынки', launch:'Запустить продукт', rebrand:'Перезапустить бренд', other:'Discovery-аудит' };
+    $('#tzBriefTitle').textContent = goalTitles[state.goal] || 'Задача проекта';
+
+    var goalLabels = { sales:'разогнать продажи', awareness:'вырастить узнаваемость', reach:'открыть новые рынки', launch:'запустить продукт', rebrand:'перезапустить бренд', other:'провести discovery' };
+    var briefText = 'Задача — ' + (goalLabels[state.goal] || labels.goal) +
+      '. Отрасль: ' + (labels.industry || '—') +
+      '. Размер бизнеса: ' + (labels.size || '—') +
+      '. Уточнение: ' + (labels.branch || '—') +
+      '. Срок: ' + (labels.urgency || '—') +
+      '. Бюджет клиента: ' + (labels.budget || '—') + '.';
+    if (state.contact.note) briefText += '<br><br><strong>Дополнительно:</strong> ' + state.contact.note;
+    $('#tzBriefText').innerHTML = briefText;
+
+    $('#tzContext1').innerHTML = (labels.industry || '—') + ' · <span style="color:rgba(0,0,0,.55)">' + (labels.size || '—') + '</span>';
+    var assetsTxt = state.assets.length ? state.assets.map(function(a){ return labels['assets_'+a] || a; }).join(', ') : 'Ничего из перечисленного — стартуем с чистого листа';
+    $('#tzContext2').textContent = assetsTxt;
+
+    var ulD = $('#tzDels'); ulD.innerHTML = '';
+    if (state.dels.length === 0) {
+      ulD.innerHTML = '<li>Конкретные deliverables уточним на discovery <span class="est">после первой встречи</span></li>';
+    } else {
+      state.dels.forEach(function(d){
+        var p = delsPricing[d];
+        var range = p ? fmtMoney(p[0])+'-'+fmtMoney(p[1]) : '—';
+        ulD.innerHTML += '<li>'+(delsTitle[d] || d)+'<span class="est">'+range+'</span></li>';
+      });
+    }
+
+    var ulP = $('#tzPhases'); ulP.innerHTML = '';
+    var phases = buildTzPhases();
+    phases.forEach(function(ph){
+      ulP.innerHTML += '<li><strong>' + ph.num + ' · ' + ph.title + '</strong> — ' + ph.tasks.join(' · ') + '<span class="est">'+ph.time+'</span></li>';
+    });
+
+    var est = calcEstimate();
+    var clientB = budgetRanges[state.budget] || [0,0];
+    $('#tzBudgetEst').textContent = est[0] === 0 && est[1] === 0 ? '—' : fmtMoney(est[0])+' - '+fmtMoney(est[1]);
+    $('#tzBudgetClient').textContent = clientB[1] >= 2000 ? '$200K+' : fmtMoney(clientB[0])+' - '+fmtMoney(clientB[1]);
+    var note = $('#tzBudgetNote'); note.innerHTML = '';
+    if (est[1] && clientB[1]) {
+      if (clientB[1] < est[0]) note.innerHTML = '<div class="budget-warn">Внимание: указанный бюджет ниже минимальной оценки. Сократим scope или поэтапно.</div>';
+      else if (clientB[0] > est[1]) note.innerHTML = '<div class="budget-ok">Бюджет с запасом — есть пространство для премиум-исполнения.</div>';
+      else note.innerHTML = '<div class="budget-ok">Бюджет совпадает с оценкой. Финализируем scope на discovery.</div>';
+    }
+
+    var ulK = $('#tzKpis'); ulK.innerHTML = '';
+    generateKpis().forEach(function(k){ ulK.innerHTML += '<li>'+k+'</li>'; });
+
+    $('#tzContacts').innerHTML = '<strong>'+ (state.contact.name||'—') +'</strong> · ' + (state.contact.company||'—') + '<br>' + 'Email: ' + (state.contact.email||'—') + (state.contact.phone ? ' · Телефон/мессенджер: ' + state.contact.phone : '');
+
+    var subj = encodeURIComponent('TZ — ' + (state.contact.company || 'PSG') + ' — ' + idStr);
+    var body = encodeURIComponent('TZ автоматически сформировано на сайте Premium Selection.\n\n' +
+      'Компания: '+(state.contact.company||'—')+'\nКонтакт: '+(state.contact.name||'—')+
+      '\nEmail: '+(state.contact.email||'—')+'\nТелефон: '+(state.contact.phone||'—')+
+      '\n\nЦель: '+(labels.goal||'—')+'\nУточнение: '+(labels.branch||'—')+
+      '\nОтрасль: '+(labels.industry||'—')+'\nРазмер: '+(labels.size||'—')+
+      '\n\nЕсть: '+(state.assets.length?state.assets.join(', '):'—')+
+      '\nНужно: '+(state.dels.length?state.dels.join(', '):'—')+
+      '\n\nСрок: '+(labels.urgency||'—')+'\nБюджет: '+(labels.budget||'—')+
+      '\nОценка: '+fmtMoney(est[0])+'-'+fmtMoney(est[1])+
+      '\n\nКомментарий: '+(state.contact.note||'—'));
+    $('#emailBtn').href = 'mailto:' + (state.contact.email || '') + '?subject=' + subj + '&body=' + body;
+    $('#sendPsgBtn').href = 'mailto:hello@premium-selection.com?subject=' + subj + '&body=' + body;
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.opt');
+    if (btn) {
+      var k = btn.dataset.key, v = btn.dataset.value, l = btn.dataset.label;
+      if (btn.classList.contains('multi')) {
+        if (v === 'nothing' && k === 'assets') {
+          var box = btn.closest('.options');
+          box.querySelectorAll('.opt.selected').forEach(function(o){ o.classList.remove('selected'); });
+          state.assets = [];
+        } else if (k === 'assets') {
+          var noth = document.querySelector('.opt[data-value="nothing"][data-key="assets"]');
+          if (noth) noth.classList.remove('selected');
+          state.assets = state.assets.filter(function(x){ return x !== 'nothing'; });
+        }
+        btn.classList.toggle('selected');
+        var arr = state[k];
+        if (btn.classList.contains('selected')) {
+          if (arr.indexOf(v) === -1) arr.push(v);
+          labels[k+'_'+v] = l;
+        } else {
+          state[k] = arr.filter(function(x){ return x !== v; });
+        }
+        var stepEl = btn.closest('.step');
+        var countEl = stepEl.querySelector('.selected-count');
+        if (countEl) countEl.textContent = 'Выбрано: ' + stepEl.querySelectorAll('.opt.selected').length;
+        renderCrumbs();
+      } else {
+        state[k] = v; labels[k] = l;
+        btn.closest('.options').querySelectorAll('.opt').forEach(function(o){ o.classList.remove('selected'); });
+        btn.classList.add('selected');
+        if (k === 'goal') { renderStep2(); show('2'); }
+        else if (k === 'branch') { show('3'); }
+        else if (k === 'industry') { show('4'); }
+        else if (k === 'size') { show('5'); }
+      }
+      return;
+    }
+    var back = e.target.closest('.step-back');
+    if (back) { show(back.dataset.back); return; }
+    var next = e.target.closest('.next-btn');
+    if (next && next.dataset.next) {
+      if (next.dataset.from === '7') {
+        if (!state.urgency || !state.budget) { alert('Выберите срочность и бюджет.'); return; }
+      }
+      show(next.dataset.next);
+      return;
+    }
+    if (e.target.id === 'generateBtn') {
+      var name = $('#cName').value.trim();
+      var company = $('#cCompany').value.trim();
+      var email = $('#cEmail').value.trim();
+      var phone = $('#cPhone').value.trim();
+      var note = $('#cNote').value.trim();
+      if (!name || !company || !email) { alert('Заполните имя, компанию и email.'); return; }
+      state.contact = { name:name, company:company, email:email, phone:phone, note:note };
+      renderTz(); show('final');
+      return;
+    }
+    if (e.target.id === 'downloadBtn') { window.print(); return; }
+    if (e.target.id === 'restartBtn') {
+      state = { goal:null, branch:null, industry:null, size:null, assets:[], dels:[], urgency:null, budget:null, contact:{} };
+      labels = {};
+      $$('.opt.selected').forEach(function(o){ o.classList.remove('selected'); });
+      $$('.selected-count').forEach(function(c){ c.textContent = 'Выбрано: 0'; });
+      $('#contactForm').reset();
+      show('1');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
