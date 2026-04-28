@@ -3,1635 +3,1003 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Premium Selection — Мы создаём грандиозные проекты</title>
-<meta name="description" content="Premium Selection — рекламно-производственная компания по созданию стильной брендированной продукции для вашего бизнеса.">
-<link rel="canonical" href="https://premium-selection.com/">
-
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:locale" content="ru_RU">
-<meta property="og:site_name" content="Premium Selection">
-<meta property="og:title" content="Premium Selection — Мы создаём грандиозные проекты">
-<meta property="og:description" content="Marketing & Research · Production · IT. Группа компаний под единым стандартом качества. Tashkent · Dubai.">
-<meta property="og:url" content="https://premium-selection.com/">
-<meta property="og:image" content="https://premium-selection.com/images/13.jpg">
-<meta property="og:image:width" content="2310">
-<meta property="og:image:height" content="1341">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Premium Selection — Мы создаём грандиозные проекты">
-<meta name="twitter:description" content="Marketing & Research · Production · IT. Группа компаний под единым стандартом качества.">
-<meta name="twitter:image" content="https://premium-selection.com/images/13.jpg">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Premium Selection Group",
-  "url": "https://premium-selection.com/",
-  "logo": "https://premium-selection.com/images/13.jpg",
-  "foundingDate": "2018",
-  "description": "Группа компаний под единым стандартом качества — Marketing & Research, Production, IT.",
-  "address": [
-    { "@type": "PostalAddress", "addressLocality": "Tashkent", "addressCountry": "UZ" },
-    { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" }
-  ],
-  "contactPoint": [
-    { "@type": "ContactPoint", "contactType": "Marketing & Research", "telephone": "+998-71-200-11-01", "email": "marketing@premium-selection.com", "availableLanguage": ["ru","en","uz"] },
-    { "@type": "ContactPoint", "contactType": "Production",          "telephone": "+998-71-200-11-02", "email": "production@premium-selection.com", "availableLanguage": ["ru","en","uz"] },
-    { "@type": "ContactPoint", "contactType": "IT",                  "telephone": "+998-71-200-11-03", "email": "it@premium-selection.com",          "availableLanguage": ["ru","en","uz"] }
-  ]
-}
-</script>
+<title>Premium Selection — создаём грандиозные проекты</title>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#F5F2EA"/>
+  <text x="100" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-weight="900" font-size="72" fill="#0A0A0A" letter-spacing="-4">P/S</text>
+  <circle cx="148" cy="60" r="6" fill="#E0301E"/>
+</svg>
+</template>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Цвет — Pantone 485 (исторический Ogilvy red), контраст с белым 5.4:1 — проходит WCAG AA */
-    --red:   #DA291C;
-    --ink:   #0A0A0A;
-    --paper: #FFFFFF;
-    --dim:   rgba(255,255,255,.78);
-    --dim-2: rgba(255,255,255,.55);
+/* ============================================================
+   P/S System tokens
+   ============================================================ */
+:root{
+  --ink-900:#0A0A0A;
+  --ink-700:#2A2A2A;
+  --ink-500:rgba(10,10,10,.62);
+  --ink-300:rgba(10,10,10,.32);
+  --ink-200:rgba(10,10,10,.18);
+  --ink-100:rgba(10,10,10,.08);
 
-    /* Типографическая шкала (модульная, шаг ~1.25) */
-    --fs-display: clamp(40px, 7vw, 132px);    /* PREMIUM / SELECTION — крупнее, центр доминирует */
-    --fs-body-l:  clamp(22px, 2.7vw, 48px);   /* Мы, lede — пропорционально ~+40% */
-    --fs-h2:      clamp(28px, 3vw, 38px);
-    --fs-body:    clamp(14px, 1.05vw, 16px);  /* описания, абзацы */
-    --fs-tag:     11px;                        /* mono-метки в ячейках */
-    --fs-meta:    11px;                        /* mono-метки в мета-полосах */
-    --fs-cap:     10px;                        /* самый мелкий технический */
+  --paper:#FAFAF8;
+  --paper-2:#F2F2EE;
+  --paper-card:#FFFFFF;
 
-    /* Семьи — Commissioner для display и текста, JetBrains Mono для технических меток */
-    --ff-display: 'Commissioner',system-ui,sans-serif;
-    --ff-text:    'Commissioner',system-ui,sans-serif;
-    --ff-mono:    'JetBrains Mono',ui-monospace,monospace;
+  --red:#DA291C;
+  --red-700:#B6231A;
+  --red-50:#FCEBE9;
 
-    /* Единый горизонтальный отступ для всех колонтитулов hero */
-    --gutter: clamp(20px, 3vw, 40px);
+  --ff-display:'Commissioner',system-ui,sans-serif;
+  --ff-text:'Commissioner',system-ui,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,monospace;
 
-    /* Letter-spacing rules */
-    --ls-display: -.025em;
-    --ls-body:    0;
-    --ls-mono:    .12em;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  html, body {
-    background:var(--red); color:#fff;
-    font-family:var(--ff-text); font-size:var(--fs-body);
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    font-feature-settings: "ss01", "cv11", "kern";
-  }
-  a { color:inherit; text-decoration:none; }
+  --ls-display:-.025em;
+  --ls-mono:.12em;
 
-  /* ============ NAV ============ */
-  .nav {
-    position:fixed; top:0; left:0; right:0; z-index:30;
-    padding:20px var(--gutter);
-    display:flex; justify-content:space-between; align-items:center;
-    color:#fff;
-    /* Контент навбара инвертируется относительно текущего фона за ним.
-       Над белой секцией → чёрный, над чёрной → белый, над красной → циан.
-       Без JS-свопа — фон сам "влияет" на читаемость. */
-    mix-blend-mode: difference;
-    isolation: isolate;
-  }
-  .nav-logo { display:flex; align-items:center; gap:10px; }
-  .nav-logo svg { width:34px; height:36px; display:block; }
-  .nav-logo .wm {
-    font-family:var(--ff-text); font-weight:700; font-size:var(--fs-cap);
-    letter-spacing:.18em; line-height:1.05;
-  }
-  .nav-meta {
-    display:flex; gap:24px;
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-  }
-  .nav-meta a:hover { opacity:.6; }
-  /* .nav.dark больше не нужен — blend-mode на .nav сам даёт контраст. */
-  /* Класс может оставаться от JS — он визуально no-op. */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;--s-8:64px;--s-9:96px;--s-10:128px;
+  --gutter: clamp(20px, 4vw, 56px);
 
-  /* ============ HERO ============ */
-  .hero {
-    height:100vh; padding:68px var(--gutter) 14px;
-    display:flex; flex-direction:column; gap:10px;
-  }
+  --r-md:4px;
+  --r-pill:999px;
 
-  /* Верхний колонтитул */
-  .top {
-    display:flex; justify-content:space-between; align-items:center;
-    padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.22);
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:var(--dim); flex-shrink:0;
-  }
-  .top strong { color:#fff; font-weight:500; }
+  --line: var(--ink-200);
 
-  /* === ГРИД 8×6 — модульная сетка с большой вариативностью ===
-     Средние ряды растянуты, чтобы крупный центр-текст (4 строки) дышал */
-  .grid {
-    flex:1; min-height:0;
-    display:grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: 0.7fr 0.7fr 1.6fr 1.6fr 0.7fr 0.7fr;
-    gap:8px;
-  }
+  --ease: cubic-bezier(.65,0,.35,1);
+  --t-fast:180ms;
+  --t-base:300ms;
+  --t-slow:550ms;
+}
 
-  .cell {
-    position:relative; overflow:hidden; border-radius:2px;
-    transition: transform .55s cubic-bezier(.65,0,.35,1),
-                background-color .9s cubic-bezier(.65,0,.35,1);
-  }
-  /* Во время паузы между фото — ячейка прозрачна, красный фон страницы виден */
-  .cell.void { background-color: transparent !important; }
-  .cell:hover { transform: translateY(-3px); }
-  .cell .frame {
-    position:absolute; inset:0; opacity:0;
-    transition: opacity 1s cubic-bezier(.65,0,.35,1);
-  }
-  .cell .frame.active { opacity:1; }
-  .cell .frame picture { display:block; width:100%; height:100%; }
-  .cell .frame img {
-    width:100%; height:100%; object-fit:cover; display:block;
-  }
-  .work picture, .post .cover picture { display:block; width:100%; height:100%; }
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+.scroll-progress{
+  position:fixed;left:0;top:0;height:2px;width:0%;
+  background:var(--red);z-index:60;
+  transition:width 80ms linear;
+}
 
-  /* Цвета */
-  .c1 { background:#1791C9; }
-  .c2 { background:#93A09A; }
-  .c3 { background:#BDC074; }
-  .c4 { background:#EE7E10; }
-  .c5 { background:#F4E89A; }
-  .c6 { background:#B5DAEF; }
-  .c7 { background:#2E2A27; }
-  .c8 { background:#1F4E79; }
-  .c9 { background:#A53A30; }
-  .c10 { background:#0F4C5C; }
-  .c11 { background:#7D6B4F; }
-  .c12 { background:#3A4F3A; }
+/* ============================================================
+   REVEAL — fade-up on scroll
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 700ms var(--ease), transform 700ms var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:80ms}
+.reveal.d2{transition-delay:160ms}
+.reveal.d3{transition-delay:240ms}
+.reveal.d4{transition-delay:320ms}
 
-  /* === Раскладка 8×6: 7 разных размеров блоков, всё по клеткам ===
-     1×1 · 2×1 · 1×2 · 2×2 · 3×1 · 1×3 · 2×3
-     Центр-текст: cols 3-6, rows 3-4 (4×2). */
+/* ============================================================
+   MARQUEE — фоновый тикер
+   ============================================================ */
+.marquee{
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:var(--s-5) 0;background:var(--paper);
+}
+.marquee-track{
+  display:flex;gap:var(--s-7);white-space:nowrap;
+  animation:marquee 38s linear infinite;
+  font-family:var(--ff-display);font-weight:900;
+  font-size:clamp(40px,5vw,84px);line-height:1;letter-spacing:var(--ls-display);
+  text-transform:uppercase;
+}
+.marquee-track span{display:inline-flex;align-items:center;gap:var(--s-7);color:var(--ink-900)}
+.marquee-track em{font-style:normal;color:var(--red)}
+.marquee-track i{font-style:normal;color:var(--ink-200);font-family:var(--ff-mono);font-size:.3em;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500}
+@keyframes marquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
 
-  /* Верх (r1-2) */
-  .b1  { grid-column: 1 / 3; grid-row: 1 / 3; } /* 2×2 */
-  .b2  { grid-column: 3 / 5; grid-row: 1 / 2; } /* 2×1 */
-  .b3  { grid-column: 5 / 6; grid-row: 1 / 3; } /* 1×2 башня */
-  .b4  { grid-column: 6 / 8; grid-row: 1 / 2; } /* 2×1 */
-  .b5  { grid-column: 8 / 9; grid-row: 1 / 4; } /* 1×3 узкая колонна */
-  .b6  { grid-column: 3 / 4; grid-row: 2 / 3; } /* 1×1 */
-  .b7  { grid-column: 4 / 5; grid-row: 2 / 3; } /* 1×1 */
-  .b8  { grid-column: 6 / 8; grid-row: 2 / 3; } /* 2×1 */
+/* ============================================================
+   BIG CTA — magnetic+halo
+   ============================================================ */
+.cta-mag{
+  position:relative;
+  transition:background var(--t-base) var(--ease), color var(--t-base) var(--ease);
+}
+.cta-mag::before{display:none}
 
-  /* Середина (r3-4) — текст */
-  .b9  { grid-column: 1 / 2; grid-row: 3 / 5; } /* 1×2 узкий */
-  .b10 { grid-column: 2 / 3; grid-row: 3 / 5; } /* 1×2 узкий */
-  .center { grid-column: 3 / 7; grid-row: 3 / 5; }
-  .b11 { grid-column: 7 / 8; grid-row: 3 / 4; } /* 1×1 */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);color:var(--ink-900);
+  font-family:var(--ff-text);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-wrap:pretty;
+}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;border:0;background:transparent;color:inherit}
 
-  /* Низ (r4-6) — большая правая колонна и низ */
-  .b12 { grid-column: 7 / 9; grid-row: 4 / 7; } /* 2×3 — крупная вертикаль */
+.t-mono{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
 
-  .b13 { grid-column: 1 / 3; grid-row: 5 / 7; } /* 2×2 угол */
-  .b14 { grid-column: 3 / 6; grid-row: 5 / 6; } /* 3×1 длинный бар */
-  .b15 { grid-column: 6 / 7; grid-row: 5 / 6; } /* 1×1 */
-  .b16 { grid-column: 3 / 4; grid-row: 6 / 7; } /* 1×1 */
-  .b17 { grid-column: 4 / 6; grid-row: 6 / 7; } /* 2×1 */
-  .b18 { grid-column: 6 / 7; grid-row: 6 / 7; } /* 1×1 */
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header{
+  position:sticky;top:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--s-3) var(--gutter);
+  background:rgba(250,250,248,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:auto;color:var(--ink-900);
+}
+.brand .mark svg{width:100%;height:auto;display:block}
+.brand .wm{font-family:var(--ff-mono);font-weight:500;font-size:9px;letter-spacing:.18em;line-height:1.05;text-transform:uppercase}
+.nav-links{display:flex;gap:22px;align-items:center;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-700)}
+.nav-links a{transition:color var(--t-base) var(--ease)}
+.nav-links a:hover{color:var(--red)}
+.nav-links .lang{display:flex;gap:8px;color:var(--ink-300)}
+.nav-links .lang b{color:var(--ink-900);font-weight:500}
+.nav-cta{display:flex;align-items:center;gap:14px}
+@media (max-width:920px){.nav-links{display:none}}
 
-  /* === Центральный текст — выровнен по левому краю, всё в Inter === */
-  .center {
-    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
-    text-align:left; color:#fff; padding: 6px 12px;
-    overflow:visible; min-height:0;
-  }
-  .center .we {
-    font-family:var(--ff-text); font-weight:500;
-    font-size: var(--fs-body-l);
-    line-height: 1.1; letter-spacing:var(--ls-body);
-    margin-bottom: clamp(2px, 0.25vw, 5px);
-    color:#fff;
-  }
-  .center .brand-line {
-    font-family:var(--ff-display); font-weight:900;
-    font-size: var(--fs-display);
-    line-height: .96; letter-spacing:var(--ls-display);
-    color:#fff; text-transform:uppercase;
-    font-style:normal;
-  }
-  /* Selection теперь такого же стиля и веса, что PREMIUM */
-  .center .brand-line.italic {
-    font-weight:900; font-style:normal;
-    text-transform:uppercase; letter-spacing:var(--ls-display);
-  }
-  .center .lede {
-    margin-top: clamp(2px, 0.25vw, 5px);
-    font-family:var(--ff-text); font-weight:500; font-style:normal;
-    font-size: var(--fs-body-l);
-    line-height: 1.1; color:#fff; letter-spacing:var(--ls-body);
-  }
-  /* «Думающая» плашка: белый блок никогда не исчезает, ширина следует за контентом
-     (inline-block + auto width). Внутри typewriter-эффект + мигающий курсор.
-     Click → contenteditable: юзер пишет своё слово, Enter → modal. */
-  .center .lede em {
-    font-style:normal; color:var(--ink); font-weight:700;
-    background:#fff; padding:.05em .35em .05em .25em; margin:0 .08em;
-    display:inline-block; vertical-align:baseline; white-space:nowrap;
-    transition: padding .25s ease;
-    cursor:pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .center .lede em[contenteditable="true"] {
-    cursor:text; outline: 2px solid var(--ink); outline-offset: 1px;
-  }
-  .center .lede em:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
-  .center .lede em::after {
-    content:'';
-    display:inline-block; vertical-align:baseline;
-    width:.08em; height:.95em; margin-left:.08em;
-    background:currentColor;
-    transform: translateY(.12em);
-    animation: psg-caret 1.05s steps(1) infinite;
-  }
-  /* При фокусе показывается системный caret — наша анимированная полоска не нужна */
-  .center .lede em[contenteditable="true"]::after,
-  .center .lede em:focus::after { display:none; }
-  @keyframes psg-caret { 50% { opacity:0; } }
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:var(--r-pill);
+  font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500;
+  transition:background var(--t-base) var(--ease),color var(--t-base) var(--ease),border-color var(--t-base) var(--ease),transform var(--t-fast) var(--ease);
+}
+.btn:focus-visible{outline:2px solid var(--ink-900);outline-offset:3px}
+.btn::after{content:"→"}
+.btn--primary{background:var(--ink-900);color:#fff}
+.btn--primary:hover{background:var(--red);transform:translateY(-1px)}
+.btn--accent{background:var(--red);color:#fff}
+.btn--accent:hover{background:var(--ink-900)}
+.btn--ghost{border:1.5px solid var(--ink-900);color:var(--ink-900)}
+.btn--ghost:hover{background:var(--ink-900);color:#fff}
+.btn--ghost-paper{border:1.5px solid #fff;color:#fff}
+.btn--ghost-paper:hover{background:#fff;color:var(--ink-900)}
+.btn--sm{padding:10px 16px;font-size:10px}
+.btn--lg{padding:18px 32px;font-size:12px}
 
-  /* === Низ === */
-  .bottom {
-    display:grid; grid-template-columns: 1fr auto; gap:32px; align-items:end;
-    padding-top:14px; border-top:1px solid rgba(255,255,255,.18);
-  }
-  .bottom .desc {
-    font-family:var(--ff-text); font-size:var(--fs-body); line-height:1.5;
-    color:#fff; max-width:62ch; letter-spacing:var(--ls-body);
-  }
-  .bottom .cta {
-    display:inline-flex; align-items:center; gap:12px;
-    padding:14px 28px; border:1.5px solid #fff; border-radius:999px;
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:#fff; cursor:pointer; transition: all .3s; flex-shrink:0;
-  }
-  .bottom .cta:hover { background:var(--ink); border-color:var(--ink); color:#fff; }
-  .bottom .cta::after { content:'→'; }
+.link{display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color var(--t-base) var(--ease),border-color var(--t-base) var(--ease)}
+.link:hover{color:var(--red);border-color:var(--red)}
+.link::after{content:"→"}
 
-  .meta-bottom {
-    display:flex; justify-content:space-between; align-items:center;
-    font-family:var(--ff-mono); font-size:var(--fs-cap);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:var(--dim-2); padding-top:4px;
-  }
-  .meta-bottom strong { color:#fff; font-weight:500; }
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  padding:clamp(56px,7vw,112px) var(--gutter) clamp(48px,6vw,96px);
+  border-bottom:1px solid var(--line);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.45fr 1fr;gap:clamp(32px,5vw,80px);
+  align-items:end;
+}
+.hero-meta{
+  display:flex;justify-content:space-between;gap:var(--s-5);
+  font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);
+  padding-bottom:var(--s-5);margin-bottom:clamp(36px,5vw,72px);
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.hero-meta .red{color:var(--red)}
+.hero-meta a{color:inherit;transition:color var(--t-base) var(--ease)}
+.hero-meta a:hover{color:var(--ink-900)}
+.hero-meta .grp{display:inline-flex;gap:6px;align-items:center}
+.hero-meta .sep{color:var(--ink-300)}
+.hero h1{
+  font-family:var(--ff-display);font-weight:900;
+  font-size:clamp(54px,9vw,180px);line-height:1.02;letter-spacing:var(--ls-display);text-transform:uppercase;
+  max-width:14ch;
+  padding-top:.12em;
+}
+.hero h1 em{font-style:normal;color:var(--red);position:relative;display:inline-block}
+.hero h1 em::after{display:none}
+.hero h1 .ws{display:block;line-height:1.02;padding-top:.04em;padding-bottom:.02em}
+.hero h1 .ws > i{font-style:normal;display:inline-block}
+.hero-side{display:flex;flex-direction:column;gap:var(--s-5);align-self:end}
+.hero-lede{font-size:clamp(17px,1.5vw,21px);line-height:1.45;color:var(--ink-700);max-width:42ch}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:var(--s-3)}
 
-  /* ============================================================
-     ============== СЕКЦИИ ПОСЛЕ HERO ============================
-     ============================================================ */
+.hero-stats{
+  margin-top:clamp(48px,6vw,88px);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--ink-900);
+  border-bottom:1px solid var(--ink-900);
+}
+.hero-stats .stat{padding:var(--s-6) var(--s-5);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s-3)}
+.hero-stats .stat:nth-child(4n){border-right:0}
+.hero-stats .v{font-family:var(--ff-display);font-weight:900;font-size:clamp(32px,4vw,64px);line-height:.9;letter-spacing:var(--ls-display);font-variant-numeric:tabular-nums}
+.hero-stats .v em{font-style:normal;color:var(--red)}
+.hero-stats .k{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+@media (max-width:1024px){.hero-grid{grid-template-columns:1fr}}
+@media (max-width:760px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
 
-  .section-pad { padding: clamp(80px, 10vw, 160px) clamp(20px, 4vw, 56px); }
-  .container { max-width: 1480px; margin: 0 auto; }
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+section{padding:clamp(64px,8vw,128px) var(--gutter);border-bottom:1px solid var(--line)}
+section.alt{background:var(--paper-2)}
+section.ink{background:var(--ink-900);color:#fff;border-color:transparent}
+section.ink .ink-line{border-color:rgba(255,255,255,.18)!important}
+section.ink .muted{color:rgba(255,255,255,.55)}
 
-  .section-head {
-    display:flex; flex-direction: row-reverse;
-    justify-content:space-between; align-items:flex-end;
-    gap: clamp(24px, 4vw, 80px);
-    padding-bottom: 24px;
-    border-bottom: 1px solid currentColor;
-    opacity: .95;
-  }
-  .section-head .label {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    opacity: .6; flex-shrink:0;
-    align-self: flex-end; margin-bottom: 6px;
-  }
-  .section-head h2 {
-    font-family:var(--ff-display); font-weight:900;
-    font-size: clamp(40px, 6vw, 92px);
-    line-height: .96; letter-spacing: var(--ls-display);
-    text-transform: uppercase;
-    text-align: left;
-  }
+.section-head{
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "num   ."
+    "title aside";
+  column-gap:clamp(20px,3vw,48px);
+  row-gap:var(--s-3);
+  align-items:end;
+  padding-bottom:var(--s-5);margin-bottom:clamp(40px,5vw,72px);
+  border-bottom:1px solid var(--line);
+}
+section.ink .section-head{border-color:rgba(255,255,255,.18)}
+.section-head .num{grid-area:num;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);white-space:nowrap}
+.section-head h2{grid-area:title;font-family:var(--ff-display);font-weight:900;font-size:clamp(36px,5.5vw,84px);line-height:.95;letter-spacing:var(--ls-display);text-transform:uppercase;margin:0}
+.section-head h2 em{font-style:normal;color:var(--red)}
+.section-head .aside{grid-area:aside;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);max-width:30ch;text-align:right;align-self:end;padding-bottom:14px}
+section.ink .section-head .aside{color:rgba(255,255,255,.55)}
+@media (max-width:760px){.section-head{grid-template-columns:1fr;grid-template-areas:"num" "title" "aside"}.section-head .aside{text-align:left;max-width:none}}
 
-  /* === DIRECTIONS === */
-  .directions { background: var(--ink); color:#fff; }
-  .directions .section-head {
-    padding: 0 clamp(20px, 4vw, 56px) 24px; max-width:1480px; margin:0 auto;
-    /* Красная линия — визуально отделяет шапку секции от списка направлений */
-    border-bottom-color: var(--red);
-  }
-  .dir-rows { border-top: 1px solid rgba(255,255,255,.18); }
-  .dir-row {
-    display:grid; grid-template-columns: 80px 1fr auto;
-    align-items:center; gap: clamp(24px, 4vw, 60px);
-    padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 56px);
-    border-bottom: 1px solid rgba(255,255,255,.18);
-    cursor:pointer; position:relative; overflow:hidden;
-    color:#fff; text-decoration:none;
-    transition: background .55s cubic-bezier(.65,0,.35,1), color .35s;
-  }
-  .dir-row:hover { background: var(--red); }
-  .dir-row .dr-num {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); color: rgba(255,255,255,.5);
-    transition:color .35s;
-    /* Маркер-маленький номер: всегда top-right своей колонки.
-       Название и стрелка остаются по дефолту (центр по вертикали). */
-    align-self: start;
-    justify-self: end;
-  }
-  .dir-row:hover .dr-num { color: rgba(255,255,255,.9); }
-  .dir-row .dr-name {
-    font-family:var(--ff-display); font-weight:900;
-    font-size: clamp(36px, 6vw, 92px); line-height:1;
-    letter-spacing:var(--ls-display); text-transform:uppercase;
-    transition: transform .55s cubic-bezier(.65,0,.35,1);
-  }
-  .dir-row:hover .dr-name { transform: translateX(20px); }
-  .dir-row .dr-desc {
-    font-size: var(--fs-body); line-height:1.5; color:rgba(255,255,255,.65);
-    margin-top: 10px; max-width: 56ch;
-  }
-  .dir-row .dr-arrow {
-    width:56px; height:56px; border-radius:50%; border:1px solid #fff;
-    display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; transition: all .55s cubic-bezier(.65,0,.35,1);
-  }
-  .dir-row .dr-arrow svg { width:18px; height:18px; transition: transform .55s; }
-  .dir-row:hover .dr-arrow { background:#fff; transform: rotate(-45deg); }
-  .dir-row:hover .dr-arrow path { stroke: var(--red); }
+/* ============================================================
+   DIRECTIONS LIST
+   ============================================================ */
+.dir-list{border-top:1.5px solid currentColor}
+.dir-list a{
+  display:grid;grid-template-columns:80px 1fr 1fr 64px;gap:var(--s-5);align-items:center;
+  padding:clamp(28px,3.5vw,44px) 0;border-bottom:1px solid var(--line);
+  transition:padding var(--t-base) var(--ease),background var(--t-base) var(--ease),color var(--t-base) var(--ease);
+  position:relative;
+}
+section.ink .dir-list a{border-bottom-color:rgba(255,255,255,.18)}
+.dir-list a:hover{background:var(--ink-900);color:#fff;padding-left:var(--s-5);padding-right:var(--s-5)}
+section.ink .dir-list a:hover{background:var(--red);color:#fff}
+.dir-list .num{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);color:var(--ink-300);transition:color var(--t-base) var(--ease)}
+section.ink .dir-list .num{color:rgba(255,255,255,.4)}
+.dir-list a:hover .num{color:rgba(255,255,255,.5)}
+.dir-list .name{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,4.4vw,72px);line-height:1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.dir-list .desc{font-size:14px;line-height:1.45;color:var(--ink-500);max-width:38ch}
+section.ink .dir-list .desc{color:rgba(255,255,255,.6)}
+.dir-list a:hover .desc{color:rgba(255,255,255,.7)}
+.dir-list .arr{
+  width:48px;height:48px;border-radius:50%;border:1px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-mono);font-size:14px;
+  transition:transform var(--t-base) var(--ease),background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),color var(--t-base) var(--ease);
+  justify-self:end;
+}
+.dir-list a:hover .arr{transform:rotate(-45deg);background:var(--red);border-color:var(--red);color:#fff}
+section.ink .dir-list a:hover .arr{background:#fff;border-color:#fff;color:var(--red)}
+@media (max-width:900px){
+  .dir-list a{grid-template-columns:60px 1fr 48px;grid-template-rows:auto auto;}
+  .dir-list .desc{grid-column:2/4}
+}
 
-  /* === ABOUT === */
-  .about {
-    background: var(--paper); color: var(--ink);
-  }
-  .about .section-head { color: var(--ink); border-bottom-color: var(--ink); }
-  .about-head {
-    margin-bottom: clamp(40px, 5vw, 72px);
-  }
-  .about-grid {
-    display:grid; grid-template-columns: 1.2fr 1fr; gap: clamp(40px, 6vw, 96px);
-    align-items: start;
-  }
-  .about-manifest {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(32px, 4.4vw, 76px);
-    line-height: 1.04; letter-spacing: var(--ls-display);
-    color: var(--ink);
-  }
-  .about-manifest em {
-    font-style: italic; font-weight: 800; color: var(--red);
-  }
-  .about-text {
-    font-size: clamp(15px, 1.2vw, 18px); line-height: 1.55; color: var(--ink);
-  }
-  .about-text p + p { margin-top: 18px; }
+/* ============================================================
+   SERVICES GRID — что внутри направлений
+   ============================================================ */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ink-900);border-bottom:1px solid var(--ink-900)}
+.svc{
+  padding:var(--s-6);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:var(--s-3);
+  transition:background var(--t-base) var(--ease);
+}
+.svc:hover{background:var(--paper-card)}
+.svc:nth-child(3n){border-right:0}
+.svc:nth-last-child(-n+3){border-bottom:0}
+.svc .meta{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red)}
+.svc h3{font-family:var(--ff-display);font-weight:700;font-size:22px;line-height:1.15}
+.svc ul{list-style:none;display:grid;gap:6px;font-size:14px;color:var(--ink-700);margin-top:var(--s-2)}
+.svc li{padding-left:14px;position:relative}
+.svc li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:1px;background:var(--ink-300)}
+@media (max-width:900px){.services-grid{grid-template-columns:1fr}.svc{border-right:0}.svc:nth-last-child(-n+3){border-bottom:1px solid var(--line)}.svc:last-child{border-bottom:0}}
 
-  /* === STATS === */
-  .stats {
-    background: var(--red); color: #fff;
-    padding: clamp(60px, 7vw, 100px) clamp(20px, 4vw, 56px);
-    display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
-    border-top: 1px solid rgba(255,255,255,.18);
-  }
-  .stat .num {
-    display:block;
-    font-family: var(--ff-display); font-weight: 900;
-    font-size: clamp(48px, 6.5vw, 132px);
-    line-height: .9; letter-spacing: var(--ls-display);
-    color:#fff; margin-bottom: 14px;
-  }
-  .stat .lbl {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(255,255,255,.78);
-  }
+/* ============================================================
+   CASES — большая editorial-сетка
+   ============================================================ */
+.cases{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(20px,3vw,40px) var(--s-5);align-items:end}
+.case{display:flex;flex-direction:column;gap:var(--s-4);cursor:pointer;min-width:0}
+.case .ph{
+  aspect-ratio:4/3;
+  background:linear-gradient(135deg,var(--ink-900),#3a3a3a);
+  border-radius:2px;
+  display:flex;align-items:flex-end;justify-content:flex-start;
+  padding:var(--s-5);color:rgba(255,255,255,.45);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;
+  position:relative;overflow:hidden;
+  transition:transform var(--t-slow) var(--ease);
+  will-change:transform;
+}
+.case .ph::after{
+  content:"VIEW →";position:absolute;right:var(--s-5);top:var(--s-5);
+  width:72px;height:72px;border-radius:50%;background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);font-weight:500;
+  transform:scale(0);transition:transform 380ms var(--ease);
+}
+.case:hover .ph{transform:scale(1.015)}
+.case:hover .ph::after{transform:scale(1)}
+.case .info .ttl{transition:color var(--t-base) var(--ease)}
+.case:hover .info .ttl{color:var(--red)}
+.case .ph::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 12px,transparent 12px 24px);pointer-events:none}
+.case .ph.has-img{background:var(--paper-2)}
+.case .ph.has-img::before{display:none}
+.case .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 380ms var(--ease)}
+.case:hover .ph.has-img img{transform:scale(1.03)}
+.case .ph.tone-red{background:linear-gradient(135deg,var(--red) 0%,#7a1810 100%)}
+.case .ph.tone-paper{background:var(--paper-2);color:var(--ink-300)}
+.case .ph.tone-ink{background:var(--ink-900)}
 
-  /* === WORKS === */
-  .works { background: var(--paper); color: var(--ink); }
-  .works .section-head { color: var(--ink); border-bottom-color: var(--ink); }
-  .works-head { margin-bottom: clamp(40px, 5vw, 72px); }
+.case .info{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--s-4);align-items:end}
+.case .info > div{min-width:0}
+.case .info .ttl{font-family:var(--ff-display);font-weight:800;font-size:clamp(16px,1.4vw,20px);line-height:1.1;letter-spacing:var(--ls-display);text-transform:uppercase;hyphens:none;overflow-wrap:normal;word-break:keep-all;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case-1 .info .ttl, .case-2 .info .ttl{font-size:clamp(18px,1.7vw,24px)}
+.case .info .meta{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.case .info .metric{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,3.2vw,44px);line-height:.9;letter-spacing:var(--ls-display);white-space:nowrap}
+.case .info .metric small{display:block;font-family:var(--ff-mono);font-size:9px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);font-weight:500;margin-top:6px}
 
-  .works-grid {
-    display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px;
-  }
-  .work {
-    position:relative; overflow:hidden; border-radius: 2px;
-    cursor:pointer; transition: transform .5s cubic-bezier(.65,0,.35,1);
-  }
-  .work:hover { transform: translateY(-4px); }
-  .work img { width:100%; height:100%; object-fit:cover; display:block; }
-  .work .meta {
-    position:absolute; left:0; right:0; bottom:0;
-    padding: 18px 20px;
-    background: linear-gradient(to top, rgba(0,0,0,.65), transparent);
-    color:#fff;
-  }
-  .work .meta .lbl {
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    opacity: .85;
-  }
-  .work .meta h3 {
-    font-family: var(--ff-text); font-weight: 700;
-    font-size: clamp(16px, 1.5vw, 22px); line-height: 1.15; margin-top: 4px;
-  }
-  .work.w1 { grid-column: span 7; aspect-ratio: 16/10; }
-  .work.w2 { grid-column: span 5; aspect-ratio: 16/10; }
-  .work.w3 { grid-column: span 4; aspect-ratio: 1/1; }
-  .work.w4 { grid-column: span 4; aspect-ratio: 1/1; }
-  .work.w5 { grid-column: span 4; aspect-ratio: 1/1; }
-  .work.w6 { grid-column: span 8; aspect-ratio: 2/1; }
-  .work.w7 { grid-column: span 4; aspect-ratio: 4/5; }
-  .works-cta {
-    margin-top: clamp(40px, 4vw, 56px); display:flex; justify-content: center;
-  }
-  .ghost-btn {
-    display:inline-flex; align-items:center; gap:12px;
-    padding: 16px 36px; border: 1.5px solid currentColor; border-radius: 999px;
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    cursor:pointer; transition: all .3s;
-  }
-  .ghost-btn:hover { background: currentColor; }
-  .ghost-btn:hover span { color: var(--paper); }
-  .ghost-btn::after { content:'→'; }
+/* layout positions */
+.case-1{grid-column:1/8}
+.case-2{grid-column:8/13}
+.case-3{grid-column:1/5}
+.case-4{grid-column:5/9}
+.case-5{grid-column:9/13}
+@media (max-width:1100px){.case-3,.case-4,.case-5{grid-column:span 6}}
+@media (max-width:900px){.case-1,.case-2,.case-3,.case-4,.case-5{grid-column:1/-1}}
 
-  /* === NEWS / BLOG === */
-  .news { background: var(--paper); color: var(--ink); }
-  .news .section-head { color: var(--ink); border-bottom-color: var(--ink); }
-  .news-head { margin-bottom: clamp(40px, 5vw, 72px); }
-  .news-grid {
-    display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .post {
-    display:flex; flex-direction:column; gap: 16px;
-    cursor:pointer; transition: transform .4s cubic-bezier(.65,0,.35,1);
-    text-decoration:none; color:var(--ink);
-  }
-  .post:hover { transform: translateY(-4px); }
-  .post .cover {
-    aspect-ratio: 16 / 11; overflow:hidden; border-radius: 2px;
-    background: #eee;
-  }
-  .post .cover img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .6s; }
-  .post:hover .cover img { transform: scale(1.04); }
-  .post .meta {
-    display:flex; gap: 16px; align-items:center;
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(0,0,0,.5);
-  }
-  .post .meta .cat { color: var(--red); font-weight: 500; }
-  .post h3 {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(20px, 1.8vw, 26px);
-    line-height: 1.15; letter-spacing: -.015em;
-    color: var(--ink);
-  }
-  .post p {
-    font-size: var(--fs-body); line-height: 1.55;
-    color: rgba(0,0,0,.65); max-width: 42ch;
-  }
-  .post .read {
-    margin-top: auto;
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: var(--ink); border-bottom: 1px solid var(--ink);
-    width: fit-content; padding-bottom: 2px;
-    transition: color .3s, border-color .3s;
-  }
-  .post:hover .read { color: var(--red); border-color: var(--red); }
-  .news-cta { margin-top: clamp(40px, 4vw, 56px); display:flex; justify-content:center; }
+/* ============================================================
+   CLIENTS — лента логотипов как маркеры
+   ============================================================ */
+.clients{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.cli{
+  padding:var(--s-6) var(--s-4);
+  border-right:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-display);font-weight:800;font-size:18px;letter-spacing:-.02em;
+  color:var(--ink-500);
+  transition:color var(--t-base) var(--ease),background var(--t-base) var(--ease);
+}
+.cli:hover{color:var(--ink-900);background:var(--paper-card)}
+.cli:nth-child(6n){border-right:0}
+@media (max-width:760px){.clients{grid-template-columns:repeat(3,1fr)}.cli:nth-child(6n){border-right:1px solid var(--line)}.cli:nth-child(3n){border-right:0}}
 
-  /* === CONTACT === */
-  .contact { background: var(--ink); color: #fff; }
-  .contact-grid {
-    display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-  }
-  .contact-card {
-    border: 1px solid rgba(255,255,255,.22);
-    padding: clamp(24px, 2.5vw, 40px);
-    display:flex; flex-direction:column; gap: 16px;
-    transition: all .35s cubic-bezier(.65,0,.35,1);
-    text-decoration:none; color:#fff;
-    min-height: 360px;
-  }
-  .contact-card:hover { background: var(--red); border-color: var(--red); transform: translateY(-4px); }
-  .contact-card .cc-num {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); color: var(--red);
-    transition: color .35s;
-  }
-  .contact-card:hover .cc-num { color:#fff; }
-  .contact-card h3 {
-    font-family: var(--ff-display); font-weight: 800;
-    font-size: clamp(28px, 3vw, 44px);
-    line-height: 1; letter-spacing: var(--ls-display);
-    text-transform: uppercase;
-  }
-  .contact-card .cc-desc {
-    font-size: var(--fs-body); line-height: 1.55;
-    color: rgba(255,255,255,.78); margin-bottom: auto;
-  }
-  .contact-card:hover .cc-desc { color: rgba(255,255,255,.9); }
-  .contact-card .cc-line {
-    font-size: var(--fs-body);
-    border-bottom: 1px solid rgba(255,255,255,.3);
-    padding-bottom: 4px; width: fit-content;
-  }
-  .contact-card .cc-mngr {
-    font-family:var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(255,255,255,.5);
-  }
+/* ============================================================
+   PROCESS — 4 шага
+   ============================================================ */
+.process{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1.5px solid currentColor}
+.step{
+  padding:var(--s-6) var(--s-5);border-right:1px solid rgba(255,255,255,.18);
+  display:flex;flex-direction:column;gap:var(--s-4);
+  position:relative;
+}
+.step:nth-child(4n){border-right:0}
+.step .n{font-family:var(--ff-display);font-weight:900;font-size:clamp(48px,6vw,96px);line-height:.85;letter-spacing:var(--ls-display);color:var(--red)}
+.step h3{font-family:var(--ff-display);font-weight:800;font-size:22px;line-height:1.1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.step p{font-size:14px;line-height:1.5;color:rgba(255,255,255,.65);max-width:32ch}
+.step .when{margin-top:auto;padding-top:var(--s-5);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.4)}
+@media (max-width:900px){.process{grid-template-columns:1fr 1fr}.step:nth-child(2n){border-right:0}.step:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}.step{border-bottom:1px solid rgba(255,255,255,.18)}}
+@media (max-width:560px){.process{grid-template-columns:1fr}.step{border-right:0!important}}
 
-  /* === MODAL «Мы создаём ___ Ваш проект» === */
-  /* Юзер вводит своё слово в плашку → Enter → эта модалка с вилкой:
-     ТЗ-генератор или прямой контакт. Без сохранения данных — закрытие = reset.
-     Использует <dialog> с native центровкой (margin auto) и ::backdrop. */
-  .psg-modal {
-    width:min(720px, calc(100% - 40px)); max-width:none;
-    max-height:90vh; padding:0; border:0; border-radius:4px;
-    background:transparent; color:var(--ink); overflow:visible;
-  }
-  .psg-modal::backdrop { background:rgba(10,10,10,.86); }
-  .psg-modal-overlay { display:none; } /* legacy: nативный ::backdrop сам затемняет */
-  .psg-modal-card {
-    position:relative; background:var(--paper); color:var(--ink);
-    width:100%; max-height:90vh; overflow-y:auto;
-    padding:clamp(28px, 4vw, 56px); border-radius:4px;
-    transform:scale(.96); opacity:0;
-    transition:transform .25s cubic-bezier(.65,0,.35,1), opacity .25s;
-  }
-  .psg-modal[open] .psg-modal-card { transform:scale(1); opacity:1; }
-  .psg-modal-close {
-    position:absolute; top:14px; right:14px;
-    width:40px; height:40px; border-radius:50%;
-    background:transparent; border:1px solid rgba(0,0,0,.15);
-    cursor:pointer; font-size:22px; line-height:1; color:var(--ink);
-    transition:background .2s, border-color .2s;
-  }
-  .psg-modal-close:hover { background:var(--ink); color:#fff; border-color:var(--ink); }
-  .psg-modal-meta {
-    display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;
-    margin-bottom:24px; padding-bottom:18px;
-    border-bottom:1px solid rgba(0,0,0,.12);
-  }
-  .psg-modal-meta-label {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.55); flex-shrink:0;
-  }
-  .psg-modal-meta-label::after { content:":"; margin-left:.1em; }
-  .psg-modal-word {
-    background:var(--ink); color:#fff;
-    padding:.05em .3em; display:inline-block; vertical-align:baseline;
-    font-family:var(--ff-display); font-weight:800;
-    font-size:clamp(22px, 2.6vw, 36px); letter-spacing:var(--ls-display);
-    text-transform:uppercase; line-height:1.1;
-    word-break:break-word; max-width:100%;
-  }
-  .psg-modal-title {
-    font-family:var(--ff-display); font-weight:900;
-    font-size:clamp(26px, 3.4vw, 44px); line-height:1.05;
-    letter-spacing:var(--ls-display); text-transform:uppercase;
-  }
-  .psg-modal-sub { display:none; }
-  .psg-modal-cta-pair {
-    display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;
-  }
-  .psg-cta-card {
-    text-align:left; border:1.5px solid var(--ink); background:transparent;
-    padding:20px 22px; cursor:pointer; color:var(--ink);
-    display:flex; flex-direction:column; gap:8px;
-    transition:background .25s, color .25s, border-color .25s, transform .25s;
-  }
-  .psg-cta-card:hover, .psg-cta-card.active {
-    background:var(--red); color:#fff; border-color:var(--red); transform:translateY(-2px);
-  }
-  .psg-cta-num {
-    font-family:var(--ff-mono); font-size:var(--fs-cap);
-    letter-spacing:var(--ls-mono); text-transform:uppercase; opacity:.65;
-  }
-  .psg-cta-title {
-    font-family:var(--ff-display); font-weight:800;
-    font-size:clamp(18px, 1.6vw, 22px); letter-spacing:var(--ls-display);
-    line-height:1.1; text-transform:uppercase;
-  }
-  .psg-cta-desc { font-size:var(--fs-body); line-height:1.4; opacity:.8; }
-  .psg-form { max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.65,0,.35,1); }
-  .psg-form.open { max-height:800px; margin-top:24px; }
-  .psg-form-intro {
-    font-family:var(--ff-display); font-weight:600;
-    font-size:clamp(18px, 1.6vw, 22px); line-height:1.3;
-    margin-bottom:20px; padding-bottom:16px;
-    border-bottom:1px solid rgba(0,0,0,.12);
-  }
-  .psg-form-intro strong {
-    background:var(--ink); color:#fff; padding:0 .2em;
-    font-weight:600;
-  }
-  .psg-form-fields { display:grid; gap:18px; }
-  .psg-input-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-  .psg-field { display:flex; flex-direction:column; gap:6px; }
-  .psg-field label {
-    font-family:var(--ff-mono); font-size:var(--fs-meta);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.55);
-  }
-  .psg-field input {
-    width:100%; padding:10px 0; font:inherit; color:var(--ink);
-    background:transparent; border:0; border-bottom:1.5px solid rgba(0,0,0,.25);
-    outline:none; transition:border-color .2s;
-  }
-  .psg-field input:focus { border-bottom-color:var(--red); }
-  .psg-field input.invalid { border-bottom-color:var(--red); }
-  .psg-checkbox-row {
-    display:flex; gap:10px; align-items:flex-start;
-    cursor:pointer; padding:6px 0; line-height:1.4;
-    font-size:var(--fs-body); color:var(--ink);
-  }
-  .psg-checkbox-row input { accent-color:var(--red); margin-top:3px; flex-shrink:0; }
-  .psg-msgr-note {
-    font-family:var(--ff-mono); font-size:var(--fs-cap);
-    letter-spacing:var(--ls-mono); text-transform:uppercase;
-    color:rgba(0,0,0,.55); margin-left:26px;
-  }
-  .psg-form-actions {
-    margin-top:24px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
-  }
-  .psg-submit {
-    background:var(--red); color:#fff; border:0; padding:14px 28px; border-radius:999px;
-    font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono);
-    text-transform:uppercase; cursor:pointer; transition:background .25s;
-  }
-  .psg-submit:hover { background:var(--ink); }
-  .psg-submit::after { content:" →"; }
-  .psg-back {
-    background:transparent; color:rgba(0,0,0,.55); border:0; padding:14px 12px;
-    font-family:var(--ff-mono); font-size:var(--fs-meta); letter-spacing:var(--ls-mono);
-    text-transform:uppercase; cursor:pointer;
-  }
-  .psg-back:hover { color:var(--ink); }
-  .psg-success { text-align:center; padding:32px 0; }
-  .psg-success h2 {
-    font-family:var(--ff-display); font-weight:900;
-    font-size:clamp(28px, 3.2vw, 44px); letter-spacing:var(--ls-display);
-    text-transform:uppercase; margin-bottom:12px;
-  }
-  .psg-success p { font-size:var(--fs-body-l); color:rgba(0,0,0,.7); }
-  @media (max-width: 760px) {
-    .psg-modal {
-      width:100vw; max-width:none; height:100vh; max-height:none;
-      margin:0; border-radius:0;
-    }
-    .psg-modal-card {
-      width:100%; height:100%; max-height:none;
-      border-radius:0; padding:24px 20px 32px;
-    }
-    .psg-modal-cta-pair { grid-template-columns:1fr; }
-    .psg-input-row { grid-template-columns:1fr; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .psg-modal-overlay, .psg-modal-card, .psg-form, .psg-cta-card {
-      transition:none !important;
-    }
-  }
+/* ============================================================
+   BRIEF CTA — большая «связаться» полоса
+   ============================================================ */
+.brief{
+  padding:clamp(72px,9vw,160px) var(--gutter);
+  background:var(--ink-900);color:#fff;
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);
+  align-items:end;
+  border-bottom:1px solid transparent;
+}
+.brief .lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:var(--s-5)}
+.brief h2{font-family:var(--ff-display);font-weight:900;font-size:clamp(40px,7vw,128px);line-height:.92;letter-spacing:var(--ls-display);text-transform:uppercase}
+.brief h2 em{font-style:normal;color:var(--red)}
+.brief .side{display:flex;flex-direction:column;gap:var(--s-5)}
+.brief p{color:rgba(255,255,255,.72);font-size:17px;line-height:1.5;max-width:42ch}
+.brief .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.brief .lines{
+  margin-top:var(--s-6);padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.18);
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);
+}
+.brief .lines strong{display:block;color:#fff;font-weight:500;margin-bottom:6px;font-size:14px;letter-spacing:.04em;text-transform:none;font-family:var(--ff-text)}
+.brief .lines a{color:#fff}
+.brief .lines a:hover{color:var(--red)}
+@media (max-width:900px){.brief{grid-template-columns:1fr}}
 
-  /* === FOCUS — клавиатурная навигация === */
-  :focus { outline: none; }
-  a:focus-visible, button:focus-visible,
-  .cta:focus-visible, .dir-row:focus-visible, .work:focus-visible,
-  .ghost-btn:focus-visible, .post:focus-visible, .contact-card:focus-visible,
-  .nav-meta a:focus-visible, .ftr-col a:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-  .about :focus-visible, .works :focus-visible, .news :focus-visible {
-    outline-color: var(--ink);
-  }
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  background:var(--ink-900);color:rgba(255,255,255,.55);
+  padding:var(--s-6) var(--gutter) var(--s-5);
+  display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:var(--s-6);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.footer .col strong{display:block;color:#fff;font-weight:500;margin-bottom:var(--s-4);font-size:11px}
+.footer ul{list-style:none;display:grid;gap:8px}
+.footer a:hover{color:#fff}
+.footer-bottom{
+  grid-column:1/-1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--s-4);
+  padding-top:var(--s-5);margin-top:var(--s-3);border-top:1px solid rgba(255,255,255,.12);
+}
+.footer-bottom strong{color:#fff;font-weight:500}
+@media (max-width:760px){.footer{grid-template-columns:1fr 1fr}}
 
-  /* === FOOTER === */
-  footer.site-footer {
-    background: #050505; color: #fff;
-    padding: clamp(60px, 6vw, 96px) clamp(20px, 4vw, 56px) 32px;
-  }
-  .ftr-grid {
-    max-width: 1480px; margin: 0 auto;
-    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
-  }
-  .ftr-brand .brand-mark {
-    font-family: var(--ff-display); font-weight: 900;
-    font-size: clamp(40px, 4vw, 72px);
-    line-height: .95; letter-spacing: var(--ls-display); text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .ftr-brand .brand-mark .dot { color: var(--red); }
-  .ftr-brand p { font-size: var(--fs-body); color: rgba(255,255,255,.6); max-width: 32ch; line-height: 1.55; }
-  .ftr-col h5 {
-    font-family: var(--ff-mono); font-size: var(--fs-meta);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(255,255,255,.5); font-weight: 500;
-    margin-bottom: 16px;
-  }
-  .ftr-col ul { list-style: none; padding: 0; margin: 0; }
-  .ftr-col ul li { padding: 4px 0; }
-  .ftr-col ul a { font-size: var(--fs-body); color: #fff; }
-  .ftr-col ul a:hover { color: var(--red); }
-  .ftr-bottom {
-    max-width: 1480px; margin: 56px auto 0; padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,.12);
-    display:flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    font-family: var(--ff-mono); font-size: var(--fs-cap);
-    letter-spacing: var(--ls-mono); text-transform: uppercase;
-    color: rgba(255,255,255,.5);
-  }
+/* ============================================================
+   utils
+   ============================================================ */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:var(--r-pill);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500}
+.tag--red{background:var(--red);color:#fff}
+.tag--ghost{border:1px solid currentColor}
 
-  /* === Responsive section adjustments === */
-  @media (max-width: 1100px) {
-    .news-grid { grid-template-columns: repeat(2, 1fr); }
-    .works-grid { grid-template-columns: repeat(8, 1fr); }
-    .work.w1, .work.w2, .work.w6 { grid-column: span 8; }
-    .work.w3, .work.w4, .work.w5 { grid-column: span 4; }
-    .work.w7 { grid-column: span 4; }
-  }
-  @media (max-width: 760px) {
-    .stats { grid-template-columns: repeat(2, 1fr); gap: 32px; }
-    .about-grid { grid-template-columns: 1fr; }
-    .news-grid { grid-template-columns: 1fr; gap: 32px; }
-    .contact-grid { grid-template-columns: 1fr; }
-    .contact-card { min-height: auto; }
-    .ftr-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-    .dir-row { grid-template-columns: 60px 1fr auto; padding: 32px 20px; }
-    .dir-row .dr-name { font-size: clamp(28px, 7vw, 48px); }
-    .dir-row .dr-desc { display: none; }
-    .works-grid { grid-template-columns: repeat(4, 1fr); }
-    .work.w1, .work.w2, .work.w6 { grid-column: span 4; }
-    .work.w3, .work.w4, .work.w5, .work.w7 { grid-column: span 2; aspect-ratio: 1/1; }
-  }
+/* ============================================================
+   FEATURED CASE — TMZ
+   ============================================================ */
+.feat{padding:clamp(72px,9vw,140px) var(--gutter) clamp(80px,9vw,140px);background:var(--ink-900);color:#fff;border-top:1px solid rgba(255,255,255,.08)}
+.feat .feat-head{display:grid;grid-template-columns:1fr auto;gap:clamp(20px,3vw,48px);align-items:end;padding-bottom:var(--s-5);margin-bottom:clamp(40px,5vw,72px);border-bottom:1px solid rgba(255,255,255,.18)}
+.feat .feat-head .num{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);display:block;margin-bottom:var(--s-3)}
+.feat .feat-head h2{font-family:var(--ff-display);font-weight:900;font-size:clamp(40px,6vw,96px);line-height:.98;letter-spacing:var(--ls-display);text-transform:uppercase;padding-top:.08em}
+.feat .feat-head h2 em{font-style:normal;color:var(--red)}
+.feat .feat-head .aside{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);max-width:34ch;text-align:right;align-self:end}
 
-  /* ============ TABLET / NARROW DESKTOP ============ */
-  @media (max-width: 1280px) and (min-width: 901px) {
-    /* Скрываем мелкие 1×1, чтобы сетка не дробилась */
-    .b6, .b7, .b3, .b15, .b16, .b18 { display:none; }
+.feat-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18);margin-bottom:clamp(40px,5vw,64px)}
+.feat-meta .m{padding:var(--s-6) var(--s-5);border-right:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:var(--s-3)}
+.feat-meta .m:nth-child(4){border-right:0}
+.feat-meta .m .v{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,3.6vw,56px);line-height:.9;letter-spacing:var(--ls-display)}
+.feat-meta .m .v em{font-style:normal;color:var(--red)}
+.feat-meta .m .k{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55)}
+@media (max-width:760px){.feat-meta{grid-template-columns:repeat(2,1fr)} .feat-meta .m:nth-child(2n){border-right:0}}
 
-    /* Расширяем соседей, чтобы заполнить пробелы */
-    .b2  { grid-column: 3 / 6; grid-row: 1 / 2; }   /* было 2×1 c3-4, стало 3×1 c3-5 */
-    .b8  { grid-column: 3 / 8; grid-row: 2 / 3; }   /* большая полоса 5×1 поверх скрытых b6/b7/b3 */
-    .b14 { grid-column: 3 / 7; grid-row: 5 / 6; }   /* 4×1 — закрывает место b15 */
-    .b17 { grid-column: 3 / 7; grid-row: 6 / 7; }   /* 4×1 — закрывает b16/b18 */
-  }
+.feat-gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s-4);grid-auto-flow:dense}
+.feat-gallery figure{position:relative;overflow:hidden;background:#1a1a1a;margin:0}
+.feat-gallery figure img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 700ms var(--ease)}
+.feat-gallery figure:hover img{transform:scale(1.04)}
+.feat-gallery figure figcaption{position:absolute;left:var(--s-4);bottom:var(--s-4);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:#fff;background:rgba(0,0,0,.5);padding:6px 10px;backdrop-filter:blur(6px)}
+.feat-gallery .g-1{grid-column:span 8;aspect-ratio:16/9}
+.feat-gallery .g-2{grid-column:span 4;aspect-ratio:4/5}
+.feat-gallery .g-3{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-4{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-5{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-6{grid-column:span 6;aspect-ratio:16/9}
+.feat-gallery .g-7{grid-column:span 6;aspect-ratio:16/9}
+@media (max-width:1024px){.feat-gallery .g-1,.feat-gallery .g-2,.feat-gallery .g-3,.feat-gallery .g-4,.feat-gallery .g-5,.feat-gallery .g-6,.feat-gallery .g-7{grid-column:span 6}}
+@media (max-width:600px){.feat-gallery figure{grid-column:1/-1!important}}
 
-  /* ============ MOBILE ============ */
-  @media (max-width: 900px) {
-    .nav { padding:14px 16px; }
-    .nav-meta { display:none; }
-    .hero { height:100vh; min-height:560px; padding:64px 12px 12px; gap:8px; }
-
-    .grid {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      gap:6px; flex:1; min-height:0;
-    }
-    /* На мобильном оставляем всего ~6 ячеек:
-       2 строки сверху, центр в середине (4 ряда), 2 строки снизу.
-       Лишние блоки скрываем — Premium Selection всегда по центру. */
-    .b1  { grid-column: 1 / 3; grid-row: 1 / 3; }   /* 2×2 верх-лево */
-    .b2  { grid-column: 3 / 5; grid-row: 1 / 2; }   /* 2×1 верх-право */
-    .b4  { grid-column: 3 / 5; grid-row: 2 / 3; }   /* 2×1 ниже */
-
-    .center { grid-column: 1 / 5; grid-row: 3 / 7; padding:18px 8px; }
-
-    .b13 { grid-column: 1 / 3; grid-row: 7 / 9; }   /* 2×2 низ-лево */
-    .b14 { grid-column: 3 / 5; grid-row: 7 / 8; }   /* 2×1 низ-право */
-    .b12 { grid-column: 3 / 5; grid-row: 8 / 9; }   /* 2×1 */
-
-    /* всё остальное скрываем */
-    .b3, .b5, .b6, .b7, .b8, .b9, .b10, .b11,
-    .b15, .b16, .b17, .b18 { display:none; }
-
-    .center .we, .center .lede { font-size: clamp(18px, 5.6vw, 30px); }
-    .center .brand-line { font-size: clamp(48px, 15vw, 96px); }
-    .bottom .desc { font-size: 14px; line-height: 1.5; }
-    .bottom { grid-template-columns:1fr; gap:12px; }
-    .bottom .cta { justify-self:flex-start; }
-    .meta-bottom { flex-direction:column; gap:4px; align-items:flex-start; }
-  }
-
-  /* ============ REDUCED MOTION ============ */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: .01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: .01ms !important;
-      scroll-behavior: auto !important;
-    }
-    .cell .frame { opacity: 1 !important; }
-    .center .lede em.fade { opacity: 1 !important; }
-  }
+.feat-foot{display:flex;justify-content:space-between;align-items:center;margin-top:clamp(40px,5vw,64px);padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.18);flex-wrap:wrap;gap:var(--s-5)}
+.feat-foot .scope{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);max-width:60ch;line-height:1.6}
+.feat-foot .scope strong{color:#fff;font-weight:500}
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="logo-ps-mini" viewBox="0 0 80 90">
-      <text x="0" y="62" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">P</text>
-      <text x="34" y="86" font-family="Commissioner, sans-serif" font-weight="900" font-size="72" letter-spacing="-2" fill="currentColor">S</text>
-      <line x1="52" y1="4" x2="22" y2="88" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
-    </symbol>
+<div class="scroll-progress" id="scrollProgress"></div>
 
-  </defs>
-</svg>
-
-<nav class="nav">
-  <a href="index.html" class="nav-logo">
-    <svg><use href="#logo-ps-mini"/></svg>
+<!-- ============ HEADER ============ -->
+<header class="header" data-screen-label="00 Header">
+  <a href="#" class="brand" aria-label="Premium Selection">
+    <span class="mark"><img src="assets/mark.svg" alt="" width="36" height="48"></span>
     <span class="wm">PREMIUM<br>SELECTION</span>
   </a>
-  <div class="nav-meta">
-    <a href="works.html">Работы</a>
-    <a href="discover.html">Диагностика</a>
-    <a href="#news">Новости</a>
-    <a href="about.html">О&nbsp;нас</a>
-    <a href="contact.html">Контакты</a>
-    <a href="#">RU · EN · UZ</a>
+  <nav class="nav-links">
+    <a href="#directions">Направления</a>
+    <a href="#cases">Работы</a>
+    <a href="#process">Процесс</a>
+    <a href="#about">О&nbsp;нас</a>
+    <a href="#brief">Контакты</a>
+    <span class="lang"><b>RU</b><a href="#">EN</a><a href="#">UZ</a></span>
+  </nav>
+  <div class="nav-cta">
+    <a href="#brief" class="btn btn--primary btn--sm">Связаться</a>
   </div>
-</nav>
+</header>
 
-<section class="hero">
-
-  <div class="top">
-    <span id="liveDate"><span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · LOADING…</span>
-    <span id="liveTime">—</span>
-    <span><strong>TASHKENT</strong> · UTC+5</span>
-  </div>
-
-  <div class="grid" id="grid">
-    <div class="cell c1 b1"></div>
-    <div class="cell c2 b2"></div>
-    <div class="cell c3 b3"></div>
-    <div class="cell c4 b4"></div>
-    <div class="cell c5 b5"></div>
-    <div class="cell c6 b6"></div>
-    <div class="cell c7 b7"></div>
-    <div class="cell c8 b8"></div>
-
-    <div class="cell c9 b9"></div>
-    <div class="cell c10 b10"></div>
-
-    <div class="center">
-      <div class="we">Мы</div>
-      <div class="brand-line">Premium</div>
-      <div class="brand-line italic">Selection</div>
-      <div class="lede">создаём <em id="rotWord">грандиозные</em>&nbsp;проекты</div>
-    </div>
-
-    <div class="cell c11 b11"></div>
-
-    <div class="cell c12 b12"></div>
-
-    <div class="cell c2 b13"></div>
-    <div class="cell c4 b14"></div>
-    <div class="cell c5 b15"></div>
-    <div class="cell c6 b16"></div>
-    <div class="cell c8 b17"></div>
-    <div class="cell c9 b18"></div>
+<!-- ============ HERO ============ -->
+<section class="hero" data-screen-label="01 Hero" style="border-bottom:1px solid var(--line)">
+  <div class="hero-meta">
+    <span class="grp">
+      <span class="red">●</span>
+      <a href="#about">С&nbsp;2018</a>
+      <span class="sep">·</span>
+      <a href="https://maps.google.com/?q=Tashkent,+Sharaf+Rashidov+St+17" target="_blank" rel="noopener">Tashkent</a>
+      <span class="sep">·</span>
+      <a href="https://maps.google.com/?q=DMCC+Business+Centre+Dubai" target="_blank" rel="noopener">Dubai</a>
+    </span>
+    <span class="grp">
+      <a href="#svc-mr">Marketing</a>
+      <span class="sep">/</span>
+      <a href="#svc-prod">Production</a>
+      <span class="sep">/</span>
+      <a href="#svc-it">IT</a>
+    </span>
+    <span>— 28.04.2026</span>
   </div>
 
-  <div class="bottom">
-    <p class="desc">Мы&nbsp;решаем масштабные задачи с&nbsp;помощью стратегии и&nbsp;креатива&nbsp;— внедряя инновации и&nbsp;собирая решения на&nbsp;стыке областей, чтобы предлагать клиентам лучшие варианты для&nbsp;роста.</p>
-    <a href="#contact" class="cta">Связаться</a>
-  </div>
-
-  <div class="meta-bottom">
-    <span>SECTION 01 / HERO</span>
-    <span>12 НАПРАВЛЕНИЙ ПРОДУКЦИИ</span>
-    <span>SCROLL ↓</span>
-  </div>
-
-</section>
-
-<!-- ============================================================
-     ============ 02 — НАПРАВЛЕНИЯ =============================
-     ============================================================ -->
-<section class="directions section-pad" id="directions" style="padding-bottom:0;">
-  <div class="section-head">
-    <span class="label">02 — Направления</span>
-    <h2>Выбери&nbsp;своё</h2>
-  </div>
-
-  <div class="dir-rows">
-    <a href="marketing-research.html" class="dir-row">
-      <span class="dr-num">01</span>
-      <div>
-        <div class="dr-name">Marketing &amp; Research</div>
-        <p class="dr-desc">Стратегия, маркетинговые исследования, бизнес-аналитика и&nbsp;моделирование, креатив, консалтинг для&nbsp;зрелого бизнеса.</p>
-      </div>
-      <span class="dr-arrow">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
-      </span>
-    </a>
-
-    <a href="production.html" class="dir-row">
-      <span class="dr-num">02</span>
-      <div>
-        <div class="dr-name">Production</div>
-        <p class="dr-desc">Полиграфия, наружная реклама, POS-материалы, сувенирная продукция, брендированные носители&nbsp;— один подрядчик под&nbsp;весь бренд.</p>
-      </div>
-      <span class="dr-arrow">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
-      </span>
-    </a>
-
-    <a href="it.html" class="dir-row">
-      <span class="dr-num">03</span>
-      <div>
-        <div class="dr-name">IT</div>
-        <p class="dr-desc">Веб-разработка, мобильные приложения, системные интеграции, автоматизация процессов, IT-аутсорс и&nbsp;поддержка.</p>
-      </div>
-      <span class="dr-arrow">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-7l7 7-7 7" stroke="#fff" stroke-width="1.6"/></svg>
-      </span>
-    </a>
-  </div>
-</section>
-
-<!-- ============================================================
-     ============ 03 — О ГРУППЕ ================================
-     ============================================================ -->
-<section class="about section-pad" id="about">
-  <div class="container">
-    <div class="section-head about-head">
-      <span class="label">03 — О&nbsp;группе</span>
-      <h2 style="visibility:hidden;">·</h2>
-    </div>
-
-    <div class="about-grid">
-      <p class="about-manifest">
-        Мы&nbsp;собираем команды для&nbsp;задач, которые не&nbsp;решаются <em>одним</em> подрядчиком.
+  <div class="hero-grid">
+    <h1>
+      <span class="ws"><i>Создаём</i></span>
+      <span class="ws"><i>грандиозные</i></span>
+      <span class="ws"><i><em>проекты.</em></i></span>
+    </h1>
+    <div class="hero-side">
+      <p class="hero-lede">
+        Группа компаний полного цикла. Marketing&nbsp;&amp; Research, Production и&nbsp;IT под&nbsp;одной крышей&nbsp;— один подрядчик от&nbsp;стратегии до&nbsp;выкладки в&nbsp;ритейле.
       </p>
-      <div class="about-text">
-        <p>Premium Selection Group объединяет три самостоятельных направления под&nbsp;единым стандартом качества. Каждое работает автономно&nbsp;— со&nbsp;своими процессами, командой и&nbsp;ответственностью.</p>
-        <p>Это даёт клиенту главное: предсказуемость, прозрачность и&nbsp;единое окно входа, когда задачи требуют синтеза стратегии, продакшена и&nbsp;технологий.</p>
-        <p>Премиум для&nbsp;нас&nbsp;— это не&nbsp;золото и&nbsp;мрамор. Это уважение ко&nbsp;времени, ресурсу и&nbsp;решению клиента.</p>
+      <div class="hero-cta">
+        <a href="#brief" class="btn btn--primary btn--lg cta-mag">Собрать ТЗ за&nbsp;3&nbsp;минуты</a>
+        <a href="#cases" class="btn btn--ghost btn--lg">Посмотреть работы</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="v" data-to="7">00</span><span class="k">Лет на&nbsp;рынке</span></div>
+    <div class="stat"><span class="v" data-to="240">000</span><span class="k">Проектов реализовано</span></div>
+    <div class="stat"><span class="v" data-to="12">00</span><span class="k">Стран&nbsp;/ присутствие</span></div>
+    <div class="stat"><span class="v" data-to="3">00</span><span class="k">Направления бизнеса</span></div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" data-screen-label="01b Marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Marketing &amp; Research <i>— 01</i> <em>·</em> Production <i>— 02</i> <em>·</em> IT <i>— 03</i> <em>·</em> Tashkent <i>— HQ</i> <em>·</em> Dubai <i>— Office</i> <em>·</em> 240<em>+</em> projects <em>·</em> С&nbsp;2018 <em>·</em></span>
+    <span>Marketing &amp; Research <i>— 01</i> <em>·</em> Production <i>— 02</i> <em>·</em> IT <i>— 03</i> <em>·</em> Tashkent <i>— HQ</i> <em>·</em> Dubai <i>— Office</i> <em>·</em> 240<em>+</em> projects <em>·</em> С&nbsp;2018 <em>·</em></span>
+  </div>
+</div>
+
+<!-- ============ DIRECTIONS ============ -->
+<section id="directions" data-screen-label="02 Directions">
+  <div class="section-head">
+    <span class="num">— 01 / Направления</span>
+    <h2>Три направления.<br>Один <em>подрядчик.</em></h2>
+    <span class="aside">— Кейс, в&nbsp;котором задействованы все&nbsp;три, дешевле в&nbsp;коммуникации и&nbsp;быстрее в&nbsp;запуске на&nbsp;30–40&nbsp;%.</span>
+  </div>
+
+  <nav class="dir-list">
+    <a href="#svc-mr">
+      <span class="num">— 01</span>
+      <span class="name">Marketing<br>&amp; Research</span>
+      <span class="desc">Стратегия, исследования, бренд-трекинг, performance. Когда нужен план на&nbsp;год, а&nbsp;не&nbsp;разовая кампания.</span>
+      <span class="arr">→</span>
+    </a>
+    <a href="#svc-prod">
+      <span class="num">— 02</span>
+      <span class="name">Production</span>
+      <span class="desc">Полиграфия, наружка, POS, корпоративная одежда, сувенирка. Один подрядчик на&nbsp;все&nbsp;бренд-носители.</span>
+      <span class="arr">→</span>
+    </a>
+    <a href="#svc-it">
+      <span class="num">— 03</span>
+      <span class="name">IT</span>
+      <span class="desc">Сайты, e-commerce, мобильные приложения, интеграции с&nbsp;CRM. От&nbsp;дизайна до&nbsp;поддержки.</span>
+      <span class="arr">→</span>
+    </a>
+  </nav>
+</section>
+
+<!-- ============ SERVICES BREAKDOWN ============ -->
+<section class="alt" id="services" data-screen-label="03 Services">
+  <div class="section-head">
+    <span class="num">— 02 / Услуги</span>
+    <h2>Что внутри</h2>
+    <span class="aside">— Берём проект целиком или&nbsp;любой из&nbsp;девяти блоков отдельно. Команда&nbsp;— одна.</span>
+  </div>
+
+  <div class="services-grid" id="svc-mr">
+    <div class="svc">
+      <span class="meta">— 01.1 / Strategy</span>
+      <h3>Бренд-стратегия</h3>
+      <ul>
+        <li>Позиционирование и&nbsp;архитектура</li>
+        <li>Discovery, аудит ниши</li>
+        <li>Brand-book</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 01.2 / Research</span>
+      <h3>Исследования</h3>
+      <ul>
+        <li>Quanti / quali, U&amp;A</li>
+        <li>Brand-tracking</li>
+        <li>Customer journey</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 01.3 / Performance</span>
+      <h3>Performance &amp; SMM</h3>
+      <ul>
+        <li>Закупка &amp; медиаплан</li>
+        <li>Контент и&nbsp;копирайтинг</li>
+        <li>Аналитика, отчёты</li>
+      </ul>
+    </div>
+
+    <div class="svc" id="svc-prod">
+      <span class="meta">— 02.1 / Print</span>
+      <h3>Полиграфия</h3>
+      <ul>
+        <li>Каталоги, буклеты, отчёты</li>
+        <li>Упаковка и&nbsp;этикетка</li>
+        <li>Дизайн под&nbsp;печать</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 02.2 / OOH &amp; POS</span>
+      <h3>Наружка &amp; POS</h3>
+      <ul>
+        <li>Билборды, ситиформаты</li>
+        <li>Брендирование точек</li>
+        <li>Монтаж и&nbsp;логистика</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 02.3 / Apparel</span>
+      <h3>Корп. одежда &amp; сувенирка</h3>
+      <ul>
+        <li>Пошив, нанесение</li>
+        <li>Подбор материалов</li>
+        <li>Брендированные носители</li>
+      </ul>
+    </div>
+
+    <div class="svc" id="svc-it">
+      <span class="meta">— 03.1 / Web</span>
+      <h3>Сайты &amp; e-commerce</h3>
+      <ul>
+        <li>Лендинги, корпоративные</li>
+        <li>Интернет-магазины</li>
+        <li>Headless-стек</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 03.2 / Mobile</span>
+      <h3>Мобильные приложения</h3>
+      <ul>
+        <li>iOS &amp; Android, Flutter</li>
+        <li>UX/UI и&nbsp;прототипы</li>
+        <li>Поддержка и&nbsp;обновления</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 03.3 / Systems</span>
+      <h3>CRM &amp; интеграции</h3>
+      <ul>
+        <li>Bitrix, AmoCRM, кастом</li>
+        <li>API и&nbsp;аналитика</li>
+        <li>Аутстафф разработки</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASES ============ -->
+<section id="cases" data-screen-label="04 Cases">
+  <div class="section-head">
+    <span class="num">— 03 / Работы</span>
+    <h2>Избранное</h2>
+    <span class="aside">— Пять проектов из&nbsp;двухсот сорока. Полный список&nbsp;— на&nbsp;<a href="#" class="link">странице работ</a>.</span>
+  </div>
+
+  <div class="cases">
+    <article class="case case-1">
+      <div class="ph has-img">
+        <img src="assets/cases/unipay-tote.png" alt="UnionPay — корпоративные сувениры">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UnionPay · 2025 · Сувениры + продакшн</div>
+          <div class="ttl">Сувениры&nbsp;UnionPay</div>
+        </div>
+        <div class="metric">+38<em style="font-style:normal;color:var(--red)">%</em><small>retail sell-through</small></div>
+      </div>
+    </article>
+
+    <article class="case case-2">
+      <div class="ph has-img">
+        <img src="assets/cases/octobank-thermos-01.png" alt="Octobank — корпоративные термосы">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Octobank · 2025 · Дизайн&nbsp;+ продакшн</div>
+          <div class="ttl">Корп.&nbsp;термосы</div>
+        </div>
+        <div class="metric">500<small style="color:var(--ink-500)">units</small></div>
+      </div>
+    </article>
+
+    <article class="case case-3">
+      <div class="ph tone-red">— Sayyod&nbsp;/ Campaign</div>
+      <div class="info">
+        <div>
+          <div class="meta">Sayyod · 2024 · Campaign</div>
+          <div class="ttl">Кампания&nbsp;Sayyod</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case case-4">
+      <div class="ph has-img">
+        <img src="assets/cases/leading-set.png" alt="Leading — корпоративный набор">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Leading · 2025 · Corporate set</div>
+          <div class="ttl">Набор&nbsp;Leading</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case case-5">
+      <div class="ph has-img">
+        <img src="assets/cases/akfa-watch.jpg" alt="Akfa Lighting — мужские механические часы с лого">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Akfa · 2025 · Premium gift</div>
+          <div class="ttl">Часы&nbsp;Akfa&nbsp;550</div>
+        </div>
+        <div class="metric">44<small style="color:var(--ink-500)">mm · steel</small></div>
+      </div>
+    </article>
+  </div>
+
+  <div style="margin-top:clamp(40px,5vw,72px);display:flex;justify-content:flex-end">
+    <a href="#" class="btn btn--ghost btn--lg">Все&nbsp;240+ проектов</a>
+  </div>
+</section>
+
+<!-- ============ FEATURED CASE — TMZ ============ -->
+<section class="feat" data-screen-label="04b Featured TMZ" id="tmz">
+  <div class="feat-head">
+    <div>
+      <span class="num">— 04 / Featured case</span>
+      <h2>TMZ Group.<br>Завод, офисы,<br><em>фирменный вид.</em></h2>
+    </div>
+    <span class="aside">— Комплексный дизайн и&nbsp;брендирование производственных зданий, офисов, навигации и&nbsp;внешней архитектуры. 2024–2025.</span>
+  </div>
+
+  <div class="feat-meta">
+    <div class="m"><span class="v">08</span><span class="k">Объектов по&nbsp;республике</span></div>
+    <div class="m"><span class="v">04</span><span class="k">Языка навигации</span></div>
+    <div class="m"><span class="v">12<em>+</em></span><span class="k">Месяцев продакшна</span></div>
+    <div class="m"><span class="v">100<em>%</em></span><span class="k">In-house production</span></div>
+  </div>
+
+  <div class="feat-gallery">
+    <figure class="g-1"><img src="assets/cases/tmz/factory-day.jpg" alt="Завод TMZ днём"><figcaption>01 · Фасад завода</figcaption></figure>
+    <figure class="g-2"><img src="assets/cases/tmz/monument-night.jpg" alt="Монумент TMZ"><figcaption>02 · Стела</figcaption></figure>
+    <figure class="g-3"><img src="assets/cases/tmz/reception-dark.jpg" alt="Ресепшн главного офиса"><figcaption>03 · Reception</figcaption></figure>
+    <figure class="g-4"><img src="assets/cases/tmz/reception-light.jpg" alt="Ресепшн приёмного"><figcaption>04 · Приёмное</figcaption></figure>
+    <figure class="g-5"><img src="assets/cases/tmz/wayfinding.jpg" alt="Навигация Qabul Bo‘limi"><figcaption>05 · Wayfinding</figcaption></figure>
+    <figure class="g-6"><img src="assets/cases/tmz/lobby-sign.jpg" alt="Лобби сознаком TMZ"><figcaption>06 · Lobby</figcaption></figure>
+    <figure class="g-7"><img src="assets/cases/tmz/factory-night.jpg" alt="Завод ночью"><figcaption>07 · Ночная подсветка</figcaption></figure>
+    <figure class="g-1"><img src="assets/cases/tmz/sales-center.jpg" alt="Центр продаж TMZ"><figcaption>08 · Центр продаж</figcaption></figure>
+  </div>
+
+  <div class="feat-foot">
+    <div class="scope">
+      <strong>Скоуп:</strong> Наружные вывески и&nbsp;фасадные знаки · Монумент входной группы · Интерьер reception и&nbsp;лобби · Полная навигационная система · Бренд-элементы центра продаж
+    </div>
+    <a href="#" class="btn btn--accent btn--lg">Полный&nbsp;кейс</a>
+  </div>
+</section>
+
+<!-- ============ CLIENTS ============ -->
+<section class="alt" data-screen-label="05 Clients" style="padding-top:clamp(48px,5vw,72px);padding-bottom:clamp(48px,5vw,72px)">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s-5);flex-wrap:wrap;gap:var(--s-4)">
+    <span class="t-mono">— 04 / Клиенты · 60+ брендов с&nbsp;2018</span>
+    <a href="#" class="link" style="font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase">Все&nbsp;клиенты</a>
+  </div>
+  <div class="clients">
+    <div class="cli">UnionPay</div>
+    <div class="cli">Octobank</div>
+    <div class="cli">TMZ&nbsp;Group</div>
+    <div class="cli">Leading</div>
+    <div class="cli">Sayyod</div>
+    <div class="cli">Aral</div>
+    <div class="cli">Akfa</div>
+    <div class="cli">Humo</div>
+    <div class="cli">Artel</div>
+    <div class="cli">Beeline</div>
+    <div class="cli">UzAuto</div>
+    <div class="cli">Korzinka</div>
+    <div class="cli">Anor</div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="ink" id="process" data-screen-label="06 Process">
+  <div class="section-head">
+    <span class="num">— 05 / Процесс</span>
+    <h2>Как&nbsp;<em>работаем</em></h2>
+    <span class="aside">— Срок от&nbsp;первого письма до&nbsp;старта&nbsp;— 7&nbsp;дней. От&nbsp;старта до&nbsp;первого результата&nbsp;— 30.</span>
+  </div>
+
+  <div class="process">
+    <div class="step">
+      <span class="n">01</span>
+      <h3>Бриф</h3>
+      <p>Заполняете форму или&nbsp;звоним голосом. Чётко фиксируем цель, ограничения, бюджет.</p>
+      <span class="when">— Day 0–2</span>
+    </div>
+    <div class="step">
+      <span class="n">02</span>
+      <h3>Команда &amp; план</h3>
+      <p>Собираем команду из&nbsp;нужных направлений. План этапов и&nbsp;цен&nbsp;— в&nbsp;одном документе.</p>
+      <span class="when">— Day 3–7</span>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <h3>Спринты</h3>
+      <p>Работаем итерациями по&nbsp;2&nbsp;недели. Демо&nbsp;— в&nbsp;каждом конце спринта.</p>
+      <span class="when">— Day 8–60</span>
+    </div>
+    <div class="step">
+      <span class="n">04</span>
+      <h3>Запуск &amp; сопровождение</h3>
+      <p>Сдаём проект, остаёмся на&nbsp;поддержке. Первые метрики&nbsp;— через 30 дней после старта.</p>
+      <span class="when">— Day 60+</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" data-screen-label="07 About">
+  <div class="section-head">
+    <span class="num">— 06 / О&nbsp;нас</span>
+    <h2>Группа из&nbsp;трёх<br>компаний.</h2>
+    <span class="aside">— Команда&nbsp;— 80&nbsp;человек. Tashkent, Dubai, удалённо.</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(32px,5vw,80px);align-items:start">
+    <div style="display:grid;gap:var(--s-5);font-size:18px;line-height:1.55;color:var(--ink-700);max-width:62ch">
+      <p>Мы&nbsp;объединили три отдельные компании в&nbsp;одну группу, потому&nbsp;что клиенту проще иметь дело с&nbsp;одним подрядчиком. Не&nbsp;потому, что мы&nbsp;дешевле&nbsp;— потому, что одна команда быстрее принимает решения.</p>
+      <p>Marketing&nbsp;&amp; Research отвечает за&nbsp;«что и&nbsp;кому». Production&nbsp;— «в&nbsp;чём это&nbsp;увидят». IT&nbsp;— «через какие касания». Внутри одного проекта они&nbsp;сидят за&nbsp;одним столом.</p>
+      <p style="margin-top:var(--s-3)">
+        <a href="#" class="link" style="font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase">Полная&nbsp;история компании</a>
+      </p>
+    </div>
+
+    <div style="display:grid;gap:var(--s-5)">
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Tashkent · HQ</span>
+        <p style="font-family:var(--ff-display);font-weight:700;font-size:20px;line-height:1.2;margin-top:6px">ул.&nbsp;Шарафа Рашидова, 17, 5 этаж</p>
+      </div>
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Dubai · Office</span>
+        <p style="font-family:var(--ff-display);font-weight:700;font-size:20px;line-height:1.2;margin-top:6px">DMCC Business Centre, Lvl 1</p>
+      </div>
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Команда</span>
+        <p style="font-family:var(--ff-display);font-weight:900;font-size:48px;line-height:1;letter-spacing:var(--ls-display);margin-top:6px">80<em style="font-style:normal;color:var(--red)">/</em>3</p>
+        <p class="t-mono" style="margin-top:6px">— человек / направления</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     ============ 04 — ЦИФРЫ ===================================
-     ============================================================ -->
-<section class="stats" id="stats">
-  <div class="stat">
-    <span class="num">07</span>
-    <span class="lbl">Лет на&nbsp;рынке</span>
+<!-- ============ BRIEF CTA ============ -->
+<section class="brief" id="brief" data-screen-label="08 Brief">
+  <div>
+    <span class="lbl">— Связаться · brief@premiumselection.uz</span>
+    <h2>Готовы<br>начать?</h2>
   </div>
-  <div class="stat">
-    <span class="num">240+</span>
-    <span class="lbl">Реализованных проектов</span>
-  </div>
-  <div class="stat">
-    <span class="num">12</span>
-    <span class="lbl">Стран присутствия</span>
-  </div>
-  <div class="stat">
-    <span class="num">03</span>
-    <span class="lbl">Направления бизнеса</span>
-  </div>
-</section>
-
-<!-- ============================================================
-     ============ 05 — РАБОТЫ ==================================
-     ============================================================ -->
-<section class="works section-pad" id="works">
-  <div class="container">
-    <div class="section-head works-head">
-      <span class="label">05 — Избранные работы</span>
-      <h2>Что мы&nbsp;делаем</h2>
+  <div class="side">
+    <p>Расскажите о&nbsp;задаче в&nbsp;двух абзацах&nbsp;— или&nbsp;соберите ТЗ через короткий бриф. Ответим в&nbsp;течение рабочего дня.</p>
+    <div class="cta-row">
+      <a href="#" class="btn btn--accent btn--lg cta-mag">Собрать&nbsp;ТЗ за&nbsp;3 минуты</a>
+      <a href="mailto:brief@premiumselection.uz" class="btn btn--ghost-paper btn--lg">Написать&nbsp;на&nbsp;почту</a>
     </div>
-
-    <div class="works-grid">
-      <a href="#" class="work w1">
-        <picture><source srcset="images/13.webp" type="image/webp"><img src="images/13.jpg" alt="Айдентика Bayan 2025" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">01 / Brand identity</div><h3>Айдентика&nbsp;— Bayan&nbsp;/&nbsp;2025</h3></div>
-      </a>
-      <a href="#" class="work w2">
-        <picture><source srcset="images/12.webp" type="image/webp"><img src="images/12.jpg" alt="Корпоративная одежда Kapsula" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">02 / Apparel</div><h3>Корпоративная одежда&nbsp;— Kapsula</h3></div>
-      </a>
-      <a href="#" class="work w3">
-        <picture><source srcset="images/1.webp" type="image/webp"><img src="images/1.jpg" alt="Брендированный мерч" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">03 / T-shirt</div><h3>Брендированный мерч</h3></div>
-      </a>
-      <a href="#" class="work w4">
-        <picture><source srcset="images/2.webp" type="image/webp"><img src="images/2.jpg" alt="Шопер с логотипом" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">04 / Tote</div><h3>Шопер с&nbsp;логотипом</h3></div>
-      </a>
-      <a href="#" class="work w5">
-        <picture><source srcset="images/15.webp" type="image/webp"><img src="images/15.jpg" alt="Сувенирная линейка" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">05 / Souvenir</div><h3>Сувенирная линейка</h3></div>
-      </a>
-      <a href="#" class="work w6">
-        <picture><source srcset="images/14.webp" type="image/webp"><img src="images/14.jpg" alt="Наружная реклама Tashkent" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">06 / Outdoor</div><h3>Наружная реклама&nbsp;— Tashkent</h3></div>
-      </a>
-      <a href="#" class="work w7">
-        <picture><source srcset="images/3.webp" type="image/webp"><img src="images/3.jpg" alt="Брендирование" loading="lazy"></picture>
-        <div class="meta"><div class="lbl">07 / Branding</div><h3>Брендирование</h3></div>
-      </a>
-    </div>
-
-    <div class="works-cta">
-      <a href="works.html" class="ghost-btn"><span>Все работы</span></a>
+    <div class="lines">
+      <div>
+        <strong>+998 71 200 00 00</strong>
+        Tashkent · пн–пт 10–19
+      </div>
+      <div>
+        <strong>+971 4 000 0000</strong>
+        Dubai · sun–thu 9–18
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     ============ 06 — НОВОСТИ СФЕРЫ ============================
-     ============================================================ -->
-<section class="news section-pad" id="news">
-  <div class="container">
-    <div class="section-head news-head">
-      <span class="label">06 — Новости сферы</span>
-      <h2>Что мы&nbsp;читаем</h2>
-    </div>
-
-    <div class="news-grid">
-      <a href="#" class="post">
-        <div class="cover"><picture><source srcset="images/13.webp" type="image/webp"><img src="images/13.jpg" alt="" loading="lazy"></picture></div>
-        <div class="meta">
-          <span class="cat">BRANDING</span>
-          <span>22 АПР 2026</span>
-        </div>
-        <h3>Как локальные бренды Узбекистана выигрывают в&nbsp;2026</h3>
-        <p>Разбор кейсов: что происходит с&nbsp;брендами FMCG и&nbsp;ритейла, когда они уходят от&nbsp;«копий» международных и&nbsp;строят собственный визуальный язык.</p>
-        <span class="read">Читать →</span>
-      </a>
-
-      <a href="#" class="post">
-        <div class="cover"><picture><source srcset="images/14.webp" type="image/webp"><img src="images/14.jpg" alt="" loading="lazy"></picture></div>
-        <div class="meta">
-          <span class="cat">PRODUCTION</span>
-          <span>15 АПР 2026</span>
-        </div>
-        <h3>POS-материалы будущего: AR, NFC и&nbsp;интерактивные витрины</h3>
-        <p>Технологии, которые меняют опыт покупателя в&nbsp;точке продаж. От&nbsp;дополненной реальности до&nbsp;умных стендов с&nbsp;аналитикой.</p>
-        <span class="read">Читать →</span>
-      </a>
-
-      <a href="#" class="post">
-        <div class="cover"><picture><source srcset="images/12.webp" type="image/webp"><img src="images/12.jpg" alt="" loading="lazy"></picture></div>
-        <div class="meta">
-          <span class="cat">RESEARCH</span>
-          <span>08 АПР 2026</span>
-        </div>
-        <h3>AI в&nbsp;маркетинговых исследованиях: что меняется</h3>
-        <p>Большие языковые модели в&nbsp;кодировании интервью, кластеризации сегментов и&nbsp;генерации гипотез&nbsp;— практика, не&nbsp;маркетинг.</p>
-        <span class="read">Читать →</span>
-      </a>
-    </div>
-
-    <div class="news-cta">
-      <a href="#" class="ghost-btn"><span>Все материалы</span></a>
-    </div>
+<!-- ============ FOOTER ============ -->
+<footer class="footer" data-screen-label="09 Footer">
+  <div class="col">
+    <a href="#" class="brand" style="margin-bottom:var(--s-4);color:#fff">
+      <span class="mark" style="filter:invert(1)"><img src="assets/mark.svg" alt="" width="36" height="48"></span>
+      <span class="wm" style="color:#fff">PREMIUM<br>SELECTION</span>
+    </a>
+    <p style="font-family:var(--ff-text);font-size:13px;letter-spacing:0;text-transform:none;color:rgba(255,255,255,.55);max-width:32ch;margin-top:var(--s-3)">Группа компаний полного цикла. Marketing&nbsp;&amp; Research, Production, IT.</p>
   </div>
-</section>
-
-<!-- ============================================================
-     ============ 07 — КОНТАКТЫ =================================
-     ============================================================ -->
-<section class="contact section-pad" id="contact">
-  <div class="container">
-    <div class="section-head" style="border-bottom-color: rgba(255,255,255,.22); margin-bottom: clamp(32px, 4vw, 56px);">
-      <span class="label">07 — Контакты</span>
-      <h2>Связаться с&nbsp;направлением</h2>
-    </div>
-
-    <div class="contact-grid">
-      <a href="mailto:marketing@premium-selection.com" class="contact-card">
-        <span class="cc-num">01 / Marketing &amp; Research</span>
-        <h3>Marketing&nbsp;&amp;<br>Research</h3>
-        <p class="cc-desc">Стратегия, исследования, креатив. Для&nbsp;брендов, у&nbsp;которых самые амбициозные планы.</p>
-        <span class="cc-line">+998 71 200 11 01</span>
-        <span class="cc-line">marketing@premium-selection.com</span>
-        <span class="cc-mngr">Менеджер&nbsp;— А. Рахимов</span>
-      </a>
-      <a href="mailto:production@premium-selection.com" class="contact-card">
-        <span class="cc-num">02 / Production</span>
-        <h3>Production</h3>
-        <p class="cc-desc">Полиграфия, наружка, POS, мерч и&nbsp;сувенирка. Один подрядчик на&nbsp;весь бренд-носитель.</p>
-        <span class="cc-line">+998 71 200 11 02</span>
-        <span class="cc-line">production@premium-selection.com</span>
-        <span class="cc-mngr">Менеджер&nbsp;— М. Юлдашев</span>
-      </a>
-      <a href="mailto:it@premium-selection.com" class="contact-card">
-        <span class="cc-num">03 / IT</span>
-        <h3>IT</h3>
-        <p class="cc-desc">Web, mobile, интеграции, автоматизация, поддержка. Для&nbsp;тех, кто хочет цифровизироваться без&nbsp;боли.</p>
-        <span class="cc-line">+998 71 200 11 03</span>
-        <span class="cc-line">it@premium-selection.com</span>
-        <span class="cc-mngr">Менеджер&nbsp;— Д. Каримов</span>
-      </a>
-    </div>
+  <div class="col">
+    <strong>Направления</strong>
+    <ul>
+      <li><a href="#svc-mr">Marketing &amp; Research</a></li>
+      <li><a href="#svc-prod">Production</a></li>
+      <li><a href="#svc-it">IT</a></li>
+    </ul>
   </div>
-</section>
-
-<!-- ============================================================
-     ============ ФУТЕР =========================================
-     ============================================================ -->
-<footer class="site-footer">
-  <div class="ftr-grid">
-    <div class="ftr-brand">
-      <div class="brand-mark">P/S<span class="dot">.</span></div>
-      <p>Premium Selection Group<br>Tashkent · Dubai · 2018</p>
-    </div>
-    <div class="ftr-col">
-      <h5>Направления</h5>
-      <ul>
-        <li><a href="marketing-research.html">Marketing &amp; Research</a></li>
-        <li><a href="production.html">Production</a></li>
-        <li><a href="it.html">IT</a></li>
-      </ul>
-    </div>
-    <div class="ftr-col">
-      <h5>Компания</h5>
-      <ul>
-        <li><a href="about.html">О&nbsp;нас</a></li>
-        <li><a href="works.html">Работы</a></li>
-        <li><a href="discover.html">Диагностика</a></li>
-        <li><a href="#news">Новости</a></li>
-        <li><a href="contact.html">Контакты</a></li>
-        <li><a href="#">Карьера</a></li>
-      </ul>
-    </div>
-    <div class="ftr-col">
-      <h5>Документы</h5>
-      <ul>
-        <li><a href="privacy.html">Политика конфиденциальности</a></li>
-        <li><a href="cookies.html">Cookies</a></li>
-        <li><a href="offer.html">Публичная оферта</a></li>
-      </ul>
-    </div>
+  <div class="col">
+    <strong>Сайт</strong>
+    <ul>
+      <li><a href="#cases">Работы</a></li>
+      <li><a href="#process">Процесс</a></li>
+      <li><a href="#about">О&nbsp;нас</a></li>
+      <li><a href="#brief">Контакты</a></li>
+    </ul>
   </div>
-
-  <div class="ftr-bottom">
-    <span>© 2026 Premium Selection Group. All rights reserved.</span>
-    <span>RU · EN · UZ</span>
-    <span>SECTION 08 / FOOTER</span>
+  <div class="col">
+    <strong>Контакты</strong>
+    <ul>
+      <li><a href="mailto:brief@premiumselection.uz">brief@premiumselection.uz</a></li>
+      <li><a href="tel:+998712000000">+998 71 200 00 00</a></li>
+      <li>Tashkent · Dubai</li>
+      <li><a href="#">Telegram</a> · <a href="#">Instagram</a> · <a href="#">LinkedIn</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>© Premium Selection, 2018–2026</strong></span>
+    <span>Сайт собран на&nbsp;P/S System v1.0</span>
+    <span><a href="#">Политика конфиденциальности</a></span>
   </div>
 </footer>
 
-<dialog class="psg-modal" id="psgModal" aria-labelledby="psgModalTitle">
-  <button class="psg-modal-overlay" data-psg-close aria-label="Закрыть"></button>
-  <div class="psg-modal-card" role="document">
-    <button class="psg-modal-close" data-psg-close aria-label="Закрыть">×</button>
-
-    <div class="psg-modal-default" id="psgDefault">
-      <div class="psg-modal-meta">
-        <span class="psg-modal-meta-label">— Идея</span>
-        <span class="psg-modal-word" id="psgWord">—</span>
-      </div>
-      <h2 class="psg-modal-title" id="psgModalTitle">С&nbsp;чего начнём?</h2>
-
-      <div class="psg-modal-cta-pair">
-        <button class="psg-cta-card" id="psgGoDiscover" type="button">
-          <span class="psg-cta-num">01</span>
-          <span class="psg-cta-title">Открыть ТЗ-генератор</span>
-          <span class="psg-cta-desc">8&nbsp;шагов → готовое ТЗ в&nbsp;PDF</span>
-        </button>
-        <button class="psg-cta-card" id="psgGoContact" type="button">
-          <span class="psg-cta-num">02</span>
-          <span class="psg-cta-title">Связаться напрямую</span>
-          <span class="psg-cta-desc">Имя, телефон → менеджер свяжется</span>
-        </button>
-      </div>
-
-      <form class="psg-form" id="psgForm" novalidate>
-        <p class="psg-form-intro">
-          Хочу создать <strong id="psgFormWord">—</strong> проект с&nbsp;вами и&nbsp;обсудить детали.
-        </p>
-        <div class="psg-form-fields">
-          <div class="psg-input-row">
-            <div class="psg-field">
-              <label for="psgName">Имя</label>
-              <input type="text" id="psgName" name="name" autocomplete="name" required maxlength="80">
-            </div>
-            <div class="psg-field">
-              <label for="psgPhone">Телефон</label>
-              <input type="tel" id="psgPhone" name="phone" autocomplete="tel" required maxlength="24" placeholder="+998 ··· ·· ·· ···">
-            </div>
-          </div>
-          <label class="psg-checkbox-row">
-            <input type="checkbox" id="psgMsgr" name="msgr" checked>
-            <span>В&nbsp;этом номере у&nbsp;меня Telegram&nbsp;/ WhatsApp&nbsp;— можно писать туда</span>
-          </label>
-          <p class="psg-msgr-note" id="psgMsgrNote">Менеджер напишет в&nbsp;мессенджер.</p>
-        </div>
-        <div class="psg-form-actions">
-          <button class="psg-submit" id="psgSubmit" type="submit">Отправить</button>
-          <button class="psg-back" id="psgBack" type="button">Назад</button>
-        </div>
-      </form>
-    </div>
-
-    <div class="psg-success" id="psgSuccess" hidden>
-      <h2>Спасибо, <span id="psgSuccessName">—</span>!</h2>
-      <p>Менеджер свяжется в&nbsp;течение 30&nbsp;минут.</p>
-    </div>
-  </div>
-</dialog>
-
 <script>
-(function(){
-  // Лог-канал виден только локально. На продакшене console.log → no-op (console.error остаётся).
-  var DEBUG = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname) || location.hostname === '';
-  var log = DEBUG ? console.log.bind(console) : function(){};
-  log('[PSG] init');
+// Scroll progress
+const sp = document.getElementById('scrollProgress');
+const onScroll = () => {
+  const h = document.documentElement;
+  const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+  sp.style.width = (scrolled * 100) + '%';
+};
+document.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
-  // Уважаем системную настройку «уменьшить анимации»: гейт для тяжёлых таймеров.
-  var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+// Reveal on scroll
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.12, rootMargin:'0px 0px -80px 0px'});
+document.querySelectorAll('.section-head, .dir-list a, .svc, .case, .step, .cli, .stat, .hero-cta, .hero-lede')
+  .forEach((el,i)=>{ el.classList.add('reveal'); if(i%4===1)el.classList.add('d1'); if(i%4===2)el.classList.add('d2'); if(i%4===3)el.classList.add('d3'); io.observe(el); });
 
-  // ============== 1. PHOTO CYCLING IN HERO CELLS ==============
-  try {
-    var SQUARE = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','9.jpg','10.jpg','11.jpg','15.jpg'];
-    var WIDE   = ['13.jpg','14.jpg'];
-    var TALL   = ['12.jpg'];
-    var ALL    = SQUARE.concat(WIDE, TALL);
+// Magnetic CTA — disabled per user request
+// (kept hook for potential future use)
 
-    var aspectMap = {
-      b1:'sq', b2:'wide', b3:'tall', b4:'wide', b5:'tall',
-      b6:'sq', b7:'sq', b8:'wide', b9:'tall', b10:'tall',
-      b11:'sq', b12:'tall', b13:'sq', b14:'wide',
-      b15:'sq', b16:'sq', b17:'wide', b18:'sq'
-    };
-
-    var cells = Array.prototype.slice.call(document.querySelectorAll('.cell'));
-
-    cells.forEach(function(cell, i){
-      var cls = '';
-      for (var j = 0; j < cell.classList.length; j++) {
-        if (/^b\d+$/.test(cell.classList[j])) { cls = cell.classList[j]; break; }
-      }
-      var aspect = aspectMap[cls] || 'sq';
-      var pool;
-      if (aspect === 'wide')      pool = WIDE.concat(SQUARE);
-      else if (aspect === 'tall') pool = TALL.concat(ALL);
-      else                        pool = SQUARE.concat(WIDE, TALL);
-
-      for (var k = 0; k < 3; k++) {
-        var src = pool[(i * 2 + k * 5) % pool.length];
-        var wrap = document.createElement('div');
-        wrap.className = 'frame' + (k === 0 ? ' active' : '');
-        var picture = document.createElement('picture');
-        var source = document.createElement('source');
-        source.type = 'image/webp';
-        source.srcset = 'images/' + src.replace(/\.jpe?g$/i, '.webp');
-        var img = document.createElement('img');
-        img.src = 'images/' + src;
-        img.alt = '';
-        img.loading = 'lazy';
-        picture.appendChild(source);
-        picture.appendChild(img);
-        wrap.appendChild(picture);
-        cell.appendChild(wrap);
-      }
-    });
-
-    if (!prefersReduce) {
-      cells.forEach(function(cell, i){
-        var frames = cell.querySelectorAll('.frame');
-        if (frames.length < 2) return;
-        var cur = 0;
-        // Случайная длительность каждой фазы — никогда не синхронизируются
-        function rand(min, max){ return min + Math.random() * (max - min); }
-        function step(){
-          frames[cur].classList.remove('active');
-          cell.classList.add('void');
-          var gap = rand(4000, 8000);   // 4–8 сек воздуха
-          setTimeout(function(){
-            cell.classList.remove('void');
-            cur = (cur + 1) % frames.length;
-            frames[cur].classList.add('active');
-            var show = rand(6000, 12000); // 6–12 сек показа
-            setTimeout(step, show);
-          }, gap);
-        }
-        // Стартовый рандомный сдвиг — старт у всех разный
-        setTimeout(step, rand(2000, 9000));
-      });
+// Stats count-up
+const animateNum = (el, to, suffix='') => {
+  const dur = 1400; const start = performance.now();
+  const tick = (t)=>{
+    const p = Math.min(1, (t-start)/dur);
+    const eased = 1 - Math.pow(1-p, 3);
+    const val = Math.floor(eased * to);
+    el.firstChild.nodeValue = String(val).padStart(2,'0');
+    if(p<1) requestAnimationFrame(tick);
+    else el.firstChild.nodeValue = String(to).padStart(2,'0');
+  };
+  requestAnimationFrame(tick);
+};
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const v = e.target;
+      const target = parseInt(v.dataset.to,10);
+      animateNum(v, target);
+      statIO.unobserve(v);
     }
-    log('[PSG] cells ok:', cells.length);
-  } catch(e) { console.error('[PSG] cells error:', e); }
-
-  // ============== 2. LIVE CLOCK ==============
-  try {
-    var dateEl = document.getElementById('liveDate');
-    var timeEl = document.getElementById('liveTime');
-    var days = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
-    var months = ['ЯНВ','ФЕВ','МАР','АПР','МАЙ','ИЮН','ИЮЛ','АВГ','СЕН','ОКТ','НОЯ','ДЕК'];
-    function tick(){
-      var now = new Date();
-      var tsh = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 3600000));
-      var d  = days[tsh.getDay()];
-      var dd = String(tsh.getDate()).padStart(2,'0');
-      var mm = months[tsh.getMonth()];
-      var yy = tsh.getFullYear();
-      var hh = String(tsh.getHours()).padStart(2,'0');
-      var mi = String(tsh.getMinutes()).padStart(2,'0');
-      var ss = String(tsh.getSeconds()).padStart(2,'0');
-      if (dateEl) dateEl.innerHTML = '<span class="dot" style="color:var(--red)">●</span>&nbsp;LIVE · ' + d + ' ' + dd + '&nbsp;' + mm + ' ' + yy;
-      if (timeEl) timeEl.innerHTML = '<strong>' + hh + ':' + mi + ':' + ss + '</strong>';
-    }
-    tick();
-    setInterval(tick, 1000);
-    log('[PSG] clock ok');
-  } catch(e) { console.error('[PSG] clock error:', e); }
-
-  // ============== 3. NAV COLOR ON SCROLL ==============
-  try {
-    var nav = document.querySelector('.nav');
-    if (nav && 'IntersectionObserver' in window) {
-      var lightSections = document.querySelectorAll('.about, .works, .news');
-      var lightObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if (e.isIntersecting) nav.classList.add('dark');
-        });
-      }, { rootMargin: '-60px 0px -85% 0px' });
-      lightSections.forEach(function(s){ lightObs.observe(s); });
-
-      var darkSections = document.querySelectorAll('.hero, .directions, .stats, .contact, .site-footer');
-      var darkObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if (e.isIntersecting) nav.classList.remove('dark');
-        });
-      }, { rootMargin: '-60px 0px -85% 0px' });
-      darkSections.forEach(function(s){ darkObs.observe(s); });
-    }
-    log('[PSG] nav ok');
-  } catch(e) { console.error('[PSG] nav error:', e); }
-
-  // ============== 4. SYNONYM TYPEWRITER + INTERACTIVE HERO ==============
-  // «Думаем что писать»: чёрный текст стирается посимвольно, плашка ужимается под него,
-  // потом плашка расширяется по мере набора нового слова. Белый фон не исчезает.
-  // Click по плашке (desktop) → ротация на паузе, юзер сам печатает → Enter → modal.
-  // Tap по плашке (mobile) → сразу modal с инпутом «напечатай своё слово».
-  // Закрытие modal без отправки → reset, ротация продолжается.
-  var psgPaused = false;       // флаг паузы typewriter (модалка / редактирование)
-  var psgResumeTimer = null;   // таймер возобновления
-  var psgResume = null;        // функция возобновления (определена ниже)
-  try {
-    var synonyms = ['грандиозные','масштабные','амбициозные','выдающиеся','впечатляющие','легендарные','мощные','смелые','значимые','большие'];
-    var rot = document.getElementById('rotWord');
-    if (rot && !prefersReduce) {
-      var ri = 0;
-      var HOLD_MS    = 2200;
-      var ERASE_MS   = 55;
-      var TYPE_MS    = 80;
-      var THINK_MS   = 380;
-      function jitter(base){ return base + Math.random() * base * 0.6; }
-      function erase(target){
-        if (psgPaused) return;
-        var cur = rot.textContent;
-        if (cur.length === 0) { psgResumeTimer = setTimeout(function(){ type(target); }, THINK_MS); return; }
-        rot.textContent = cur.slice(0, -1);
-        psgResumeTimer = setTimeout(function(){ erase(target); }, jitter(ERASE_MS));
-      }
-      function type(target){
-        if (psgPaused) return;
-        var cur = rot.textContent;
-        if (cur.length >= target.length) { psgResumeTimer = setTimeout(next, HOLD_MS); return; }
-        rot.textContent = target.slice(0, cur.length + 1);
-        psgResumeTimer = setTimeout(function(){ type(target); }, jitter(TYPE_MS));
-      }
-      function next(){
-        if (psgPaused) return;
-        ri = (ri + 1) % synonyms.length;
-        erase(synonyms[ri]);
-      }
-      psgResume = function(){
-        if (!psgPaused) return;
-        psgPaused = false;
-        // продолжить с текущего слова в массиве (rot.textContent может быть «обкусанным» —
-        // дотыпиваем target до конца и идём дальше)
-        type(synonyms[ri]);
-      };
-      psgResumeTimer = setTimeout(next, HOLD_MS);
-    }
-    log('[PSG] synonyms ok');
-  } catch(e) { console.error('[PSG] synonyms error:', e); }
-
-  // ============== 5. PLACEHOLDER ANCHORS — block scroll-to-top ==============
-  // Внутренние страницы ещё не готовы. Кликая на href="#" — ничего не происходит,
-  // вместо неприятного скачка наверх и порчи URL.
-  try {
-    document.addEventListener('click', function(e){
-      var a = e.target && e.target.closest && e.target.closest('a[href="#"]');
-      if (a) { e.preventDefault(); }
-    });
-    log('[PSG] anchor-block ok');
-  } catch(e) { console.error('[PSG] anchor-block error:', e); }
-
-  // ============== 6. INTERACTIVE HERO — click → type → modal ==============
-  // Юзер кликает по плашке. Desktop: contenteditable + Enter → modal. Mobile: сразу modal.
-  // Cancel закрывает без сохранения и продолжает synonym typewriter с того же места.
-  try {
-    var hero = document.getElementById('rotWord');
-    var modal = document.getElementById('psgModal');
-    var defaultPane = document.getElementById('psgDefault');
-    var successPane = document.getElementById('psgSuccess');
-    var form = document.getElementById('psgForm');
-    var contactBtn = document.getElementById('psgGoContact');
-    var discoverBtn = document.getElementById('psgGoDiscover');
-    var nameInput = document.getElementById('psgName');
-    var phoneInput = document.getElementById('psgPhone');
-    var msgrCb = document.getElementById('psgMsgr');
-    var msgrNote = document.getElementById('psgMsgrNote');
-    var wordSpan = document.getElementById('psgWord');
-    var formWord = document.getElementById('psgFormWord');
-    var successName = document.getElementById('psgSuccessName');
-    var backBtn = document.getElementById('psgBack');
-    var isMobile = function(){ return window.matchMedia('(max-width: 760px)').matches; };
-    var lastFocus = null;
-
-    function pauseTypewriter(){
-      psgPaused = true;
-      if (psgResumeTimer) { clearTimeout(psgResumeTimer); psgResumeTimer = null; }
-    }
-    function resumeTypewriter(){
-      if (psgResume && psgPaused) psgResume();
-    }
-
-    function getCurrentWord(){
-      // Desktop: то что юзер напечатал в плашке. Mobile: запросим в модалке через prompt-инпут.
-      var w = (hero && hero.textContent || '').trim();
-      return w;
-    }
-
-    function openModal(word){
-      lastFocus = document.activeElement;
-      pauseTypewriter();
-      if (hero) hero.contentEditable = 'false';
-      wordSpan.textContent = word || '—';
-      formWord.textContent = word || '—';
-      // reset state
-      successPane.hidden = true;
-      defaultPane.hidden = false;
-      form.classList.remove('open');
-      contactBtn.classList.remove('active');
-      nameInput.classList.remove('invalid');
-      phoneInput.classList.remove('invalid');
-      // open
-      if (typeof modal.showModal === 'function') {
-        try { modal.showModal(); } catch(_){ modal.setAttribute('open', ''); }
-      } else {
-        modal.setAttribute('open', '');
-      }
-      // фокус на первой кнопке
-      setTimeout(function(){ discoverBtn.focus(); }, 50);
-    }
-
-    function closeModal(){
-      if (typeof modal.close === 'function') {
-        try { modal.close(); } catch(_){ modal.removeAttribute('open'); }
-      } else {
-        modal.removeAttribute('open');
-      }
-      if (hero) hero.contentEditable = 'false';
-      // вернуть фокус и продолжить ротацию
-      if (lastFocus && lastFocus !== document.body && typeof lastFocus.focus === 'function') {
-        try { lastFocus.focus(); } catch(_){}
-      }
-      resumeTypewriter();
-    }
-
-    // Клик по плашке
-    if (hero) {
-      hero.setAttribute('role', 'textbox');
-      hero.setAttribute('aria-label', 'Напечатай своё слово и нажми Enter');
-      hero.addEventListener('click', function(){
-        if (isMobile()) {
-          openModal(getCurrentWord() || synonyms[ri] || '');
-          return;
-        }
-        if (hero.contentEditable === 'true') return;
-        pauseTypewriter();
-        hero.contentEditable = 'true';
-        // выделить текущее слово, чтобы юзер сразу мог печатать
-        var range = document.createRange();
-        range.selectNodeContents(hero);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        hero.focus();
-      });
-      hero.addEventListener('keydown', function(e){
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          var word = getCurrentWord();
-          if (!word) { hero.contentEditable = 'false'; resumeTypewriter(); return; }
-          openModal(word);
-        } else if (e.key === 'Escape') {
-          e.preventDefault();
-          hero.contentEditable = 'false';
-          hero.blur();
-          resumeTypewriter();
-        }
-      });
-      hero.addEventListener('blur', function(){
-        // если кликнул вне без Enter — отменяем
-        if (hero.contentEditable === 'true' && !modal.hasAttribute('open')) {
-          hero.contentEditable = 'false';
-          resumeTypewriter();
-        }
-      });
-    }
-
-    // Закрытие модалки: × / Esc / клик по ::backdrop (target === dialog)
-    document.addEventListener('click', function(e){
-      var c = e.target && e.target.closest && e.target.closest('[data-psg-close]');
-      if (c) closeModal();
-    });
-    modal.addEventListener('click', function(e){
-      // Click по native ::backdrop приходит на сам <dialog> с target === modal
-      if (e.target === modal) closeModal();
-    });
-    modal.addEventListener('cancel', function(e){ e.preventDefault(); closeModal(); });
-    modal.addEventListener('close', function(){
-      // если закрыли через native (Esc) и состояние не сбросили — подстрахуемся
-      if (psgPaused && successPane.hidden) resumeTypewriter();
-    });
-
-    // Кнопка «Открыть ТЗ-генератор»
-    discoverBtn.addEventListener('click', function(){
-      var word = wordSpan.textContent.trim();
-      var url = 'discover.html' + (word && word !== '—' ? '?w=' + encodeURIComponent(word) : '');
-      window.location.href = url;
-    });
-
-    // Кнопка «Связаться напрямую» — раскрыть форму
-    contactBtn.addEventListener('click', function(){
-      contactBtn.classList.add('active');
-      form.classList.add('open');
-      setTimeout(function(){ nameInput.focus(); }, 250);
-    });
-
-    // Назад из формы
-    backBtn.addEventListener('click', function(){
-      form.classList.remove('open');
-      contactBtn.classList.remove('active');
-      setTimeout(function(){ contactBtn.focus(); }, 100);
-    });
-
-    // Галочка мессенджера — текст рядом
-    function updateMsgrNote(){
-      msgrNote.textContent = msgrCb.checked
-        ? 'Менеджер напишет в мессенджер.'
-        : 'Менеджер позвонит на этот номер.';
-    }
-    msgrCb.addEventListener('change', updateMsgrNote);
-    updateMsgrNote();
-
-    // Submit — без бэкенда: валидация → success
-    function validatePhone(v){ return /[\d+()\s\-]{9,}/.test(v); }
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var name = nameInput.value.trim();
-      var phone = phoneInput.value.trim();
-      var ok = true;
-      if (!name) { nameInput.classList.add('invalid'); ok = false; } else nameInput.classList.remove('invalid');
-      if (!validatePhone(phone)) { phoneInput.classList.add('invalid'); ok = false; } else phoneInput.classList.remove('invalid');
-      if (!ok) { (nameInput.classList.contains('invalid') ? nameInput : phoneInput).focus(); return; }
-      // success state — без записи куда-либо
-      successName.textContent = name.split(/\s+/)[0];
-      defaultPane.hidden = true;
-      successPane.hidden = false;
-      log('[PSG] lead (no backend yet):', { word: wordSpan.textContent, name: name, phone: phone, msgr: msgrCb.checked });
-      // авто-закрытие 4с
-      setTimeout(function(){
-        if (!modal.hasAttribute('open')) return;
-        // сброс полей перед закрытием
-        nameInput.value = ''; phoneInput.value = '';
-        msgrCb.checked = true; updateMsgrNote();
-        closeModal();
-      }, 4000);
-    });
-
-    log('[PSG] interactive-hero ok');
-  } catch(e) { console.error('[PSG] interactive-hero error:', e); }
-})();
+  });
+},{threshold:.5});
+document.querySelectorAll('.hero-stats .v[data-to]').forEach(v=>statIO.observe(v));
 </script>
 
 </body>
