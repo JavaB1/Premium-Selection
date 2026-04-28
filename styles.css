@@ -33,9 +33,22 @@
 html, body {
   background:var(--paper); color:var(--ink);
   font-family:var(--ff-text); font-size:var(--fs-body);
-  min-height:100vh;
+  min-height:100vh; min-height:100dvh;
+  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
+  text-size-adjust:100%; -webkit-text-size-adjust:100%;
+}
+img, picture, svg { max-width:100%; display:block; }
+img { height:auto; }
+/* Анти-flash на iOS Safari при тапе */
+a, button, input, textarea, select { -webkit-tap-highlight-color: rgba(218,41,28,.18); }
+/* Минимальная зона тапа на сенсорных экранах */
+@media (hover: none) and (pointer: coarse) {
+  a, button, .cta, .ghost-btn, .next-btn, .opt, .nav-meta a, .ftr-col a {
+    min-height: 44px;
+  }
 }
 a { color:inherit; text-decoration:none; }
 
@@ -48,6 +61,13 @@ a { color:inherit; text-decoration:none; }
   /* Контент навбара инвертируется относительно фона: белая → чёрный, чёрная → белый. */
   mix-blend-mode: difference;
   isolation: isolate;
+}
+/* Фолбэк для браузеров без mix-blend-mode (старые Android, IE) */
+@supports not (mix-blend-mode: difference) {
+  .nav {
+    background: linear-gradient(rgba(0,0,0,.45), transparent);
+    color: #fff;
+  }
 }
 .nav-logo { display:flex; align-items:center; gap:10px; }
 .nav-logo svg { width:34px; height:36px; display:block; }
@@ -65,7 +85,8 @@ a { color:inherit; text-decoration:none; }
 /* === STICKY SUB-NAV === */
 .subnav {
   position:fixed; top:60px; left:0; right:0; z-index:25;
-  background:rgba(10,10,10,.92); backdrop-filter:blur(8px);
+  background:rgba(10,10,10,.92);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   padding:12px var(--gutter);
   border-bottom:1px solid rgba(255,255,255,.12);
   transform:translateY(-110%); opacity:0;
@@ -95,7 +116,7 @@ a { color:inherit; text-decoration:none; }
 /* === HERO (direction-style) === */
 .hero-direction {
   background:var(--ink); color:#fff;
-  min-height:100vh; padding:120px var(--gutter) clamp(60px, 7vw, 100px);
+  min-height:100vh; min-height:100dvh; padding:120px var(--gutter) clamp(60px, 7vw, 100px);
   display:flex; flex-direction:column; justify-content:flex-end;
   position:relative; overflow:hidden;
 }
@@ -613,6 +634,19 @@ a:focus-visible, button:focus-visible {
 }
 
 /* === RESPONSIVE === */
+
+/* Ultra-wide (>1920px) — ограничиваем макс. ширину контента */
+@media (min-width:1921px) {
+  .ftr-grid, .subnav ul, .ftr-bottom { max-width:1720px; }
+  .hero-direction { padding-left:max(var(--gutter),5vw); padding-right:max(var(--gutter),5vw); }
+}
+
+/* Desktop / Laptop (≤1440px) — лёгкое уплотнение */
+@media (max-width:1440px) {
+  :root { --gutter: clamp(20px, 2.5vw, 36px); }
+}
+
+/* Narrow desktop / tablet landscape (≤1100px) */
 @media (max-width:1100px) {
   .services-grid { grid-template-columns:repeat(2,1fr); }
   .team-grid { grid-template-columns:repeat(2,1fr); }
@@ -626,38 +660,11 @@ a:focus-visible, button:focus-visible {
     padding-top:14px; margin-top:14px;
   }
 }
-@media (max-width:760px) {
-  .nav-meta { display:none; }
-  .subnav { padding:10px 16px; top:54px; }
-  .subnav ul { gap:14px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
-  .hero-direction { padding:140px 20px 60px; min-height:90vh; }
-  .breadcrumb { top:80px; }
-  .hero-meta { display:none; }
-  .hero-watermark { font-size:60vw; right:-8vw; }
-  .hero-scroll-hint { right:20px; bottom:20px; }
-  .services-grid { grid-template-columns:1fr; }
-  .team-grid { grid-template-columns:repeat(2,1fr); }
-  .numbers { grid-template-columns:repeat(2,1fr); gap:32px; }
-  .pains-grid { grid-template-columns:1fr; }
-  .cta-grid { grid-template-columns:1fr; }
-  .cases-grid { grid-template-columns:repeat(4,1fr); }
-  .case.c1, .case.c2, .case.c3, .case.c4, .case.c5 { grid-column:span 4; aspect-ratio:1/1; }
-  .ftr-grid { grid-template-columns:1fr 1fr; gap:32px; }
-  .process-step { grid-template-columns:60px 1fr; padding:24px 0; }
-  .service { padding-top:64px; }
-  .service-includes { max-height:none; opacity:1; margin-top:8px; }
-  .service-includes li { border-top:1px solid rgba(0,0,0,.12); }
-  .service:hover .service-includes li { border-top-color:rgba(255,255,255,.18); }
-  .case .case-details { max-height:none; opacity:1; margin-top:10px; }
+
+/* Tablet portrait (≤1024px) */
+@media (max-width:1024px) {
+  .ftr-grid { grid-template-columns:2fr 1fr 1fr; gap:36px; }
+  .nav-meta { gap:16px; }
 }
 
-/* === REDUCED MOTION === */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
-  }
-  .trust-track { animation:none !important; transform:none !important; }
-}
+/* Tablet narrow (≤900px) — превентивно прячем нав-мета

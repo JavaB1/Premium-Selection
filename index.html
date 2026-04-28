@@ -26,7 +26,19 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/13.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/12.webp" type="image/webp">
+
+<!-- PWA / mobile theming -->
+<meta name="theme-color" content="#DA291C" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Premium Selection">
+<meta name="format-detection" content="telephone=no">
 
 <script type="application/ld+json">
 {
@@ -83,11 +95,15 @@
   html, body {
     background:var(--red); color:#fff;
     font-family:var(--ff-text); font-size:var(--fs-body);
-    min-height:100vh;
+    min-height:100vh; min-height:100dvh;
+    overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
     text-rendering:optimizeLegibility;
     font-feature-settings: "ss01", "cv11", "kern";
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
   }
+  img, picture, svg { max-width:100%; display:block; }
   a { color:inherit; text-decoration:none; }
 
   /* ============ NAV ============ */
@@ -101,6 +117,10 @@
        Без JS-свопа — фон сам "влияет" на читаемость. */
     mix-blend-mode: difference;
     isolation: isolate;
+  }
+  /* Fallback для браузеров без mix-blend-mode */
+  @supports not (mix-blend-mode: difference) {
+    .nav { background: linear-gradient(rgba(0,0,0,.45), transparent); }
   }
   .nav-logo { display:flex; align-items:center; gap:10px; }
   .nav-logo svg { width:34px; height:36px; display:block; }
@@ -119,7 +139,7 @@
 
   /* ============ HERO ============ */
   .hero {
-    height:100vh; padding:68px var(--gutter) 14px;
+    height:100vh; height:100dvh; padding:68px var(--gutter) 14px;
     display:flex; flex-direction:column; gap:10px;
   }
 
@@ -691,7 +711,7 @@
   .psg-success p { font-size:var(--fs-body-l); color:rgba(0,0,0,.7); }
   @media (max-width: 760px) {
     .psg-modal {
-      width:100vw; max-width:none; height:100vh; max-height:none;
+      width:100vw; max-width:none; height:100vh; height:100dvh; max-height:none;
       margin:0; border-radius:0;
     }
     .psg-modal-card {
@@ -796,7 +816,7 @@
   @media (max-width: 900px) {
     .nav { padding:14px 16px; }
     .nav-meta { display:none; }
-    .hero { height:100vh; min-height:560px; padding:64px 12px 12px; gap:8px; }
+    .hero { height:100dvh; min-height:560px; padding:64px 12px 12px; gap:8px; }
 
     .grid {
       grid-template-columns: repeat(4, 1fr);
@@ -826,6 +846,33 @@
     .bottom { grid-template-columns:1fr; gap:12px; }
     .bottom .cta { justify-self:flex-start; }
     .meta-bottom { flex-direction:column; gap:4px; align-items:flex-start; }
+  }
+
+  /* ============ MOBILE M (≤480px) ============ */
+  @media (max-width: 480px) {
+    .nav { padding:12px 14px; }
+    .hero { padding:56px 10px 10px; gap:6px; }
+    .grid { gap:5px; }
+    .center { padding:14px 6px; }
+    .center .we, .center .lede { font-size: clamp(16px, 5vw, 24px); }
+    .center .brand-line { font-size: clamp(40px, 13vw, 72px); }
+    .stats { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .ftr-grid { grid-template-columns: 1fr; gap: 28px; }
+    .dir-row { grid-template-columns: 48px 1fr; padding: 24px 14px; }
+    .dir-row .dr-name { font-size: clamp(24px, 8vw, 40px); }
+    .works-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .work.w1, .work.w2, .work.w3, .work.w4, .work.w5, .work.w6, .work.w7 { grid-column: span 2; aspect-ratio:1/1; }
+    .news-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ============ MOBILE XS (≤380px) ============ */
+  @media (max-width: 380px) {
+    .nav { padding:10px 12px; }
+    .hero { padding:52px 8px 8px; min-height:520px; }
+    .grid { grid-template-rows: repeat(7, 1fr); gap:4px; }
+    .center .brand-line { font-size: clamp(34px, 12vw, 56px); }
+    .stats { grid-template-columns: 1fr; gap: 18px; }
+    .dir-row .dr-name { font-size: 22px; }
   }
 
   /* ============ REDUCED MOTION ============ */
@@ -1302,7 +1349,10 @@
         var img = document.createElement('img');
         img.src = 'images/' + src;
         img.alt = '';
-        img.loading = 'lazy';
+        img.decoding = 'async';
+        // Первый кадр первых 6 ячеек — eager (above-the-fold). Остальные — lazy.
+        img.loading = (k === 0 && i < 6) ? 'eager' : 'lazy';
+        if (k === 0 && i < 4) img.setAttribute('fetchpriority','high');
         picture.appendChild(source);
         picture.appendChild(img);
         wrap.appendChild(picture);
