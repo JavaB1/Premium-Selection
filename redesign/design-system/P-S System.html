@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P/S System — Premium Selection · v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   P/S SYSTEM — TOKENS
+   ============================================================ */
+:root{
+  /* === COLOR === */
+  --ink-900:#0A0A0A;
+  --ink-700:#2A2A2A;
+  --ink-500:rgba(10,10,10,.62);
+  --ink-300:rgba(10,10,10,.32);
+  --ink-200:rgba(10,10,10,.18);
+  --ink-100:rgba(10,10,10,.08);
+
+  --paper:#FAFAF8;     /* page bg */
+  --paper-2:#F2F2EE;   /* section alt bg */
+  --paper-card:#FFFFFF;
+
+  --red:#DA291C;       /* signature accent */
+  --red-700:#B6231A;   /* hover/pressed */
+  --red-50:#FCEBE9;    /* tint for chips/highlight */
+
+  --warn:#E8A317;
+  --ok:#2E8B57;
+
+  /* === TYPE === */
+  --ff-display:'Commissioner',system-ui,sans-serif;
+  --ff-text:'Commissioner',system-ui,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+
+  --fs-display: clamp(48px, 8vw, 148px);
+  --fs-h1:      clamp(36px, 5vw, 76px);
+  --fs-h2:      clamp(28px, 3.4vw, 52px);
+  --fs-h3:      clamp(20px, 1.8vw, 26px);
+  --fs-lede:    clamp(18px, 1.6vw, 24px);
+  --fs-body:    16px;
+  --fs-small:   14px;
+  --fs-meta:    11px;
+  --fs-cap:     10px;
+
+  --ls-display:-.025em;
+  --ls-body:0;
+  --ls-mono:.12em;
+
+  /* === SPACING (8pt scale) === */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px;
+  --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  /* === RADIUS === */
+  --r-0:0; --r-sm:2px; --r-md:4px; --r-pill:999px;
+
+  /* === LINES === */
+  --line: var(--ink-200);
+  --line-strong: var(--ink-900);
+
+  /* === MOTION === */
+  --ease: cubic-bezier(.65,0,.35,1);
+  --t-fast:180ms;
+  --t-base:300ms;
+  --t-slow:550ms;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);color:var(--ink-900);
+  font-family:var(--ff-text);font-size:var(--fs-body);line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-wrap:pretty;
+}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+
+/* ============================================================
+   NAV — внутренняя навигация документа
+   ============================================================ */
+.psnav{
+  position:sticky;top:0;z-index:30;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--s-3) var(--gutter);
+  background:rgba(250,250,248,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;
+}
+.psnav .brand{display:flex;align-items:center;gap:10px;font-weight:500;color:var(--ink-900)}
+.psnav .brand .mk{
+  width:22px;height:24px;border:1.5px solid var(--ink-900);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--ff-display);font-weight:900;font-size:13px;letter-spacing:-.05em;
+}
+.psnav .links{display:flex;gap:20px;color:var(--ink-500);flex-wrap:wrap}
+.psnav .links a:hover{color:var(--ink-900)}
+@media (max-width:760px){.psnav .links{display:none}}
+
+/* ============================================================
+   COVER
+   ============================================================ */
+.cover{padding:clamp(64px,9vw,140px) var(--gutter) clamp(48px,6vw,88px);border-bottom:1px solid var(--line)}
+.cover .label{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:var(--s-5)}
+.cover h1{
+  font-family:var(--ff-display);font-weight:900;
+  font-size:var(--fs-display);line-height:.92;letter-spacing:var(--ls-display);text-transform:uppercase;
+  max-width:14ch;
+}
+.cover h1 em{font-style:normal;color:var(--red)}
+.cover .meta{
+  margin-top:clamp(32px,4vw,56px);padding-top:var(--s-5);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-5);
+  font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);
+}
+.cover .meta strong{display:block;color:var(--ink-900);font-weight:500;margin-bottom:6px}
+@media (max-width:760px){.cover .meta{grid-template-columns:1fr 1fr}}
+
+/* ============================================================
+   SECTION / HEAD
+   ============================================================ */
+section{padding:clamp(56px,7vw,112px) var(--gutter);border-bottom:1px solid var(--line)}
+section.alt{background:var(--paper-2)}
+.section-head{
+  display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,48px);align-items:baseline;
+  padding-bottom:var(--s-5);margin-bottom:clamp(32px,4vw,56px);
+  border-bottom:1px solid var(--line);
+}
+.section-head .num{
+  font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);
+  padding-top:14px;
+}
+.section-head h2{
+  font-family:var(--ff-display);font-weight:900;
+  font-size:var(--fs-h1);line-height:.96;letter-spacing:var(--ls-display);text-transform:uppercase;
+}
+.lede{font-size:var(--fs-lede);line-height:1.45;max-width:64ch;color:var(--ink-700)}
+
+.subhead{
+  font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;
+  color:var(--ink-500);margin-bottom:var(--s-4);
+}
+
+/* ============================================================
+   COLOR SWATCHES
+   ============================================================ */
+.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+@media (max-width:900px){.swatches{grid-template-columns:repeat(2,1fr)}}
+.sw{padding:var(--s-5);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s-3);min-height:200px}
+.sw:nth-child(4n){border-right:0}
+.sw .chip{height:64px;border-radius:var(--r-sm);border:1px solid var(--ink-100)}
+.sw .name{font-family:var(--ff-display);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.sw .hex{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);color:var(--ink-500);text-transform:uppercase}
+.sw .role{font-size:var(--fs-small);color:var(--ink-500);line-height:1.4}
+
+/* ============================================================
+   TYPE SCALE
+   ============================================================ */
+.type-row{display:grid;grid-template-columns:120px 1fr auto;gap:var(--s-5);padding:var(--s-5) 0;border-bottom:1px solid var(--line);align-items:baseline}
+.type-row:last-child{border-bottom:0}
+.type-row .tag{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+.type-row .spec{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);color:var(--ink-500);text-align:right;white-space:nowrap}
+@media (max-width:760px){.type-row{grid-template-columns:1fr;gap:var(--s-2)}}
+.t-display{font-family:var(--ff-display);font-weight:900;font-size:var(--fs-display);line-height:.92;letter-spacing:var(--ls-display);text-transform:uppercase}
+.t-h1{font-family:var(--ff-display);font-weight:900;font-size:var(--fs-h1);line-height:.96;letter-spacing:var(--ls-display);text-transform:uppercase}
+.t-h2{font-family:var(--ff-display);font-weight:800;font-size:var(--fs-h2);line-height:1;letter-spacing:var(--ls-display)}
+.t-h3{font-family:var(--ff-display);font-weight:700;font-size:var(--fs-h3);line-height:1.15}
+.t-lede{font-family:var(--ff-text);font-weight:500;font-size:var(--fs-lede);line-height:1.45}
+.t-body{font-family:var(--ff-text);font-size:var(--fs-body);line-height:1.55}
+.t-small{font-family:var(--ff-text);font-size:var(--fs-small);line-height:1.5;color:var(--ink-700)}
+.t-mono{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+
+/* ============================================================
+   GRID & SPACING
+   ============================================================ */
+.grid-demo{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:var(--s-3) 0}
+.grid-demo .col{height:80px;background:repeating-linear-gradient(45deg,var(--ink-100) 0 6px,transparent 6px 12px);border-radius:var(--r-sm);font-family:var(--ff-mono);font-size:9px;color:var(--ink-500);display:flex;align-items:center;justify-content:center}
+.space-row{display:flex;align-items:flex-end;gap:var(--s-5);flex-wrap:wrap;margin-top:var(--s-5)}
+.sp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.sp i{display:block;background:var(--ink-900);width:auto}
+.sp i.s1{height:4px;width:4px}.sp i.s2{height:8px;width:8px}.sp i.s3{height:12px;width:12px}
+.sp i.s4{height:16px;width:16px}.sp i.s5{height:24px;width:24px}.sp i.s6{height:32px;width:32px}
+.sp i.s7{height:48px;width:48px}.sp i.s8{height:64px;width:64px}
+.sp span{font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);color:var(--ink-500)}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:var(--r-pill);
+  font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500;
+  cursor:pointer;border:0;background:transparent;color:inherit;
+  transition:background var(--t-base) var(--ease),color var(--t-base) var(--ease),border-color var(--t-base) var(--ease),transform var(--t-fast) var(--ease);
+}
+.btn:focus-visible{outline:2px solid var(--ink-900);outline-offset:3px}
+.btn::after{content:"→"}
+.btn--primary{background:var(--ink-900);color:#fff}
+.btn--primary:hover{background:var(--red);transform:translateY(-1px)}
+.btn--accent{background:var(--red);color:#fff}
+.btn--accent:hover{background:var(--ink-900)}
+.btn--ghost{border:1.5px solid var(--ink-900);color:var(--ink-900)}
+.btn--ghost:hover{background:var(--ink-900);color:#fff}
+.btn--ghost-paper{border:1.5px solid #fff;color:#fff}
+.btn--ghost-paper:hover{background:#fff;color:var(--ink-900)}
+.btn--rect{border-radius:var(--r-md)}
+.btn--sm{padding:10px 16px;font-size:10px}
+.btn--lg{padding:18px 32px;font-size:12px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+
+.link{
+  display:inline-flex;align-items:center;gap:6px;
+  border-bottom:1px solid currentColor;padding-bottom:2px;
+  transition:color var(--t-base) var(--ease),border-color var(--t-base) var(--ease);
+}
+.link:hover{color:var(--red);border-color:var(--red)}
+.link::after{content:"↗";font-size:.85em}
+.link--internal::after{content:"→"}
+
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:var(--s-5);border:1px dashed var(--line);border-radius:var(--r-md)}
+.btn-row.dark{background:var(--ink-900);color:#fff;border-color:transparent}
+.btn-row.red{background:var(--red);color:#fff;border-color:transparent}
+
+/* ============================================================
+   CHIPS / BADGES
+   ============================================================ */
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:var(--r-pill);
+  font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500;
+}
+.chip--ink{background:var(--ink-900);color:#fff}
+.chip--red{background:var(--red);color:#fff}
+.chip--paper{background:var(--paper-card);color:var(--ink-900);border:1px solid var(--line)}
+.chip--ghost{background:transparent;color:var(--ink-900);border:1px solid var(--ink-900)}
+.chip--tint{background:var(--red-50);color:var(--red-700)}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--s-5)}
+.field label{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+.field .hint{font-size:var(--fs-small);color:var(--ink-500)}
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.field textarea,
+.field select{
+  font:inherit;color:var(--ink-900);
+  padding:12px 0;background:transparent;
+  border:0;border-bottom:1.5px solid var(--ink-300);
+  outline:none;transition:border-color var(--t-base) var(--ease);
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-bottom-color:var(--red)}
+.field textarea{min-height:96px;resize:vertical}
+.field--rect input,.field--rect textarea{
+  border:1px solid var(--ink-300);padding:12px 14px;border-radius:var(--r-md);
+}
+.field--rect input:focus,.field--rect textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-50)}
+
+.checkbox{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:var(--fs-small);line-height:1.4}
+.checkbox input{accent-color:var(--red);margin-top:3px}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.cards-grid{grid-template-columns:1fr}}
+
+/* Variant A — outlined */
+.card-a{
+  border:1px solid var(--line);background:var(--paper-card);
+  padding:var(--s-5);display:flex;flex-direction:column;gap:var(--s-3);
+  transition:border-color var(--t-base) var(--ease),transform var(--t-base) var(--ease);
+}
+.card-a:hover{border-color:var(--ink-900);transform:translateY(-2px)}
+.card-a .meta{font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red)}
+.card-a h3{font-family:var(--ff-display);font-weight:700;font-size:var(--fs-h3);line-height:1.15}
+.card-a p{font-size:var(--fs-small);color:var(--ink-700);line-height:1.55}
+.card-a .arrow{margin-top:auto;font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.card-a .arrow::after{content:"→"}
+
+/* Variant B — top-rule, no frame */
+.card-b{
+  border-top:1.5px solid var(--ink-900);padding:var(--s-5) 0;
+  display:flex;flex-direction:column;gap:var(--s-3);
+}
+.card-b .num{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red)}
+.card-b h3{font-family:var(--ff-display);font-weight:800;font-size:var(--fs-h3);line-height:1.1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.card-b p{font-size:var(--fs-small);color:var(--ink-500);line-height:1.55}
+.card-b .arrow{margin-top:var(--s-2);font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;border-bottom:1px solid var(--ink-900);width:fit-content;padding-bottom:2px;transition:color var(--t-base) var(--ease),border-color var(--t-base) var(--ease)}
+.card-b:hover .arrow{color:var(--red);border-color:var(--red)}
+
+/* Case-card — dense, with metric */
+.case-card{
+  display:grid;grid-template-columns:120px 1fr auto;gap:var(--s-5);align-items:center;
+  padding:var(--s-5) 0;border-bottom:1px solid var(--line);
+  transition:background var(--t-base) var(--ease);
+  cursor:pointer;
+}
+.case-card:hover{background:var(--paper-2)}
+.case-card .ph{aspect-ratio:1/1;background:repeating-linear-gradient(45deg,var(--ink-100) 0 8px,transparent 8px 16px);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-family:var(--ff-mono);font-size:9px;color:var(--ink-500);letter-spacing:var(--ls-mono)}
+.case-card .info .client{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.case-card .info h3{font-family:var(--ff-display);font-weight:800;font-size:var(--fs-h3);line-height:1.1;letter-spacing:var(--ls-display);margin-bottom:6px;text-transform:uppercase}
+.case-card .info p{font-size:var(--fs-small);color:var(--ink-700);max-width:60ch}
+.case-card .metric{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,3.5vw,52px);line-height:.9;letter-spacing:var(--ls-display);color:var(--ink-900);text-align:right}
+.case-card .metric small{display:block;font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);font-weight:500;margin-top:6px}
+@media (max-width:760px){.case-card{grid-template-columns:1fr;gap:var(--s-3)}.case-card .metric{text-align:left}}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--ink-900);border-bottom:1px solid var(--ink-900)}
+@media (max-width:760px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:var(--s-6) var(--s-5);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s-3)}
+.stat:nth-child(4n){border-right:0}
+.stat .v{font-family:var(--ff-display);font-weight:900;font-size:clamp(40px,5vw,84px);line-height:.9;letter-spacing:var(--ls-display)}
+.stat .v em{font-style:normal;color:var(--red)}
+.stat .k{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+
+/* ============================================================
+   SECTION PATTERNS — hero variants
+   ============================================================ */
+.hero-demo{
+  display:grid;grid-template-columns:1.4fr 1fr;gap:var(--s-7);
+  padding:var(--s-7);border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--paper-card);
+  align-items:end;
+}
+.hero-demo .lbl{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:var(--s-4)}
+.hero-demo h1{font-family:var(--ff-display);font-weight:900;font-size:clamp(32px,4.5vw,72px);line-height:.94;letter-spacing:var(--ls-display);text-transform:uppercase;margin-bottom:var(--s-4)}
+.hero-demo h1 em{font-style:normal;color:var(--red)}
+.hero-demo p{font-size:var(--fs-body);color:var(--ink-700);max-width:42ch;margin-bottom:var(--s-5)}
+.hero-demo .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-demo .side{display:flex;flex-direction:column;gap:var(--s-3)}
+.hero-demo .ph{aspect-ratio:4/5;background:repeating-linear-gradient(45deg,var(--ink-100) 0 8px,transparent 8px 16px);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-family:var(--ff-mono);font-size:11px;color:var(--ink-500);letter-spacing:var(--ls-mono)}
+@media (max-width:900px){.hero-demo{grid-template-columns:1fr}}
+
+.hero-demo--dark{background:var(--ink-900);color:#fff;border-color:transparent}
+.hero-demo--dark p{color:rgba(255,255,255,.78)}
+.hero-demo--dark .lbl{color:#fff;opacity:.7}
+.hero-demo--dark .ph{background:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 8px,transparent 8px 16px)}
+
+/* Directions — list pattern */
+.dir-list{border-top:1px solid var(--ink-900)}
+.dir-list a{
+  display:grid;grid-template-columns:60px 1fr auto;gap:var(--s-5);align-items:center;
+  padding:var(--s-6) 0;border-bottom:1px solid var(--line);
+  transition:padding var(--t-base) var(--ease),background var(--t-base) var(--ease),color var(--t-base) var(--ease);
+  position:relative;
+}
+.dir-list a:hover{background:var(--ink-900);color:#fff;padding-left:var(--s-5);padding-right:var(--s-5)}
+.dir-list .num{font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);color:var(--ink-300);transition:color var(--t-base) var(--ease)}
+.dir-list a:hover .num{color:rgba(255,255,255,.5)}
+.dir-list .name{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,4vw,64px);line-height:1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.dir-list .arr{width:48px;height:48px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:var(--ff-mono);transition:transform var(--t-base) var(--ease)}
+.dir-list a:hover .arr{transform:rotate(-45deg);background:var(--red);border-color:var(--red);color:#fff}
+
+/* ============================================================
+   NAV PATTERNS
+   ============================================================ */
+.nav-demo{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--s-3) var(--s-5);
+  background:rgba(250,250,248,.85);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:var(--r-md);
+}
+.nav-demo .brand{display:flex;align-items:center;gap:10px}
+.nav-demo .mk{
+  width:28px;height:32px;border:1.5px solid var(--ink-900);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--ff-display);font-weight:900;font-size:14px;letter-spacing:-.05em;
+  position:relative;
+}
+.nav-demo .mk::after{
+  content:"";position:absolute;left:5%;right:5%;top:50%;height:1.5px;background:var(--red);
+  transform:rotate(-58deg);
+}
+.nav-demo .wm{font-family:var(--ff-mono);font-weight:500;font-size:9px;letter-spacing:.18em;line-height:1.05;text-transform:uppercase}
+.nav-demo .links{display:flex;gap:18px;font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-700)}
+.nav-demo .links a:hover{color:var(--red)}
+.nav-demo--dark{background:var(--ink-900);color:#fff;border-color:transparent}
+.nav-demo--dark .mk{border-color:#fff}
+.nav-demo--dark .links{color:rgba(255,255,255,.78)}
+@media (max-width:760px){.nav-demo .links{display:none}}
+
+/* breadcrumb */
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--ff-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+.crumbs span{display:flex;align-items:center;gap:8px}
+.crumbs span:not(:last-child)::after{content:"/";color:var(--ink-300)}
+.crumbs b{color:var(--ink-900);font-weight:500}
+
+/* ============================================================
+   ICONOGRAPHY — minimal set, geometric
+   ============================================================ */
+.icon{width:24px;height:24px;display:inline-block;color:currentColor}
+.icon-row{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--s-4)}
+@media (max-width:900px){.icon-row{grid-template-columns:repeat(4,1fr)}}
+.icon-cell{display:flex;flex-direction:column;align-items:center;gap:var(--s-2);padding:var(--s-4);border:1px solid var(--line);border-radius:var(--r-sm)}
+.icon-cell span{font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+
+/* ============================================================
+   TOKEN TABLE
+   ============================================================ */
+.tok-tbl{border:1px solid var(--line);background:var(--paper-card)}
+.tok-tbl-head, .tok-tbl-row{
+  display:grid;grid-template-columns:1fr 1fr 80px 2fr;gap:var(--s-5);
+  padding:var(--s-3) var(--s-5);border-bottom:1px solid var(--line);
+}
+.tok-tbl-head{background:var(--ink-900);color:#fff;font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;border-bottom:0}
+.tok-tbl-row:last-child{border-bottom:0}
+.tok-tbl-row code{font-family:var(--ff-mono);font-size:var(--fs-small);color:var(--ink-700)}
+.tok-tbl-row .swatch{width:24px;height:24px;border-radius:var(--r-sm);border:1px solid var(--ink-100)}
+.tok-tbl-row .role{font-size:var(--fs-small);color:var(--ink-500)}
+@media (max-width:760px){.tok-tbl-head{display:none}.tok-tbl-row{grid-template-columns:1fr;gap:6px;padding:var(--s-4)}}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  padding:var(--s-6) var(--gutter);
+  font-family:var(--ff-mono);font-size:var(--fs-cap);letter-spacing:var(--ls-mono);text-transform:uppercase;
+  background:var(--ink-900);color:rgba(255,255,255,.55);
+}
+.foot strong{color:#fff;font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="psnav">
+  <div class="brand"><span class="mk">P</span> P/S System · v1.0</div>
+  <div class="links">
+    <a href="#tokens">Tokens</a>
+    <a href="#color">Color</a>
+    <a href="#type">Type</a>
+    <a href="#grid">Grid</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#forms">Forms</a>
+    <a href="#cards">Cards</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#example">Example</a>
+  </div>
+</nav>
+
+<!-- ============ COVER ============ -->
+<header class="cover" data-screen-label="01 Cover">
+  <div class="label">— Design system · v1.0 · for Premium Selection</div>
+  <h1>P/S<br><em>System.</em></h1>
+  <p class="lede" style="margin-top:var(--s-6)">Сдержанная версия фирменного стиля&nbsp;— тот&nbsp;же характер, что и&nbsp;на&nbsp;текущем сайте, но&nbsp;с&nbsp;дисциплиной. Меньше цветов, чёткая иерархия, кнопки опознаются как&nbsp;кнопки.</p>
+  <div class="meta">
+    <div><strong>Автор</strong>P/S Group · 2026</div>
+    <div><strong>Тип</strong>Edito­rial · Editorial-tech</div>
+    <div><strong>Шрифты</strong>Commissioner · JetBrains Mono</div>
+    <div><strong>Состояние</strong>v1.0 — proposal</div>
+  </div>
+</header>
+
+<!-- ============ PRINCIPLES ============ -->
+<section data-screen-label="02 Principles">
+  <div class="section-head">
+    <span class="num">— 01 / Принципы</span>
+    <h2>Четыре правила</h2>
+  </div>
+  <div class="cards-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="card-b">
+      <span class="num">01</span>
+      <h3>Один акцент</h3>
+      <p>Красный — только для&nbsp;того, на&nbsp;что должен упасть взгляд. CTA, метки разделов, статус. Никаких декоративных пятен.</p>
+    </div>
+    <div class="card-b">
+      <span class="num">02</span>
+      <h3>Линия > заливка</h3>
+      <p>Структуру держим тонкими линиями ink/200, а&nbsp;не&nbsp;цветом. Это даёт «editorial»-ощущение и&nbsp;сразу читаемо.</p>
+    </div>
+    <div class="card-b">
+      <span class="num">03</span>
+      <h3>Mono метит, Display кричит</h3>
+      <p>JetBrains Mono — служебная роль (метки, координаты, номера). Commissioner — высказывания. Не&nbsp;путать.</p>
+    </div>
+    <div class="card-b">
+      <span class="num">04</span>
+      <h3>Воздух&nbsp;— это&nbsp;контент</h3>
+      <p>Большие отступы&nbsp;— часть тона&nbsp;«премиум». Не&nbsp;заполняй пустоту, дай ей&nbsp;работать.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLOR ============ -->
+<section class="alt" id="color" data-screen-label="03 Color">
+  <div class="section-head">
+    <span class="num">— 02 / Color</span>
+    <h2>Палитра</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Три ядра: <strong>ink</strong>&nbsp;— структура и&nbsp;текст, <strong>paper</strong>&nbsp;— фон и&nbsp;карточки, <strong>red</strong>&nbsp;— один акцент. Плюс служебные warn/ok.</p>
+  <h3 class="subhead">— Core</h3>
+  <div class="swatches" style="margin-bottom:var(--s-7)">
+    <div class="sw"><div class="chip" style="background:#0A0A0A"></div><div class="name">Ink 900</div><div class="hex">#0A0A0A</div><div class="role">Текст, линии, фон тёмных секций</div></div>
+    <div class="sw"><div class="chip" style="background:#FAFAF8"></div><div class="name">Paper</div><div class="hex">#FAFAF8</div><div class="role">Основной фон</div></div>
+    <div class="sw"><div class="chip" style="background:#F2F2EE"></div><div class="name">Paper 2</div><div class="hex">#F2F2EE</div><div class="role">Чередование секций</div></div>
+    <div class="sw"><div class="chip" style="background:#DA291C"></div><div class="name">Red</div><div class="hex">#DA291C</div><div class="role">Акцент. Метки, primary CTA, состояние active</div></div>
+  </div>
+
+  <h3 class="subhead">— Ink scale (для текста и&nbsp;линий)</h3>
+  <div class="swatches" style="margin-bottom:var(--s-7)">
+    <div class="sw"><div class="chip" style="background:#0A0A0A"></div><div class="name">Ink 900</div><div class="hex">#0A0A0A</div><div class="role">Заголовки, body на&nbsp;paper</div></div>
+    <div class="sw"><div class="chip" style="background:#2A2A2A"></div><div class="name">Ink 700</div><div class="hex">#2A2A2A</div><div class="role">Body на&nbsp;paper-2</div></div>
+    <div class="sw"><div class="chip" style="background:rgba(10,10,10,.62)"></div><div class="name">Ink 500</div><div class="hex">α 0.62</div><div class="role">Подписи, мета</div></div>
+    <div class="sw"><div class="chip" style="background:rgba(10,10,10,.18)"></div><div class="name">Ink 200</div><div class="hex">α 0.18</div><div class="role">Линии, разделители</div></div>
+  </div>
+
+  <h3 class="subhead">— Red &amp; service</h3>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#DA291C"></div><div class="name">Red</div><div class="hex">#DA291C</div><div class="role">Acc + active</div></div>
+    <div class="sw"><div class="chip" style="background:#B6231A"></div><div class="name">Red 700</div><div class="hex">#B6231A</div><div class="role">Hover/pressed</div></div>
+    <div class="sw"><div class="chip" style="background:#FCEBE9"></div><div class="name">Red 50</div><div class="hex">#FCEBE9</div><div class="role">Highlight, focus-ring</div></div>
+    <div class="sw"><div class="chip" style="background:#E8A317"></div><div class="name">Warn</div><div class="hex">#E8A317</div><div class="role">Только статусы</div></div>
+  </div>
+
+  <p class="t-mono" style="margin-top:var(--s-6)">— Что&nbsp;ушло из&nbsp;старой системы: 12 цветов hero-ячеек (c1–c12). Они&nbsp;были «фотопалитрой», но&nbsp;на&nbsp;уровне layout-а они стали шумом.</p>
+</section>
+
+<!-- ============ TYPE ============ -->
+<section id="type" data-screen-label="04 Type">
+  <div class="section-head">
+    <span class="num">— 03 / Type</span>
+    <h2>Типографика</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-7)">Две&nbsp;семьи. <strong>Commissioner</strong> 400/500/700/800/900&nbsp;— весь интерфейс и&nbsp;display. <strong>JetBrains Mono</strong> 400/500&nbsp;— только служебно: метки, номера, координаты, тех-подписи.</p>
+
+  <h3 class="subhead">— Шкала</h3>
+  <div class="type-row">
+    <span class="tag">Display</span>
+    <span class="t-display">Premium Selection</span>
+    <span class="spec">Commissioner 900 · clamp(48–148px) · -2.5%</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">H1</span>
+    <span class="t-h1">Что мы делаем</span>
+    <span class="spec">Commissioner 900 · clamp(36–76px)</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">H2</span>
+    <span class="t-h2">Заголовок секции</span>
+    <span class="spec">Commissioner 800 · clamp(28–52px)</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">H3</span>
+    <span class="t-h3">Подзаголовок карточки</span>
+    <span class="spec">Commissioner 700 · clamp(20–26px)</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">Lede</span>
+    <span class="t-lede">Вводный абзац — крупнее body, мягче display.</span>
+    <span class="spec">Commissioner 500 · clamp(18–24px) · 1.45</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">Body</span>
+    <span class="t-body">Основной текст — здесь живёт большинство содержания. Длинные строки 60–70ch, line-height 1.55, никакого uppercase.</span>
+    <span class="spec">Commissioner 400 · 16px · 1.55</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">Small</span>
+    <span class="t-small">Уточнения, подписи к&nbsp;карточкам, второй уровень информации.</span>
+    <span class="spec">Commissioner 400 · 14px · 1.5</span>
+  </div>
+  <div class="type-row">
+    <span class="tag">Mono / Meta</span>
+    <span class="t-mono">— Coordinate · 11 / 16 · uppercase · ls .12em</span>
+    <span class="spec">JetBrains Mono 500 · 11px · UPPER</span>
+  </div>
+
+  <h3 class="subhead" style="margin-top:var(--s-7)">— Правила</h3>
+  <ul style="display:grid;gap:var(--s-3);max-width:64ch;list-style:none">
+    <li>· Капс&nbsp;— только display и&nbsp;mono-метки. h2 крупных секций&nbsp;— разрешено. h3 карточек&nbsp;— sentence case.</li>
+    <li>· Line-height: display .92, h-уровни .96–1.15, body 1.55, small 1.5.</li>
+    <li>· Letter-spacing: display −2.5%, body 0, mono +12%.</li>
+    <li>· Никогда не&nbsp;делать h2 mono. Mono — это&nbsp;«машинная» интонация.</li>
+  </ul>
+</section>
+
+<!-- ============ GRID & SPACING ============ -->
+<section class="alt" id="grid" data-screen-label="05 Grid">
+  <div class="section-head">
+    <span class="num">— 04 / Grid &amp; spacing</span>
+    <h2>Сетка и&nbsp;отступы</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">12-колоночная сетка, <code>gap:8px</code>. Внешние гаттеры&nbsp;— <code>clamp(20px,4vw,56px)</code>. Все отступы&nbsp;— по&nbsp;шкале&nbsp;8.</p>
+
+  <h3 class="subhead">— 12 колонок</h3>
+  <div class="grid-demo">
+    <div class="col">1</div><div class="col">2</div><div class="col">3</div><div class="col">4</div>
+    <div class="col">5</div><div class="col">6</div><div class="col">7</div><div class="col">8</div>
+    <div class="col">9</div><div class="col">10</div><div class="col">11</div><div class="col">12</div>
+  </div>
+
+  <h3 class="subhead" style="margin-top:var(--s-7)">— Шкала (8pt)</h3>
+  <div class="space-row">
+    <div class="sp"><i class="s1"></i><span>04 / s-1</span></div>
+    <div class="sp"><i class="s2"></i><span>08 / s-2</span></div>
+    <div class="sp"><i class="s3"></i><span>12 / s-3</span></div>
+    <div class="sp"><i class="s4"></i><span>16 / s-4</span></div>
+    <div class="sp"><i class="s5"></i><span>24 / s-5</span></div>
+    <div class="sp"><i class="s6"></i><span>32 / s-6</span></div>
+    <div class="sp"><i class="s7"></i><span>48 / s-7</span></div>
+    <div class="sp"><i class="s8"></i><span>64 / s-8</span></div>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section id="buttons" data-screen-label="06 Buttons">
+  <div class="section-head">
+    <span class="num">— 05 / Buttons &amp; links</span>
+    <h2>Кнопки и&nbsp;ссылки</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Микс: <strong>pill</strong>&nbsp;— primary &amp; CTA, <strong>rect</strong>&nbsp;— secondary &amp; в&nbsp;формах. Все mono-метки внутри. Стрелка&nbsp;— часть бренда.</p>
+
+  <h3 class="subhead">— Variant A · Pill (primary)</h3>
+  <div class="btn-row" style="margin-bottom:var(--s-5)">
+    <button class="btn btn--primary">Связаться</button>
+    <button class="btn btn--accent">Сгенерировать ТЗ</button>
+    <button class="btn btn--ghost">Все работы</button>
+    <button class="btn btn--primary btn--sm">Small</button>
+    <button class="btn btn--primary btn--lg">Large</button>
+    <button class="btn btn--primary" disabled>Disabled</button>
+  </div>
+  <div class="btn-row dark" style="margin-bottom:var(--s-5)">
+    <button class="btn btn--accent">Primary on ink</button>
+    <button class="btn btn--ghost-paper">Ghost on ink</button>
+  </div>
+  <div class="btn-row red" style="margin-bottom:var(--s-7)">
+    <button class="btn" style="background:#fff;color:var(--red)">On red</button>
+    <button class="btn btn--ghost-paper">Ghost on red</button>
+  </div>
+
+  <h3 class="subhead">— Variant B · Rect (technical)</h3>
+  <div class="btn-row">
+    <button class="btn btn--primary btn--rect">Скачать PDF</button>
+    <button class="btn btn--ghost btn--rect">Назад</button>
+    <button class="btn btn--accent btn--rect btn--sm">Apply</button>
+  </div>
+
+  <h3 class="subhead" style="margin-top:var(--s-7)">— Inline links</h3>
+  <p class="t-body" style="max-width:64ch">Текст-ссылка <a href="#" class="link link--internal">переходит внутри сайта</a>, а&nbsp;на&nbsp;внешний ресурс&nbsp;— <a href="#" class="link">с&nbsp;маркером ↗</a>. Hover окрашивает в&nbsp;red.</p>
+
+  <h3 class="subhead" style="margin-top:var(--s-7)">— Chips</h3>
+  <div class="btn-row" style="gap:8px">
+    <span class="chip chip--ink">P0 · Critical</span>
+    <span class="chip chip--red">New</span>
+    <span class="chip chip--paper">Branding</span>
+    <span class="chip chip--ghost">Production</span>
+    <span class="chip chip--tint">Active</span>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="alt" id="forms" data-screen-label="07 Forms">
+  <div class="section-head">
+    <span class="num">— 06 / Forms</span>
+    <h2>Поля ввода</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Два варианта: <strong>underline</strong>&nbsp;— editorial, для&nbsp;visit-форм и&nbsp;опросников. <strong>Rect</strong>&nbsp;— для&nbsp;форм с&nbsp;большим количеством полей.</p>
+
+  <div class="cards-grid" style="grid-template-columns:1fr 1fr">
+    <div style="padding:var(--s-6);border:1px solid var(--line);background:var(--paper-card)">
+      <h3 class="t-mono" style="color:var(--red);margin-bottom:var(--s-5)">— Variant A · Underline</h3>
+      <div class="field"><label>Имя *</label><input type="text" placeholder="Например, Алишер"></div>
+      <div class="field"><label>Телефон *</label><input type="tel" placeholder="+998 ··· "></div>
+      <div class="field"><label>О&nbsp;задаче</label><textarea placeholder="Сроки, источники, спецтребования..."></textarea></div>
+      <label class="checkbox"><input type="checkbox"> Согласен на&nbsp;обработку данных</label>
+    </div>
+
+    <div class="field--rect" style="padding:var(--s-6);border:1px solid var(--line);background:var(--paper-card)">
+      <h3 class="t-mono" style="color:var(--red);margin-bottom:var(--s-5)">— Variant B · Rect</h3>
+      <div class="field"><label>Имя *</label><input type="text" placeholder="Например, Алишер"></div>
+      <div class="field"><label>Телефон *</label><input type="tel" placeholder="+998 ··· "></div>
+      <div class="field"><label>О&nbsp;задаче</label><textarea placeholder="Сроки, источники, спецтребования..."></textarea></div>
+      <label class="checkbox"><input type="checkbox"> Согласен на&nbsp;обработку данных</label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section id="cards" data-screen-label="08 Cards">
+  <div class="section-head">
+    <span class="num">— 07 / Cards</span>
+    <h2>Карточки</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Два&nbsp;варианта. <strong>A&nbsp;— outlined</strong>: сетки услуг, направлений, контактов. <strong>B&nbsp;— top-rule</strong>: editorial-блоки, принципы, текстовые сетки.</p>
+
+  <h3 class="subhead">— Variant A · Outlined</h3>
+  <div class="cards-grid" style="margin-bottom:var(--s-7)">
+    <div class="card-a">
+      <span class="meta">01 / Marketing &amp; Research</span>
+      <h3>Стратегия и&nbsp;исследования</h3>
+      <p>Когда нужен план на&nbsp;год, а&nbsp;не&nbsp;разовая кампания. Количественные исследования, segmentation, brand-tracking.</p>
+      <span class="arrow">Перейти</span>
+    </div>
+    <div class="card-a">
+      <span class="meta">02 / Production</span>
+      <h3>Полиграфия и&nbsp;OOH</h3>
+      <p>Один подрядчик на&nbsp;весь бренд-носитель. Печать, наружка, POS, брендированные носители.</p>
+      <span class="arrow">Перейти</span>
+    </div>
+    <div class="card-a">
+      <span class="meta">03 / IT</span>
+      <h3>Веб &amp; мобильное</h3>
+      <p>Сайты, e-commerce, мобильные приложения, интеграции с&nbsp;CRM. Цикл&nbsp;— от&nbsp;дизайна до&nbsp;поддержки.</p>
+      <span class="arrow">Перейти</span>
+    </div>
+  </div>
+
+  <h3 class="subhead">— Variant B · Top-rule</h3>
+  <div class="cards-grid" style="margin-bottom:var(--s-7)">
+    <div class="card-b">
+      <span class="num">01</span>
+      <h3>Один&nbsp;акцент</h3>
+      <p>Красный — только для&nbsp;того, на&nbsp;что должен упасть взгляд: CTA, метка раздела, статус.</p>
+      <span class="arrow">Подробнее</span>
+    </div>
+    <div class="card-b">
+      <span class="num">02</span>
+      <h3>Линия больше заливки</h3>
+      <p>Структуру держим линиями ink/200. Это даёт editorial-вид и&nbsp;сразу читаемо.</p>
+      <span class="arrow">Подробнее</span>
+    </div>
+    <div class="card-b">
+      <span class="num">03</span>
+      <h3>Воздух&nbsp;— это&nbsp;контент</h3>
+      <p>Большие отступы&nbsp;— часть тона&nbsp;«премиум». Не&nbsp;заполняй пустоту.</p>
+      <span class="arrow">Подробнее</span>
+    </div>
+  </div>
+
+  <h3 class="subhead">— Case-card (для&nbsp;works.html)</h3>
+  <div>
+    <div class="case-card">
+      <div class="ph">PROJECT IMG</div>
+      <div class="info">
+        <span class="client">Bayan · 2025 · Brand identity</span>
+        <h3>Айдентика для&nbsp;премиум-FMCG</h3>
+        <p>Полный гайд + упаковка под&nbsp;5&nbsp;линеек, брендированный мерч, выкладка в&nbsp;ритейле.</p>
+      </div>
+      <div class="metric">+38%<small>retail sell-through</small></div>
+    </div>
+    <div class="case-card">
+      <div class="ph">PROJECT IMG</div>
+      <div class="info">
+        <span class="client">Kapsula · 2024 · Apparel</span>
+        <h3>Корпоративная одежда</h3>
+        <p>1&nbsp;200 единиц для&nbsp;команды банка. Подбор материалов, нанесение, логистика по&nbsp;трём городам.</p>
+      </div>
+      <div class="metric">1.2k<small>units delivered</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="alt" data-screen-label="09 Stats">
+  <div class="section-head">
+    <span class="num">— 08 / Stats</span>
+    <h2>Цифры</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Для&nbsp;«цифровых» секций (about, направления). Внутри ink/red&nbsp;— на&nbsp;тёмной подложке выглядит дороже.</p>
+
+  <div class="stats-row" style="background:var(--paper-card)">
+    <div class="stat"><span class="v">07</span><span class="k">Лет на&nbsp;рынке</span></div>
+    <div class="stat"><span class="v">240<em>+</em></span><span class="k">Реализованных проектов</span></div>
+    <div class="stat"><span class="v">12</span><span class="k">Стран присутствия</span></div>
+    <div class="stat"><span class="v">03</span><span class="k">Направления бизнеса</span></div>
+  </div>
+
+  <div class="stats-row" style="background:var(--ink-900);color:#fff;border-color:var(--ink-900);margin-top:var(--s-5)">
+    <div class="stat" style="border-color:rgba(255,255,255,.18)"><span class="v">07</span><span class="k" style="color:rgba(255,255,255,.55)">Лет на&nbsp;рынке</span></div>
+    <div class="stat" style="border-color:rgba(255,255,255,.18)"><span class="v">240<em>+</em></span><span class="k" style="color:rgba(255,255,255,.55)">Проектов</span></div>
+    <div class="stat" style="border-color:rgba(255,255,255,.18)"><span class="v">12</span><span class="k" style="color:rgba(255,255,255,.55)">Стран</span></div>
+    <div class="stat" style="border-color:rgba(255,255,255,.18)"><span class="v">03</span><span class="k" style="color:rgba(255,255,255,.55)">Направления</span></div>
+  </div>
+</section>
+
+<!-- ============ NAVIGATION PATTERNS ============ -->
+<section id="patterns" data-screen-label="10 Nav">
+  <div class="section-head">
+    <span class="num">— 09 / Navigation</span>
+    <h2>Навигация</h2>
+  </div>
+
+  <h3 class="subhead">— Header: variant A (light, sticky+blur)</h3>
+  <div class="nav-demo" style="margin-bottom:var(--s-5)">
+    <div class="brand">
+      <span class="mk">P<span style="position:absolute;right:2px;bottom:2px;font-size:9px">S</span></span>
+      <span class="wm">PREMIUM<br>SELECTION</span>
+    </div>
+    <div class="links">
+      <a href="#">Работы</a>
+      <a href="#">Brief</a>
+      <a href="#">О&nbsp;нас</a>
+      <a href="#">Контакты</a>
+      <a href="#">RU·EN·UZ</a>
+    </div>
+  </div>
+
+  <h3 class="subhead">— Header: variant B (ink — для&nbsp;тёмных страниц)</h3>
+  <div class="nav-demo nav-demo--dark" style="margin-bottom:var(--s-7)">
+    <div class="brand">
+      <span class="mk">P<span style="position:absolute;right:2px;bottom:2px;font-size:9px">S</span></span>
+      <span class="wm">PREMIUM<br>SELECTION</span>
+    </div>
+    <div class="links">
+      <a href="#">Работы</a>
+      <a href="#">Brief</a>
+      <a href="#">О&nbsp;нас</a>
+      <a href="#">Контакты</a>
+    </div>
+  </div>
+
+  <h3 class="subhead">— Breadcrumbs</h3>
+  <div class="crumbs" style="margin-bottom:var(--s-7)">
+    <span>Главная</span>
+    <span>Направления</span>
+    <span>Production</span>
+    <span><b>Айдентика Bayan</b></span>
+  </div>
+
+  <h3 class="subhead">— Directions list (главный паттерн в&nbsp;hero/about)</h3>
+  <nav class="dir-list">
+    <a href="#"><span class="num">01</span><span class="name">Marketing &amp; Research</span><span class="arr">→</span></a>
+    <a href="#"><span class="num">02</span><span class="name">Production</span><span class="arr">→</span></a>
+    <a href="#"><span class="num">03</span><span class="name">IT</span><span class="arr">→</span></a>
+  </nav>
+</section>
+
+<!-- ============ ICONS ============ -->
+<section class="alt" data-screen-label="11 Icons">
+  <div class="section-head">
+    <span class="num">— 10 / Iconography</span>
+    <h2>Иконки</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">24×24, stroke 1.5, без&nbsp;заливок. Геометричные, технические. Используем точечно&nbsp;— в&nbsp;кнопках и&nbsp;статусах. <strong>Не&nbsp;декорируем ими карточки.</strong></p>
+  <div class="icon-row">
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14m-6-7l7 7-7 7"/></svg>
+      <span>arrow</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14m-7-7h14"/></svg>
+      <span>plus</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      <span>close</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+      <span>time</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <span>menu</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>
+      <span>search</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7l9 6 9-6M3 7v10h18V7"/></svg>
+      <span>mail</span>
+    </div>
+    <div class="icon-cell">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 19l14-14M19 19V5H5"/></svg>
+      <span>arrow-up-right</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOKEN TABLE ============ -->
+<section data-screen-label="12 Tokens" id="tokens">
+  <div class="section-head">
+    <span class="num">— 11 / Tokens</span>
+    <h2>Токены (CSS variables)</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Все значения объявлены в&nbsp;<code>:root</code>. Перенос на&nbsp;текущий сайт = добавить эти переменные и&nbsp;заменить хардкод.</p>
+
+  <div class="tok-tbl">
+    <div class="tok-tbl-head"><div>Token</div><div>Value</div><div>Sample</div><div>Role</div></div>
+    <div class="tok-tbl-row"><code>--ink-900</code><code>#0A0A0A</code><div class="swatch" style="background:#0A0A0A"></div><div class="role">Текст, линии, тёмные секции</div></div>
+    <div class="tok-tbl-row"><code>--paper</code><code>#FAFAF8</code><div class="swatch" style="background:#FAFAF8"></div><div class="role">Основной фон страницы</div></div>
+    <div class="tok-tbl-row"><code>--paper-2</code><code>#F2F2EE</code><div class="swatch" style="background:#F2F2EE"></div><div class="role">Чередование секций</div></div>
+    <div class="tok-tbl-row"><code>--red</code><code>#DA291C</code><div class="swatch" style="background:#DA291C"></div><div class="role">Акцент, метки, primary CTA</div></div>
+    <div class="tok-tbl-row"><code>--red-50</code><code>#FCEBE9</code><div class="swatch" style="background:#FCEBE9"></div><div class="role">Highlight, focus-ring</div></div>
+    <div class="tok-tbl-row"><code>--line</code><code>α 0.18 ink</code><div class="swatch" style="background:rgba(10,10,10,.18)"></div><div class="role">Разделители, рамки карточек</div></div>
+    <div class="tok-tbl-row"><code>--gutter</code><code>clamp(20,4vw,56)</code><div class="swatch" style="background:repeating-linear-gradient(90deg,var(--ink-200) 0 1px,transparent 1px 6px)"></div><div class="role">Внешние отступы секций</div></div>
+    <div class="tok-tbl-row"><code>--r-pill</code><code>999px</code><div class="swatch" style="border-radius:999px;background:var(--ink-900)"></div><div class="role">Кнопки primary, chips</div></div>
+    <div class="tok-tbl-row"><code>--r-md</code><code>4px</code><div class="swatch" style="border-radius:4px;background:var(--ink-900)"></div><div class="role">Карточки, формы (rect)</div></div>
+    <div class="tok-tbl-row"><code>--ease</code><code>(.65,0,.35,1)</code><div class="swatch" style="background:linear-gradient(90deg,var(--ink-200),var(--ink-900))"></div><div class="role">Все hover/transition</div></div>
+  </div>
+</section>
+
+<!-- ============ EXAMPLE PAGE ============ -->
+<section class="alt" id="example" data-screen-label="13 Example">
+  <div class="section-head">
+    <span class="num">— 12 / Example</span>
+    <h2>Собрано вместе</h2>
+  </div>
+  <p class="lede" style="margin-bottom:var(--s-6)">Hero нового сайта, по&nbsp;правилам системы. Один акцент, чёткая иерархия, CTA опознаётся.</p>
+
+  <div class="hero-demo">
+    <div>
+      <div class="lbl">— Premium Selection · Tashkent · Dubai · с&nbsp;2018</div>
+      <h1>Создаём грандиозные <em>проекты.</em></h1>
+      <p>Marketing&nbsp;&amp; Research, Production и&nbsp;IT&nbsp;— под&nbsp;одной&nbsp;крышей. Один подрядчик на&nbsp;весь цикл&nbsp;— от&nbsp;стратегии до&nbsp;выкладки в&nbsp;ритейле.</p>
+      <div class="ctas">
+        <button class="btn btn--primary">Собрать ТЗ за&nbsp;3 минуты</button>
+        <button class="btn btn--ghost">Посмотреть работы</button>
+      </div>
+    </div>
+    <div class="side">
+      <div class="ph">HERO IMG / 4:5</div>
+    </div>
+  </div>
+
+  <div style="margin-top:var(--s-7)">
+    <h3 class="subhead">— Ниже hero: directions</h3>
+    <nav class="dir-list">
+      <a href="#"><span class="num">01</span><span class="name">Marketing &amp; Research</span><span class="arr">→</span></a>
+      <a href="#"><span class="num">02</span><span class="name">Production</span><span class="arr">→</span></a>
+      <a href="#"><span class="num">03</span><span class="name">IT</span><span class="arr">→</span></a>
+    </nav>
+  </div>
+
+  <p class="t-mono" style="margin-top:var(--s-7);max-width:64ch;color:var(--ink-700)">— Сравнение со&nbsp;старым: цветов на&nbsp;первом экране 3 (ink, paper, red) вместо 18. Главная CTA читается, плашка-инпут больше не&nbsp;нужна, направления показаны выше fold.</p>
+</section>
+
+<!-- ============ HOW TO MIGRATE ============ -->
+<section data-screen-label="14 Migrate">
+  <div class="section-head">
+    <span class="num">— 13 / Migration</span>
+    <h2>Как&nbsp;<em>переехать</em></h2>
+  </div>
+  <div class="cards-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="card-b">
+      <span class="num">Шаг 1</span>
+      <h3>Подключить токены</h3>
+      <p>Скопировать <code>:root</code>-блок этого файла в&nbsp;<code>styles.css</code>. Старые переменные оставляем рядом&nbsp;— ничего не&nbsp;ломается.</p>
+    </div>
+    <div class="card-b">
+      <span class="num">Шаг 2</span>
+      <h3>Заменить компоненты по&nbsp;одному</h3>
+      <p>На&nbsp;каждой странице меняем 1&nbsp;элемент: nav&nbsp;→&nbsp;cta&nbsp;→&nbsp;cards&nbsp;→&nbsp;forms. Тестируем после каждого.</p>
+    </div>
+    <div class="card-b">
+      <span class="num">Шаг 3</span>
+      <h3>Удалить старое</h3>
+      <p>Когда все страницы переехали&nbsp;— удалить <code>.c1–.c12</code>, <code>mix-blend-mode</code> на&nbsp;.nav, плашку-инпут и&nbsp;modal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<div class="foot">
+  <span><strong>P/S System</strong> — v1.0 · 28.04.2026</span>
+  <span>14 разделов · только система · сайт не&nbsp;тронут</span>
+  <span><strong>Premium Selection</strong></span>
+</div>
+
+</body>
+</html>

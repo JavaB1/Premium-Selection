@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Premium Selection — создаём грандиозные проекты</title>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#F5F2EA"/>
+  <text x="100" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-weight="900" font-size="72" fill="#0A0A0A" letter-spacing="-4">P/S</text>
+  <circle cx="148" cy="60" r="6" fill="#E0301E"/>
+</svg>
+</template>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   P/S System tokens
+   ============================================================ */
+:root{
+  --ink-900:#0A0A0A;
+  --ink-700:#2A2A2A;
+  --ink-500:rgba(10,10,10,.62);
+  --ink-300:rgba(10,10,10,.32);
+  --ink-200:rgba(10,10,10,.18);
+  --ink-100:rgba(10,10,10,.08);
+
+  --paper:#FAFAF8;
+  --paper-2:#F2F2EE;
+  --paper-card:#FFFFFF;
+
+  --red:#DA291C;
+  --red-700:#B6231A;
+  --red-50:#FCEBE9;
+
+  --ff-display:'Commissioner',system-ui,sans-serif;
+  --ff-text:'Commissioner',system-ui,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+
+  --ls-display:-.025em;
+  --ls-mono:.12em;
+
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;--s-8:64px;--s-9:96px;--s-10:128px;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  --r-md:4px;
+  --r-pill:999px;
+
+  --line: var(--ink-200);
+
+  --ease: cubic-bezier(.65,0,.35,1);
+  --t-fast:180ms;
+  --t-base:300ms;
+  --t-slow:550ms;
+}
+
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+.scroll-progress{
+  position:fixed;left:0;top:0;height:2px;width:0%;
+  background:var(--red);z-index:60;
+  transition:width 80ms linear;
+}
+
+/* ============================================================
+   REVEAL — fade-up on scroll
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 700ms var(--ease), transform 700ms var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:80ms}
+.reveal.d2{transition-delay:160ms}
+.reveal.d3{transition-delay:240ms}
+.reveal.d4{transition-delay:320ms}
+
+/* ============================================================
+   MARQUEE — фоновый тикер
+   ============================================================ */
+.marquee{
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:var(--s-5) 0;background:var(--paper);
+}
+.marquee-track{
+  display:flex;gap:var(--s-7);white-space:nowrap;
+  animation:marquee 38s linear infinite;
+  font-family:var(--ff-display);font-weight:900;
+  font-size:clamp(40px,5vw,84px);line-height:1;letter-spacing:var(--ls-display);
+  text-transform:uppercase;
+}
+.marquee-track span{display:inline-flex;align-items:center;gap:var(--s-7);color:var(--ink-900)}
+.marquee-track em{font-style:normal;color:var(--red)}
+.marquee-track i{font-style:normal;color:var(--ink-200);font-family:var(--ff-mono);font-size:.3em;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500}
+@keyframes marquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+
+/* ============================================================
+   BIG CTA — magnetic+halo
+   ============================================================ */
+.cta-mag{
+  position:relative;
+  transition:background var(--t-base) var(--ease), color var(--t-base) var(--ease);
+}
+.cta-mag::before{display:none}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);color:var(--ink-900);
+  font-family:var(--ff-text);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-wrap:pretty;
+}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;border:0;background:transparent;color:inherit}
+
+.t-mono{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header{
+  position:sticky;top:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--s-3) var(--gutter);
+  background:rgba(250,250,248,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:auto;color:var(--ink-900);
+}
+.brand .mark svg{width:100%;height:auto;display:block}
+.brand .wm{font-family:var(--ff-mono);font-weight:500;font-size:9px;letter-spacing:.18em;line-height:1.05;text-transform:uppercase}
+.nav-links{display:flex;gap:22px;align-items:center;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-700)}
+.nav-links a{transition:color var(--t-base) var(--ease)}
+.nav-links a:hover{color:var(--red)}
+.nav-links .lang{display:flex;gap:8px;color:var(--ink-300)}
+.nav-links .lang b{color:var(--ink-900);font-weight:500}
+.nav-cta{display:flex;align-items:center;gap:14px}
+@media (max-width:920px){.nav-links{display:none}}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:var(--r-pill);
+  font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500;
+  transition:background var(--t-base) var(--ease),color var(--t-base) var(--ease),border-color var(--t-base) var(--ease),transform var(--t-fast) var(--ease);
+}
+.btn:focus-visible{outline:2px solid var(--ink-900);outline-offset:3px}
+.btn::after{content:"→"}
+.btn--primary{background:var(--ink-900);color:#fff}
+.btn--primary:hover{background:var(--red);transform:translateY(-1px)}
+.btn--accent{background:var(--red);color:#fff}
+.btn--accent:hover{background:var(--ink-900)}
+.btn--ghost{border:1.5px solid var(--ink-900);color:var(--ink-900)}
+.btn--ghost:hover{background:var(--ink-900);color:#fff}
+.btn--ghost-paper{border:1.5px solid #fff;color:#fff}
+.btn--ghost-paper:hover{background:#fff;color:var(--ink-900)}
+.btn--sm{padding:10px 16px;font-size:10px}
+.btn--lg{padding:18px 32px;font-size:12px}
+
+.link{display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color var(--t-base) var(--ease),border-color var(--t-base) var(--ease)}
+.link:hover{color:var(--red);border-color:var(--red)}
+.link::after{content:"→"}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  padding:clamp(56px,7vw,112px) var(--gutter) clamp(48px,6vw,96px);
+  border-bottom:1px solid var(--line);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.45fr 1fr;gap:clamp(32px,5vw,80px);
+  align-items:end;
+}
+.hero-meta{
+  display:flex;justify-content:space-between;gap:var(--s-5);
+  font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);
+  padding-bottom:var(--s-5);margin-bottom:clamp(36px,5vw,72px);
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.hero-meta .red{color:var(--red)}
+.hero-meta a{color:inherit;transition:color var(--t-base) var(--ease)}
+.hero-meta a:hover{color:var(--ink-900)}
+.hero-meta .grp{display:inline-flex;gap:6px;align-items:center}
+.hero-meta .sep{color:var(--ink-300)}
+.hero h1{
+  font-family:var(--ff-display);font-weight:900;
+  font-size:clamp(54px,9vw,180px);line-height:1.02;letter-spacing:var(--ls-display);text-transform:uppercase;
+  max-width:14ch;
+  padding-top:.12em;
+}
+.hero h1 em{font-style:normal;color:var(--red);position:relative;display:inline-block}
+.hero h1 em::after{display:none}
+.hero h1 .ws{display:block;line-height:1.02;padding-top:.04em;padding-bottom:.02em}
+.hero h1 .ws > i{font-style:normal;display:inline-block}
+.hero-side{display:flex;flex-direction:column;gap:var(--s-5);align-self:end}
+.hero-lede{font-size:clamp(17px,1.5vw,21px);line-height:1.45;color:var(--ink-700);max-width:42ch}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:var(--s-3)}
+
+.hero-stats{
+  margin-top:clamp(48px,6vw,88px);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--ink-900);
+  border-bottom:1px solid var(--ink-900);
+}
+.hero-stats .stat{padding:var(--s-6) var(--s-5);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s-3)}
+.hero-stats .stat:nth-child(4n){border-right:0}
+.hero-stats .v{font-family:var(--ff-display);font-weight:900;font-size:clamp(32px,4vw,64px);line-height:.9;letter-spacing:var(--ls-display);font-variant-numeric:tabular-nums}
+.hero-stats .v em{font-style:normal;color:var(--red)}
+.hero-stats .k{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500)}
+@media (max-width:1024px){.hero-grid{grid-template-columns:1fr}}
+@media (max-width:760px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+section{padding:clamp(64px,8vw,128px) var(--gutter);border-bottom:1px solid var(--line)}
+section.alt{background:var(--paper-2)}
+section.ink{background:var(--ink-900);color:#fff;border-color:transparent}
+section.ink .ink-line{border-color:rgba(255,255,255,.18)!important}
+section.ink .muted{color:rgba(255,255,255,.55)}
+
+.section-head{
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "num   ."
+    "title aside";
+  column-gap:clamp(20px,3vw,48px);
+  row-gap:var(--s-3);
+  align-items:end;
+  padding-bottom:var(--s-5);margin-bottom:clamp(40px,5vw,72px);
+  border-bottom:1px solid var(--line);
+}
+section.ink .section-head{border-color:rgba(255,255,255,.18)}
+.section-head .num{grid-area:num;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);white-space:nowrap}
+.section-head h2{grid-area:title;font-family:var(--ff-display);font-weight:900;font-size:clamp(36px,5.5vw,84px);line-height:.95;letter-spacing:var(--ls-display);text-transform:uppercase;margin:0}
+.section-head h2 em{font-style:normal;color:var(--red)}
+.section-head .aside{grid-area:aside;font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);max-width:30ch;text-align:right;align-self:end;padding-bottom:14px}
+section.ink .section-head .aside{color:rgba(255,255,255,.55)}
+@media (max-width:760px){.section-head{grid-template-columns:1fr;grid-template-areas:"num" "title" "aside"}.section-head .aside{text-align:left;max-width:none}}
+
+/* ============================================================
+   DIRECTIONS LIST
+   ============================================================ */
+.dir-list{border-top:1.5px solid currentColor}
+.dir-list a{
+  display:grid;grid-template-columns:80px 1fr 1fr 64px;gap:var(--s-5);align-items:center;
+  padding:clamp(28px,3.5vw,44px) 0;border-bottom:1px solid var(--line);
+  transition:padding var(--t-base) var(--ease),background var(--t-base) var(--ease),color var(--t-base) var(--ease);
+  position:relative;
+}
+section.ink .dir-list a{border-bottom-color:rgba(255,255,255,.18)}
+.dir-list a:hover{background:var(--ink-900);color:#fff;padding-left:var(--s-5);padding-right:var(--s-5)}
+section.ink .dir-list a:hover{background:var(--red);color:#fff}
+.dir-list .num{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);color:var(--ink-300);transition:color var(--t-base) var(--ease)}
+section.ink .dir-list .num{color:rgba(255,255,255,.4)}
+.dir-list a:hover .num{color:rgba(255,255,255,.5)}
+.dir-list .name{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,4.4vw,72px);line-height:1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.dir-list .desc{font-size:14px;line-height:1.45;color:var(--ink-500);max-width:38ch}
+section.ink .dir-list .desc{color:rgba(255,255,255,.6)}
+.dir-list a:hover .desc{color:rgba(255,255,255,.7)}
+.dir-list .arr{
+  width:48px;height:48px;border-radius:50%;border:1px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-mono);font-size:14px;
+  transition:transform var(--t-base) var(--ease),background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),color var(--t-base) var(--ease);
+  justify-self:end;
+}
+.dir-list a:hover .arr{transform:rotate(-45deg);background:var(--red);border-color:var(--red);color:#fff}
+section.ink .dir-list a:hover .arr{background:#fff;border-color:#fff;color:var(--red)}
+@media (max-width:900px){
+  .dir-list a{grid-template-columns:60px 1fr 48px;grid-template-rows:auto auto;}
+  .dir-list .desc{grid-column:2/4}
+}
+
+/* ============================================================
+   SERVICES GRID — что внутри направлений
+   ============================================================ */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ink-900);border-bottom:1px solid var(--ink-900)}
+.svc{
+  padding:var(--s-6);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:var(--s-3);
+  transition:background var(--t-base) var(--ease);
+}
+.svc:hover{background:var(--paper-card)}
+.svc:nth-child(3n){border-right:0}
+.svc:nth-last-child(-n+3){border-bottom:0}
+.svc .meta{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red)}
+.svc h3{font-family:var(--ff-display);font-weight:700;font-size:22px;line-height:1.15}
+.svc ul{list-style:none;display:grid;gap:6px;font-size:14px;color:var(--ink-700);margin-top:var(--s-2)}
+.svc li{padding-left:14px;position:relative}
+.svc li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:1px;background:var(--ink-300)}
+@media (max-width:900px){.services-grid{grid-template-columns:1fr}.svc{border-right:0}.svc:nth-last-child(-n+3){border-bottom:1px solid var(--line)}.svc:last-child{border-bottom:0}}
+
+/* ============================================================
+   CASES — большая editorial-сетка
+   ============================================================ */
+.cases{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(20px,3vw,40px) var(--s-5);align-items:end}
+.case{display:flex;flex-direction:column;gap:var(--s-4);cursor:pointer;min-width:0}
+.case .ph{
+  aspect-ratio:4/3;
+  background:linear-gradient(135deg,var(--ink-900),#3a3a3a);
+  border-radius:2px;
+  display:flex;align-items:flex-end;justify-content:flex-start;
+  padding:var(--s-5);color:rgba(255,255,255,.45);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;
+  position:relative;overflow:hidden;
+  transition:transform var(--t-slow) var(--ease);
+  will-change:transform;
+}
+.case .ph::after{
+  content:"VIEW →";position:absolute;right:var(--s-5);top:var(--s-5);
+  width:72px;height:72px;border-radius:50%;background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);font-weight:500;
+  transform:scale(0);transition:transform 380ms var(--ease);
+}
+.case:hover .ph{transform:scale(1.015)}
+.case:hover .ph::after{transform:scale(1)}
+.case .info .ttl{transition:color var(--t-base) var(--ease)}
+.case:hover .info .ttl{color:var(--red)}
+.case .ph::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 12px,transparent 12px 24px);pointer-events:none}
+.case .ph.has-img{background:var(--paper-2)}
+.case .ph.has-img::before{display:none}
+.case .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 380ms var(--ease)}
+.case:hover .ph.has-img img{transform:scale(1.03)}
+.case .ph.tone-red{background:linear-gradient(135deg,var(--red) 0%,#7a1810 100%)}
+.case .ph.tone-paper{background:var(--paper-2);color:var(--ink-300)}
+.case .ph.tone-ink{background:var(--ink-900)}
+
+.case .info{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--s-4);align-items:end}
+.case .info > div{min-width:0}
+.case .info .ttl{font-family:var(--ff-display);font-weight:800;font-size:clamp(16px,1.4vw,20px);line-height:1.1;letter-spacing:var(--ls-display);text-transform:uppercase;hyphens:none;overflow-wrap:normal;word-break:keep-all;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case-1 .info .ttl, .case-2 .info .ttl{font-size:clamp(18px,1.7vw,24px)}
+.case .info .meta{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.case .info .metric{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,3.2vw,44px);line-height:.9;letter-spacing:var(--ls-display);white-space:nowrap}
+.case .info .metric small{display:block;font-family:var(--ff-mono);font-size:9px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--ink-500);font-weight:500;margin-top:6px}
+
+/* layout positions */
+.case-1{grid-column:1/8}
+.case-2{grid-column:8/13}
+.case-3{grid-column:1/5}
+.case-4{grid-column:5/9}
+.case-5{grid-column:9/13}
+@media (max-width:1100px){.case-3,.case-4,.case-5{grid-column:span 6}}
+@media (max-width:900px){.case-1,.case-2,.case-3,.case-4,.case-5{grid-column:1/-1}}
+
+/* ============================================================
+   CLIENTS — лента логотипов как маркеры
+   ============================================================ */
+.clients{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.cli{
+  padding:var(--s-6) var(--s-4);
+  border-right:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-display);font-weight:800;font-size:18px;letter-spacing:-.02em;
+  color:var(--ink-500);
+  transition:color var(--t-base) var(--ease),background var(--t-base) var(--ease);
+}
+.cli:hover{color:var(--ink-900);background:var(--paper-card)}
+.cli:nth-child(6n){border-right:0}
+@media (max-width:760px){.clients{grid-template-columns:repeat(3,1fr)}.cli:nth-child(6n){border-right:1px solid var(--line)}.cli:nth-child(3n){border-right:0}}
+
+/* ============================================================
+   PROCESS — 4 шага
+   ============================================================ */
+.process{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1.5px solid currentColor}
+.step{
+  padding:var(--s-6) var(--s-5);border-right:1px solid rgba(255,255,255,.18);
+  display:flex;flex-direction:column;gap:var(--s-4);
+  position:relative;
+}
+.step:nth-child(4n){border-right:0}
+.step .n{font-family:var(--ff-display);font-weight:900;font-size:clamp(48px,6vw,96px);line-height:.85;letter-spacing:var(--ls-display);color:var(--red)}
+.step h3{font-family:var(--ff-display);font-weight:800;font-size:22px;line-height:1.1;letter-spacing:var(--ls-display);text-transform:uppercase}
+.step p{font-size:14px;line-height:1.5;color:rgba(255,255,255,.65);max-width:32ch}
+.step .when{margin-top:auto;padding-top:var(--s-5);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.4)}
+@media (max-width:900px){.process{grid-template-columns:1fr 1fr}.step:nth-child(2n){border-right:0}.step:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}.step{border-bottom:1px solid rgba(255,255,255,.18)}}
+@media (max-width:560px){.process{grid-template-columns:1fr}.step{border-right:0!important}}
+
+/* ============================================================
+   BRIEF CTA — большая «связаться» полоса
+   ============================================================ */
+.brief{
+  padding:clamp(72px,9vw,160px) var(--gutter);
+  background:var(--ink-900);color:#fff;
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);
+  align-items:end;
+  border-bottom:1px solid transparent;
+}
+.brief .lbl{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);margin-bottom:var(--s-5)}
+.brief h2{font-family:var(--ff-display);font-weight:900;font-size:clamp(40px,7vw,128px);line-height:.92;letter-spacing:var(--ls-display);text-transform:uppercase}
+.brief h2 em{font-style:normal;color:var(--red)}
+.brief .side{display:flex;flex-direction:column;gap:var(--s-5)}
+.brief p{color:rgba(255,255,255,.72);font-size:17px;line-height:1.5;max-width:42ch}
+.brief .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.brief .lines{
+  margin-top:var(--s-6);padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.18);
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);
+}
+.brief .lines strong{display:block;color:#fff;font-weight:500;margin-bottom:6px;font-size:14px;letter-spacing:.04em;text-transform:none;font-family:var(--ff-text)}
+.brief .lines a{color:#fff}
+.brief .lines a:hover{color:var(--red)}
+@media (max-width:900px){.brief{grid-template-columns:1fr}}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  background:var(--ink-900);color:rgba(255,255,255,.55);
+  padding:var(--s-6) var(--gutter) var(--s-5);
+  display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:var(--s-6);
+  font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.footer .col strong{display:block;color:#fff;font-weight:500;margin-bottom:var(--s-4);font-size:11px}
+.footer ul{list-style:none;display:grid;gap:8px}
+.footer a:hover{color:#fff}
+.footer-bottom{
+  grid-column:1/-1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--s-4);
+  padding-top:var(--s-5);margin-top:var(--s-3);border-top:1px solid rgba(255,255,255,.12);
+}
+.footer-bottom strong{color:#fff;font-weight:500}
+@media (max-width:760px){.footer{grid-template-columns:1fr 1fr}}
+
+/* ============================================================
+   utils
+   ============================================================ */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:var(--r-pill);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;font-weight:500}
+.tag--red{background:var(--red);color:#fff}
+.tag--ghost{border:1px solid currentColor}
+
+/* ============================================================
+   FEATURED CASE — TMZ
+   ============================================================ */
+.feat{padding:clamp(72px,9vw,140px) var(--gutter) clamp(80px,9vw,140px);background:var(--ink-900);color:#fff;border-top:1px solid rgba(255,255,255,.08)}
+.feat .feat-head{display:grid;grid-template-columns:1fr auto;gap:clamp(20px,3vw,48px);align-items:end;padding-bottom:var(--s-5);margin-bottom:clamp(40px,5vw,72px);border-bottom:1px solid rgba(255,255,255,.18)}
+.feat .feat-head .num{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:var(--red);display:block;margin-bottom:var(--s-3)}
+.feat .feat-head h2{font-family:var(--ff-display);font-weight:900;font-size:clamp(40px,6vw,96px);line-height:.98;letter-spacing:var(--ls-display);text-transform:uppercase;padding-top:.08em}
+.feat .feat-head h2 em{font-style:normal;color:var(--red)}
+.feat .feat-head .aside{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);max-width:34ch;text-align:right;align-self:end}
+
+.feat-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18);margin-bottom:clamp(40px,5vw,64px)}
+.feat-meta .m{padding:var(--s-6) var(--s-5);border-right:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:var(--s-3)}
+.feat-meta .m:nth-child(4){border-right:0}
+.feat-meta .m .v{font-family:var(--ff-display);font-weight:900;font-size:clamp(28px,3.6vw,56px);line-height:.9;letter-spacing:var(--ls-display)}
+.feat-meta .m .v em{font-style:normal;color:var(--red)}
+.feat-meta .m .k{font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55)}
+@media (max-width:760px){.feat-meta{grid-template-columns:repeat(2,1fr)} .feat-meta .m:nth-child(2n){border-right:0}}
+
+.feat-gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s-4);grid-auto-flow:dense}
+.feat-gallery figure{position:relative;overflow:hidden;background:#1a1a1a;margin:0}
+.feat-gallery figure img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 700ms var(--ease)}
+.feat-gallery figure:hover img{transform:scale(1.04)}
+.feat-gallery figure figcaption{position:absolute;left:var(--s-4);bottom:var(--s-4);font-family:var(--ff-mono);font-size:10px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:#fff;background:rgba(0,0,0,.5);padding:6px 10px;backdrop-filter:blur(6px)}
+.feat-gallery .g-1{grid-column:span 8;aspect-ratio:16/9}
+.feat-gallery .g-2{grid-column:span 4;aspect-ratio:4/5}
+.feat-gallery .g-3{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-4{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-5{grid-column:span 4;aspect-ratio:4/3}
+.feat-gallery .g-6{grid-column:span 6;aspect-ratio:16/9}
+.feat-gallery .g-7{grid-column:span 6;aspect-ratio:16/9}
+@media (max-width:1024px){.feat-gallery .g-1,.feat-gallery .g-2,.feat-gallery .g-3,.feat-gallery .g-4,.feat-gallery .g-5,.feat-gallery .g-6,.feat-gallery .g-7{grid-column:span 6}}
+@media (max-width:600px){.feat-gallery figure{grid-column:1/-1!important}}
+
+.feat-foot{display:flex;justify-content:space-between;align-items:center;margin-top:clamp(40px,5vw,64px);padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.18);flex-wrap:wrap;gap:var(--s-5)}
+.feat-foot .scope{font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase;color:rgba(255,255,255,.55);max-width:60ch;line-height:1.6}
+.feat-foot .scope strong{color:#fff;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============ HEADER ============ -->
+<header class="header" data-screen-label="00 Header">
+  <a href="#" class="brand" aria-label="Premium Selection">
+    <span class="mark"><img src="assets/mark.svg" alt="" width="36" height="48"></span>
+    <span class="wm">PREMIUM<br>SELECTION</span>
+  </a>
+  <nav class="nav-links">
+    <a href="#directions">Направления</a>
+    <a href="#cases">Работы</a>
+    <a href="#process">Процесс</a>
+    <a href="#about">О&nbsp;нас</a>
+    <a href="#brief">Контакты</a>
+    <span class="lang"><b>RU</b><a href="#">EN</a><a href="#">UZ</a></span>
+  </nav>
+  <div class="nav-cta">
+    <a href="#brief" class="btn btn--primary btn--sm">Связаться</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" data-screen-label="01 Hero" style="border-bottom:1px solid var(--line)">
+  <div class="hero-meta">
+    <span class="grp">
+      <span class="red">●</span>
+      <a href="#about">С&nbsp;2018</a>
+      <span class="sep">·</span>
+      <a href="https://maps.google.com/?q=Tashkent,+Sharaf+Rashidov+St+17" target="_blank" rel="noopener">Tashkent</a>
+      <span class="sep">·</span>
+      <a href="https://maps.google.com/?q=DMCC+Business+Centre+Dubai" target="_blank" rel="noopener">Dubai</a>
+    </span>
+    <span class="grp">
+      <a href="#svc-mr">Marketing</a>
+      <span class="sep">/</span>
+      <a href="#svc-prod">Production</a>
+      <span class="sep">/</span>
+      <a href="#svc-it">IT</a>
+    </span>
+    <span>— 28.04.2026</span>
+  </div>
+
+  <div class="hero-grid">
+    <h1>
+      <span class="ws"><i>Создаём</i></span>
+      <span class="ws"><i>грандиозные</i></span>
+      <span class="ws"><i><em>проекты.</em></i></span>
+    </h1>
+    <div class="hero-side">
+      <p class="hero-lede">
+        Группа компаний полного цикла. Marketing&nbsp;&amp; Research, Production и&nbsp;IT под&nbsp;одной крышей&nbsp;— один подрядчик от&nbsp;стратегии до&nbsp;выкладки в&nbsp;ритейле.
+      </p>
+      <div class="hero-cta">
+        <a href="#brief" class="btn btn--primary btn--lg cta-mag">Собрать ТЗ за&nbsp;3&nbsp;минуты</a>
+        <a href="#cases" class="btn btn--ghost btn--lg">Посмотреть работы</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="v" data-to="7">00</span><span class="k">Лет на&nbsp;рынке</span></div>
+    <div class="stat"><span class="v" data-to="240">000</span><span class="k">Проектов реализовано</span></div>
+    <div class="stat"><span class="v" data-to="12">00</span><span class="k">Стран&nbsp;/ присутствие</span></div>
+    <div class="stat"><span class="v" data-to="3">00</span><span class="k">Направления бизнеса</span></div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" data-screen-label="01b Marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Marketing &amp; Research <i>— 01</i> <em>·</em> Production <i>— 02</i> <em>·</em> IT <i>— 03</i> <em>·</em> Tashkent <i>— HQ</i> <em>·</em> Dubai <i>— Office</i> <em>·</em> 240<em>+</em> projects <em>·</em> С&nbsp;2018 <em>·</em></span>
+    <span>Marketing &amp; Research <i>— 01</i> <em>·</em> Production <i>— 02</i> <em>·</em> IT <i>— 03</i> <em>·</em> Tashkent <i>— HQ</i> <em>·</em> Dubai <i>— Office</i> <em>·</em> 240<em>+</em> projects <em>·</em> С&nbsp;2018 <em>·</em></span>
+  </div>
+</div>
+
+<!-- ============ DIRECTIONS ============ -->
+<section id="directions" data-screen-label="02 Directions">
+  <div class="section-head">
+    <span class="num">— 01 / Направления</span>
+    <h2>Три направления.<br>Один <em>подрядчик.</em></h2>
+    <span class="aside">— Кейс, в&nbsp;котором задействованы все&nbsp;три, дешевле в&nbsp;коммуникации и&nbsp;быстрее в&nbsp;запуске на&nbsp;30–40&nbsp;%.</span>
+  </div>
+
+  <nav class="dir-list">
+    <a href="#svc-mr">
+      <span class="num">— 01</span>
+      <span class="name">Marketing<br>&amp; Research</span>
+      <span class="desc">Стратегия, исследования, бренд-трекинг, performance. Когда нужен план на&nbsp;год, а&nbsp;не&nbsp;разовая кампания.</span>
+      <span class="arr">→</span>
+    </a>
+    <a href="#svc-prod">
+      <span class="num">— 02</span>
+      <span class="name">Production</span>
+      <span class="desc">Полиграфия, наружка, POS, корпоративная одежда, сувенирка. Один подрядчик на&nbsp;все&nbsp;бренд-носители.</span>
+      <span class="arr">→</span>
+    </a>
+    <a href="#svc-it">
+      <span class="num">— 03</span>
+      <span class="name">IT</span>
+      <span class="desc">Сайты, e-commerce, мобильные приложения, интеграции с&nbsp;CRM. От&nbsp;дизайна до&nbsp;поддержки.</span>
+      <span class="arr">→</span>
+    </a>
+  </nav>
+</section>
+
+<!-- ============ SERVICES BREAKDOWN ============ -->
+<section class="alt" id="services" data-screen-label="03 Services">
+  <div class="section-head">
+    <span class="num">— 02 / Услуги</span>
+    <h2>Что внутри</h2>
+    <span class="aside">— Берём проект целиком или&nbsp;любой из&nbsp;девяти блоков отдельно. Команда&nbsp;— одна.</span>
+  </div>
+
+  <div class="services-grid" id="svc-mr">
+    <div class="svc">
+      <span class="meta">— 01.1 / Strategy</span>
+      <h3>Бренд-стратегия</h3>
+      <ul>
+        <li>Позиционирование и&nbsp;архитектура</li>
+        <li>Discovery, аудит ниши</li>
+        <li>Brand-book</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 01.2 / Research</span>
+      <h3>Исследования</h3>
+      <ul>
+        <li>Quanti / quali, U&amp;A</li>
+        <li>Brand-tracking</li>
+        <li>Customer journey</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 01.3 / Performance</span>
+      <h3>Performance &amp; SMM</h3>
+      <ul>
+        <li>Закупка &amp; медиаплан</li>
+        <li>Контент и&nbsp;копирайтинг</li>
+        <li>Аналитика, отчёты</li>
+      </ul>
+    </div>
+
+    <div class="svc" id="svc-prod">
+      <span class="meta">— 02.1 / Print</span>
+      <h3>Полиграфия</h3>
+      <ul>
+        <li>Каталоги, буклеты, отчёты</li>
+        <li>Упаковка и&nbsp;этикетка</li>
+        <li>Дизайн под&nbsp;печать</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 02.2 / OOH &amp; POS</span>
+      <h3>Наружка &amp; POS</h3>
+      <ul>
+        <li>Билборды, ситиформаты</li>
+        <li>Брендирование точек</li>
+        <li>Монтаж и&nbsp;логистика</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 02.3 / Apparel</span>
+      <h3>Корп. одежда &amp; сувенирка</h3>
+      <ul>
+        <li>Пошив, нанесение</li>
+        <li>Подбор материалов</li>
+        <li>Брендированные носители</li>
+      </ul>
+    </div>
+
+    <div class="svc" id="svc-it">
+      <span class="meta">— 03.1 / Web</span>
+      <h3>Сайты &amp; e-commerce</h3>
+      <ul>
+        <li>Лендинги, корпоративные</li>
+        <li>Интернет-магазины</li>
+        <li>Headless-стек</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 03.2 / Mobile</span>
+      <h3>Мобильные приложения</h3>
+      <ul>
+        <li>iOS &amp; Android, Flutter</li>
+        <li>UX/UI и&nbsp;прототипы</li>
+        <li>Поддержка и&nbsp;обновления</li>
+      </ul>
+    </div>
+    <div class="svc">
+      <span class="meta">— 03.3 / Systems</span>
+      <h3>CRM &amp; интеграции</h3>
+      <ul>
+        <li>Bitrix, AmoCRM, кастом</li>
+        <li>API и&nbsp;аналитика</li>
+        <li>Аутстафф разработки</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASES ============ -->
+<section id="cases" data-screen-label="04 Cases">
+  <div class="section-head">
+    <span class="num">— 03 / Работы</span>
+    <h2>Избранное</h2>
+    <span class="aside">— Пять проектов из&nbsp;двухсот сорока. Полный список&nbsp;— на&nbsp;<a href="#" class="link">странице работ</a>.</span>
+  </div>
+
+  <div class="cases">
+    <article class="case case-1">
+      <div class="ph has-img">
+        <img src="assets/cases/unipay-tote.png" alt="UnionPay — корпоративные сувениры">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UnionPay · 2025 · Сувениры + продакшн</div>
+          <div class="ttl">Сувениры&nbsp;UnionPay</div>
+        </div>
+        <div class="metric">+38<em style="font-style:normal;color:var(--red)">%</em><small>retail sell-through</small></div>
+      </div>
+    </article>
+
+    <article class="case case-2">
+      <div class="ph has-img">
+        <img src="assets/cases/octobank-thermos-01.png" alt="Octobank — корпоративные термосы">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Octobank · 2025 · Дизайн&nbsp;+ продакшн</div>
+          <div class="ttl">Корп.&nbsp;термосы</div>
+        </div>
+        <div class="metric">500<small style="color:var(--ink-500)">units</small></div>
+      </div>
+    </article>
+
+    <article class="case case-3">
+      <div class="ph tone-red">— Sayyod&nbsp;/ Campaign</div>
+      <div class="info">
+        <div>
+          <div class="meta">Sayyod · 2024 · Campaign</div>
+          <div class="ttl">Кампания&nbsp;Sayyod</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case case-4">
+      <div class="ph has-img">
+        <img src="assets/cases/leading-set.png" alt="Leading — корпоративный набор">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Leading · 2025 · Corporate set</div>
+          <div class="ttl">Набор&nbsp;Leading</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case case-5">
+      <div class="ph has-img">
+        <img src="assets/cases/akfa-watch.jpg" alt="Akfa Lighting — мужские механические часы с лого">
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">Akfa · 2025 · Premium gift</div>
+          <div class="ttl">Часы&nbsp;Akfa&nbsp;550</div>
+        </div>
+        <div class="metric">44<small style="color:var(--ink-500)">mm · steel</small></div>
+      </div>
+    </article>
+  </div>
+
+  <div style="margin-top:clamp(40px,5vw,72px);display:flex;justify-content:flex-end">
+    <a href="#" class="btn btn--ghost btn--lg">Все&nbsp;240+ проектов</a>
+  </div>
+</section>
+
+<!-- ============ FEATURED CASE — TMZ ============ -->
+<section class="feat" data-screen-label="04b Featured TMZ" id="tmz">
+  <div class="feat-head">
+    <div>
+      <span class="num">— 04 / Featured case</span>
+      <h2>TMZ Group.<br>Завод, офисы,<br><em>фирменный вид.</em></h2>
+    </div>
+    <span class="aside">— Комплексный дизайн и&nbsp;брендирование производственных зданий, офисов, навигации и&nbsp;внешней архитектуры. 2024–2025.</span>
+  </div>
+
+  <div class="feat-meta">
+    <div class="m"><span class="v">08</span><span class="k">Объектов по&nbsp;республике</span></div>
+    <div class="m"><span class="v">04</span><span class="k">Языка навигации</span></div>
+    <div class="m"><span class="v">12<em>+</em></span><span class="k">Месяцев продакшна</span></div>
+    <div class="m"><span class="v">100<em>%</em></span><span class="k">In-house production</span></div>
+  </div>
+
+  <div class="feat-gallery">
+    <figure class="g-1"><img src="assets/cases/tmz/factory-day.jpg" alt="Завод TMZ днём"><figcaption>01 · Фасад завода</figcaption></figure>
+    <figure class="g-2"><img src="assets/cases/tmz/monument-night.jpg" alt="Монумент TMZ"><figcaption>02 · Стела</figcaption></figure>
+    <figure class="g-3"><img src="assets/cases/tmz/reception-dark.jpg" alt="Ресепшн главного офиса"><figcaption>03 · Reception</figcaption></figure>
+    <figure class="g-4"><img src="assets/cases/tmz/reception-light.jpg" alt="Ресепшн приёмного"><figcaption>04 · Приёмное</figcaption></figure>
+    <figure class="g-5"><img src="assets/cases/tmz/wayfinding.jpg" alt="Навигация Qabul Bo‘limi"><figcaption>05 · Wayfinding</figcaption></figure>
+    <figure class="g-6"><img src="assets/cases/tmz/lobby-sign.jpg" alt="Лобби сознаком TMZ"><figcaption>06 · Lobby</figcaption></figure>
+    <figure class="g-7"><img src="assets/cases/tmz/factory-night.jpg" alt="Завод ночью"><figcaption>07 · Ночная подсветка</figcaption></figure>
+    <figure class="g-1"><img src="assets/cases/tmz/sales-center.jpg" alt="Центр продаж TMZ"><figcaption>08 · Центр продаж</figcaption></figure>
+  </div>
+
+  <div class="feat-foot">
+    <div class="scope">
+      <strong>Скоуп:</strong> Наружные вывески и&nbsp;фасадные знаки · Монумент входной группы · Интерьер reception и&nbsp;лобби · Полная навигационная система · Бренд-элементы центра продаж
+    </div>
+    <a href="#" class="btn btn--accent btn--lg">Полный&nbsp;кейс</a>
+  </div>
+</section>
+
+<!-- ============ CLIENTS ============ -->
+<section class="alt" data-screen-label="05 Clients" style="padding-top:clamp(48px,5vw,72px);padding-bottom:clamp(48px,5vw,72px)">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s-5);flex-wrap:wrap;gap:var(--s-4)">
+    <span class="t-mono">— 04 / Клиенты · 60+ брендов с&nbsp;2018</span>
+    <a href="#" class="link" style="font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase">Все&nbsp;клиенты</a>
+  </div>
+  <div class="clients">
+    <div class="cli">UnionPay</div>
+    <div class="cli">Octobank</div>
+    <div class="cli">TMZ&nbsp;Group</div>
+    <div class="cli">Leading</div>
+    <div class="cli">Sayyod</div>
+    <div class="cli">Aral</div>
+    <div class="cli">Akfa</div>
+    <div class="cli">Humo</div>
+    <div class="cli">Artel</div>
+    <div class="cli">Beeline</div>
+    <div class="cli">UzAuto</div>
+    <div class="cli">Korzinka</div>
+    <div class="cli">Anor</div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="ink" id="process" data-screen-label="06 Process">
+  <div class="section-head">
+    <span class="num">— 05 / Процесс</span>
+    <h2>Как&nbsp;<em>работаем</em></h2>
+    <span class="aside">— Срок от&nbsp;первого письма до&nbsp;старта&nbsp;— 7&nbsp;дней. От&nbsp;старта до&nbsp;первого результата&nbsp;— 30.</span>
+  </div>
+
+  <div class="process">
+    <div class="step">
+      <span class="n">01</span>
+      <h3>Бриф</h3>
+      <p>Заполняете форму или&nbsp;звоним голосом. Чётко фиксируем цель, ограничения, бюджет.</p>
+      <span class="when">— Day 0–2</span>
+    </div>
+    <div class="step">
+      <span class="n">02</span>
+      <h3>Команда &amp; план</h3>
+      <p>Собираем команду из&nbsp;нужных направлений. План этапов и&nbsp;цен&nbsp;— в&nbsp;одном документе.</p>
+      <span class="when">— Day 3–7</span>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <h3>Спринты</h3>
+      <p>Работаем итерациями по&nbsp;2&nbsp;недели. Демо&nbsp;— в&nbsp;каждом конце спринта.</p>
+      <span class="when">— Day 8–60</span>
+    </div>
+    <div class="step">
+      <span class="n">04</span>
+      <h3>Запуск &amp; сопровождение</h3>
+      <p>Сдаём проект, остаёмся на&nbsp;поддержке. Первые метрики&nbsp;— через 30 дней после старта.</p>
+      <span class="when">— Day 60+</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" data-screen-label="07 About">
+  <div class="section-head">
+    <span class="num">— 06 / О&nbsp;нас</span>
+    <h2>Группа из&nbsp;трёх<br>компаний.</h2>
+    <span class="aside">— Команда&nbsp;— 80&nbsp;человек. Tashkent, Dubai, удалённо.</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(32px,5vw,80px);align-items:start">
+    <div style="display:grid;gap:var(--s-5);font-size:18px;line-height:1.55;color:var(--ink-700);max-width:62ch">
+      <p>Мы&nbsp;объединили три отдельные компании в&nbsp;одну группу, потому&nbsp;что клиенту проще иметь дело с&nbsp;одним подрядчиком. Не&nbsp;потому, что мы&nbsp;дешевле&nbsp;— потому, что одна команда быстрее принимает решения.</p>
+      <p>Marketing&nbsp;&amp; Research отвечает за&nbsp;«что и&nbsp;кому». Production&nbsp;— «в&nbsp;чём это&nbsp;увидят». IT&nbsp;— «через какие касания». Внутри одного проекта они&nbsp;сидят за&nbsp;одним столом.</p>
+      <p style="margin-top:var(--s-3)">
+        <a href="#" class="link" style="font-family:var(--ff-mono);font-size:11px;letter-spacing:var(--ls-mono);text-transform:uppercase">Полная&nbsp;история компании</a>
+      </p>
+    </div>
+
+    <div style="display:grid;gap:var(--s-5)">
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Tashkent · HQ</span>
+        <p style="font-family:var(--ff-display);font-weight:700;font-size:20px;line-height:1.2;margin-top:6px">ул.&nbsp;Шарафа Рашидова, 17, 5 этаж</p>
+      </div>
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Dubai · Office</span>
+        <p style="font-family:var(--ff-display);font-weight:700;font-size:20px;line-height:1.2;margin-top:6px">DMCC Business Centre, Lvl 1</p>
+      </div>
+      <div style="border-top:1.5px solid var(--ink-900);padding-top:var(--s-4)">
+        <span class="t-mono" style="color:var(--red)">— Команда</span>
+        <p style="font-family:var(--ff-display);font-weight:900;font-size:48px;line-height:1;letter-spacing:var(--ls-display);margin-top:6px">80<em style="font-style:normal;color:var(--red)">/</em>3</p>
+        <p class="t-mono" style="margin-top:6px">— человек / направления</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BRIEF CTA ============ -->
+<section class="brief" id="brief" data-screen-label="08 Brief">
+  <div>
+    <span class="lbl">— Связаться · brief@premiumselection.uz</span>
+    <h2>Готовы<br>начать?</h2>
+  </div>
+  <div class="side">
+    <p>Расскажите о&nbsp;задаче в&nbsp;двух абзацах&nbsp;— или&nbsp;соберите ТЗ через короткий бриф. Ответим в&nbsp;течение рабочего дня.</p>
+    <div class="cta-row">
+      <a href="#" class="btn btn--accent btn--lg cta-mag">Собрать&nbsp;ТЗ за&nbsp;3 минуты</a>
+      <a href="mailto:brief@premiumselection.uz" class="btn btn--ghost-paper btn--lg">Написать&nbsp;на&nbsp;почту</a>
+    </div>
+    <div class="lines">
+      <div>
+        <strong>+998 71 200 00 00</strong>
+        Tashkent · пн–пт 10–19
+      </div>
+      <div>
+        <strong>+971 4 000 0000</strong>
+        Dubai · sun–thu 9–18
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer" data-screen-label="09 Footer">
+  <div class="col">
+    <a href="#" class="brand" style="margin-bottom:var(--s-4);color:#fff">
+      <span class="mark" style="filter:invert(1)"><img src="assets/mark.svg" alt="" width="36" height="48"></span>
+      <span class="wm" style="color:#fff">PREMIUM<br>SELECTION</span>
+    </a>
+    <p style="font-family:var(--ff-text);font-size:13px;letter-spacing:0;text-transform:none;color:rgba(255,255,255,.55);max-width:32ch;margin-top:var(--s-3)">Группа компаний полного цикла. Marketing&nbsp;&amp; Research, Production, IT.</p>
+  </div>
+  <div class="col">
+    <strong>Направления</strong>
+    <ul>
+      <li><a href="#svc-mr">Marketing &amp; Research</a></li>
+      <li><a href="#svc-prod">Production</a></li>
+      <li><a href="#svc-it">IT</a></li>
+    </ul>
+  </div>
+  <div class="col">
+    <strong>Сайт</strong>
+    <ul>
+      <li><a href="#cases">Работы</a></li>
+      <li><a href="#process">Процесс</a></li>
+      <li><a href="#about">О&nbsp;нас</a></li>
+      <li><a href="#brief">Контакты</a></li>
+    </ul>
+  </div>
+  <div class="col">
+    <strong>Контакты</strong>
+    <ul>
+      <li><a href="mailto:brief@premiumselection.uz">brief@premiumselection.uz</a></li>
+      <li><a href="tel:+998712000000">+998 71 200 00 00</a></li>
+      <li>Tashkent · Dubai</li>
+      <li><a href="#">Telegram</a> · <a href="#">Instagram</a> · <a href="#">LinkedIn</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>© Premium Selection, 2018–2026</strong></span>
+    <span>Сайт собран на&nbsp;P/S System v1.0</span>
+    <span><a href="#">Политика конфиденциальности</a></span>
+  </div>
+</footer>
+
+<script>
+// Scroll progress
+const sp = document.getElementById('scrollProgress');
+const onScroll = () => {
+  const h = document.documentElement;
+  const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+  sp.style.width = (scrolled * 100) + '%';
+};
+document.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+// Reveal on scroll
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.12, rootMargin:'0px 0px -80px 0px'});
+document.querySelectorAll('.section-head, .dir-list a, .svc, .case, .step, .cli, .stat, .hero-cta, .hero-lede')
+  .forEach((el,i)=>{ el.classList.add('reveal'); if(i%4===1)el.classList.add('d1'); if(i%4===2)el.classList.add('d2'); if(i%4===3)el.classList.add('d3'); io.observe(el); });
+
+// Magnetic CTA — disabled per user request
+// (kept hook for potential future use)
+
+// Stats count-up
+const animateNum = (el, to, suffix='') => {
+  const dur = 1400; const start = performance.now();
+  const tick = (t)=>{
+    const p = Math.min(1, (t-start)/dur);
+    const eased = 1 - Math.pow(1-p, 3);
+    const val = Math.floor(eased * to);
+    el.firstChild.nodeValue = String(val).padStart(2,'0');
+    if(p<1) requestAnimationFrame(tick);
+    else el.firstChild.nodeValue = String(to).padStart(2,'0');
+  };
+  requestAnimationFrame(tick);
+};
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const v = e.target;
+      const target = parseInt(v.dataset.to,10);
+      animateNum(v, target);
+      statIO.unobserve(v);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('.hero-stats .v[data-to]').forEach(v=>statIO.observe(v));
+</script>
+
+</body>
+</html>

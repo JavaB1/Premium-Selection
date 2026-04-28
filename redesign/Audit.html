@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UX/UI аудит — Premium Selection</title>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#DA291C;
+    --ink:#0A0A0A;
+    --paper:#FAFAF8;
+    --line:rgba(10,10,10,.12);
+    --dim:rgba(10,10,10,.62);
+    --warn:#E8A317;
+    --ok:#2E8B57;
+    --ff-display:'Commissioner',system-ui,sans-serif;
+    --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+    --gutter:clamp(20px,4vw,56px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--ff-display);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+  a{color:inherit}
+  /* ============ TOP STRIP ============ */
+  .strip{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px var(--gutter);
+    border-bottom:1px solid var(--line);
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--dim);
+  }
+  .strip strong{color:var(--ink);font-weight:500}
+  .strip .dot{color:var(--red)}
+  /* ============ COVER ============ */
+  .cover{padding:clamp(60px,9vw,140px) var(--gutter) clamp(48px,6vw,88px);border-bottom:1px solid var(--line)}
+  .cover .label{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--red);margin-bottom:24px;
+  }
+  .cover h1{
+    font-family:var(--ff-display);font-weight:900;
+    font-size:clamp(48px,8vw,148px);line-height:.92;letter-spacing:-.025em;
+    text-transform:uppercase;max-width:18ch;
+  }
+  .cover h1 em{font-style:normal;color:var(--red)}
+  .cover .meta{
+    margin-top:clamp(32px,4vw,56px);
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+    padding-top:24px;border-top:1px solid var(--line);
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--dim);
+  }
+  .cover .meta strong{display:block;color:var(--ink);font-weight:500;margin-bottom:6px}
+  @media (max-width:760px){.cover .meta{grid-template-columns:1fr 1fr}}
+
+  /* ============ SECTION ============ */
+  section{padding:clamp(56px,7vw,112px) var(--gutter);border-bottom:1px solid var(--line)}
+  .section-head{
+    display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,48px);align-items:baseline;
+    padding-bottom:24px;margin-bottom:clamp(32px,4vw,56px);
+    border-bottom:1px solid var(--line);
+  }
+  .section-head .num{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);
+    padding-top:14px;
+  }
+  .section-head h2{
+    font-family:var(--ff-display);font-weight:900;
+    font-size:clamp(32px,5vw,76px);line-height:.96;letter-spacing:-.025em;text-transform:uppercase;
+  }
+  .lede{font-size:clamp(18px,1.6vw,24px);line-height:1.45;max-width:60ch;color:var(--ink)}
+  .lede + .lede{margin-top:14px}
+  p{max-width:70ch}
+
+  /* ============ TL;DR ============ */
+  .tldr{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(32px,5vw,80px)}
+  @media (max-width:900px){.tldr{grid-template-columns:1fr}}
+  .quote{
+    border-left:3px solid var(--red);padding:8px 0 8px 24px;
+    font-family:var(--ff-display);font-weight:600;
+    font-size:clamp(20px,2.2vw,28px);line-height:1.3;
+    color:var(--ink);max-width:32ch;
+  }
+  .quote small{
+    display:block;margin-top:14px;
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--dim);font-weight:500;
+  }
+  .verdict{display:flex;flex-direction:column;gap:16px}
+  .verdict h3{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500
+  }
+  .verdict p{font-size:17px;line-height:1.6}
+  .verdict strong{font-weight:700;background:#FFF1B0;padding:0 4px}
+
+  /* ============ SCORES ============ */
+  .scores{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+    border:1px solid var(--line);
+  }
+  @media (max-width:900px){.scores{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:480px){.scores{grid-template-columns:1fr}}
+  .score{
+    padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .score:last-child{border-right:0}
+  .score .k{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)
+  }
+  .score .v{
+    font-family:var(--ff-display);font-weight:900;
+    font-size:clamp(40px,4.5vw,72px);line-height:.9;letter-spacing:-.025em;
+  }
+  .score .v small{font-size:.4em;color:var(--dim);font-weight:600;letter-spacing:0;margin-left:4px}
+  .score .bar{height:4px;background:var(--line);position:relative;overflow:hidden}
+  .score .bar i{position:absolute;inset:0 auto 0 0;background:var(--ink);width:var(--w,50%)}
+  .score.bad .bar i{background:var(--red)}
+  .score.warn .bar i{background:var(--warn)}
+  .score.ok .bar i{background:var(--ok)}
+  .score .note{font-size:13px;color:var(--dim);line-height:1.45}
+
+  /* ============ FINDINGS ============ */
+  .findings{display:flex;flex-direction:column;gap:0}
+  .find{
+    display:grid;grid-template-columns:120px 1.4fr 1fr;gap:clamp(20px,3vw,48px);
+    padding:clamp(24px,3vw,40px) 0;
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .find:last-child{border-bottom:0}
+  @media (max-width:900px){.find{grid-template-columns:1fr;gap:18px}}
+  .find .head{display:flex;flex-direction:column;gap:10px}
+  .pri{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:999px;
+    font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+    width:fit-content;
+  }
+  .pri.p0{background:var(--red);color:#fff}
+  .pri.p1{background:var(--ink);color:#fff}
+  .pri.p2{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+  .find .id{font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;color:var(--dim)}
+  .find h4{
+    font-family:var(--ff-display);font-weight:800;
+    font-size:clamp(20px,1.8vw,26px);line-height:1.15;letter-spacing:-.015em;
+    margin-bottom:10px;
+  }
+  .find p{font-size:15px;line-height:1.55;color:var(--ink);max-width:52ch}
+  .find p + p{margin-top:8px}
+  .find code{
+    font-family:var(--ff-mono);font-size:12px;
+    background:rgba(10,10,10,.06);padding:2px 6px;border-radius:3px;
+    color:var(--ink);
+  }
+  .find .fix{
+    background:#FFF;border:1px solid var(--line);
+    padding:18px 20px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .find .fix h5{
+    font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);font-weight:500;
+  }
+  .find .fix p{font-size:14px;color:var(--ink)}
+  .find .where{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.04em;color:var(--dim);
+    padding-top:8px;border-top:1px dashed var(--line);margin-top:6px;
+  }
+  .find .where b{color:var(--ink);font-weight:500}
+
+  /* ============ CRITIC: heatmap of homepage ============ */
+  .heat{
+    display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,56px);align-items:start;
+  }
+  @media (max-width:900px){.heat{grid-template-columns:1fr}}
+  .mock{
+    background:var(--red);color:#fff;
+    border-radius:4px;padding:18px;
+    position:relative;aspect-ratio:8/6;overflow:hidden;
+  }
+  .mock-grid{
+    display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:.7fr .7fr 1.6fr 1.6fr .7fr .7fr;
+    gap:5px;height:100%;
+  }
+  .mock-cell{border-radius:2px;font-family:var(--ff-mono);font-size:9px;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center}
+  .mc1{background:#1791C9;grid-column:1/3;grid-row:1/3}
+  .mc2{background:#93A09A;grid-column:3/5;grid-row:1/2}
+  .mc3{background:#BDC074;grid-column:5/6;grid-row:1/3}
+  .mc4{background:#EE7E10;grid-column:6/8;grid-row:1/2}
+  .mc5{background:#F4E89A;color:rgba(0,0,0,.4);grid-column:8/9;grid-row:1/4}
+  .mc6{background:#B5DAEF;color:rgba(0,0,0,.4);grid-column:3/4;grid-row:2/3}
+  .mc7{background:#2E2A27;grid-column:4/5;grid-row:2/3}
+  .mc8{background:#1F4E79;grid-column:6/8;grid-row:2/3}
+  .mc9{background:#A53A30;grid-column:1/2;grid-row:3/5}
+  .mc10{background:#0F4C5C;grid-column:2/3;grid-row:3/5}
+  .mc-center{
+    grid-column:3/7;grid-row:3/5;
+    display:flex;flex-direction:column;justify-content:center;padding:0 8px;
+    color:#fff;
+  }
+  .mc-center .we{font-size:11px;font-weight:500;margin-bottom:2px}
+  .mc-center .br{font-family:var(--ff-display);font-weight:900;font-size:34px;line-height:.92;letter-spacing:-.025em;text-transform:uppercase}
+  .mc-center .ld{font-size:11px;margin-top:3px}
+  .mc-center .ld em{background:#fff;color:#000;font-style:normal;padding:0 4px}
+  .mc11{background:#7D6B4F;grid-column:7/8;grid-row:3/4}
+  .mc12{background:#3A4F3A;grid-column:7/9;grid-row:4/7}
+  .mc13{background:#93A09A;grid-column:1/3;grid-row:5/7}
+  .mc14{background:#EE7E10;grid-column:3/6;grid-row:5/6}
+  .mc15{background:#F4E89A;color:rgba(0,0,0,.4);grid-column:6/7;grid-row:5/6}
+  .mc16{background:#B5DAEF;color:rgba(0,0,0,.4);grid-column:3/4;grid-row:6/7}
+  .mc17{background:#1F4E79;grid-column:4/6;grid-row:6/7}
+  .mc18{background:#A53A30;grid-column:6/7;grid-row:6/7}
+  /* annotation pins */
+  .pin{
+    position:absolute;width:28px;height:28px;border-radius:50%;
+    background:#fff;color:var(--ink);border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--ff-mono);font-weight:700;font-size:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
+    transform:translate(-50%,-50%);
+    z-index:5;
+  }
+  .pin.r{background:var(--red);color:#fff;border-color:#fff}
+  .heat-list{display:flex;flex-direction:column;gap:18px}
+  .heat-item{
+    display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start;
+    padding-bottom:18px;border-bottom:1px solid var(--line);
+  }
+  .heat-item:last-child{border-bottom:0}
+  .heat-item .pin-static{
+    width:28px;height:28px;border-radius:50%;
+    background:var(--red);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--ff-mono);font-weight:700;font-size:12px;
+  }
+  .heat-item h4{font-family:var(--ff-display);font-weight:700;font-size:17px;margin-bottom:6px}
+  .heat-item p{font-size:14px;color:var(--dim);line-height:1.5;max-width:46ch}
+
+  /* ============ FIX TABLE ============ */
+  .fixtbl{
+    border:1px solid var(--line);
+  }
+  .fixtbl-head{
+    display:grid;grid-template-columns:80px 60px 1fr 1fr 100px 100px;gap:20px;
+    padding:16px 20px;background:var(--ink);color:#fff;
+    font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .fixtbl-row{
+    display:grid;grid-template-columns:80px 60px 1fr 1fr 100px 100px;gap:20px;
+    padding:18px 20px;border-bottom:1px solid var(--line);align-items:start;
+    font-size:14px;
+  }
+  .fixtbl-row:last-child{border-bottom:0}
+  .fixtbl-row code{font-family:var(--ff-mono);font-size:12px;color:var(--dim)}
+  .fixtbl-row b{font-weight:700}
+  .fixtbl-row .effort,.fixtbl-row .impact{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .fixtbl-row .impact.high{color:var(--red);font-weight:700}
+  .fixtbl-row .impact.med{color:var(--warn);font-weight:700}
+  .fixtbl-row .impact.low{color:var(--dim)}
+  @media (max-width:900px){
+    .fixtbl-head{display:none}
+    .fixtbl-row{grid-template-columns:1fr;gap:8px;padding:18px 16px}
+    .fixtbl-row > div::before{
+      content:attr(data-l);display:block;
+      font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
+      margin-bottom:4px;
+    }
+  }
+
+  /* ============ NEXT STEPS ============ */
+  .next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:900px){.next-grid{grid-template-columns:1fr}}
+  .next-card{
+    border:1.5px solid var(--ink);padding:28px;
+    display:flex;flex-direction:column;gap:14px;
+    transition:background .3s,color .3s;cursor:default;
+  }
+  .next-card:hover{background:var(--ink);color:#fff}
+  .next-card .num{
+    font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);
+  }
+  .next-card:hover .num{color:#fff}
+  .next-card h4{
+    font-family:var(--ff-display);font-weight:800;font-size:24px;line-height:1.05;letter-spacing:-.015em;text-transform:uppercase;
+  }
+  .next-card p{font-size:14px;line-height:1.5}
+
+  /* ============ FOOTER ============ */
+  .foot{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    padding:32px var(--gutter);
+    font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
+    background:var(--ink);color:rgba(255,255,255,.55);
+  }
+  .foot strong{color:#fff;font-weight:500}
+
+  @media print{
+    body{background:#fff}
+    section,.cover{break-inside:avoid;page-break-inside:avoid}
+    .pin{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP STRIP ============ -->
+<div class="strip" data-screen-label="00 Strip">
+  <span><span class="dot">●</span>&nbsp;<strong>UX/UI AUDIT</strong> · Premium Selection</span>
+  <span>28.04.2026</span>
+  <span><strong>v1.0</strong> · Internal</span>
+</div>
+
+<!-- ============ COVER ============ -->
+<header class="cover" data-screen-label="01 Cover">
+  <div class="label">— Audit · Premium Selection Group · premium-selection.com</div>
+  <h1>Слишком&nbsp;<em>пёстро.</em><br>Непонятно куда нажать.</h1>
+  <div class="meta">
+    <div><strong>Объект</strong>premium-selection.com</div>
+    <div><strong>Жалоба клиента</strong>«Пёстро. Не понятно как что куда»</div>
+    <div><strong>Скоуп</strong>index, discover, направления, шаблоны</div>
+    <div><strong>Метод</strong>Эвристика + анализ кода</div>
+  </div>
+</header>
+
+<!-- ============ TL;DR ============ -->
+<section data-screen-label="02 TL;DR">
+  <div class="section-head">
+    <span class="num">— 01 / Резюме</span>
+    <h2>В двух&nbsp;абзацах</h2>
+  </div>
+  <div class="tldr">
+    <div class="quote">
+      «Слишком пёстро и&nbsp;не&nbsp;ясно как&nbsp;что&nbsp;куда нажать»
+      <small>— клиент, дословно</small>
+    </div>
+    <div class="verdict">
+      <h3>— Диагноз</h3>
+      <p>Сайт сделан крепко: типографика на&nbsp;месте, сетка чёткая, R<small>U</small>/E<small>N</small>/U<small>Z</small>-инфраструктура и&nbsp;SEO готовы. Проблема не&nbsp;в&nbsp;качестве&nbsp;— в&nbsp;<strong>визуальной иерархии</strong>: главный экран кричит 12&nbsp;цветами одновременно, и&nbsp;<strong>основная CTA не&nbsp;опознаётся как&nbsp;кнопка</strong> (одиночная «Связаться» внизу теряется на&nbsp;фоне коллажа).</p>
+      <p>Вторая беда&nbsp;— <strong>тонна интерактивных «фич»</strong>, которые конкурируют друг с&nbsp;другом за&nbsp;внимание: вращающееся слово, contenteditable-плашка, ротация фото в&nbsp;ячейках, mix-blend-mode-навигация, hover-сценарии в&nbsp;каждой секции. Юзер не&nbsp;понимает, что из&nbsp;этого&nbsp;— ссылка, что&nbsp;— анимация, что&nbsp;— ввод.</p>
+      <p>Лечится без переделки&nbsp;— <strong>дисциплиной</strong>: убрать 70% цветов, поднять CTA в&nbsp;hero как&nbsp;первый клик, дать кнопкам визуальный «вес кнопки», вынести 3&nbsp;направления в&nbsp;явные карточки выше fold.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCORES ============ -->
+<section data-screen-label="03 Scores">
+  <div class="section-head">
+    <span class="num">— 02 / Оценки</span>
+    <h2>По&nbsp;5&nbsp;осям</h2>
+  </div>
+  <div class="scores">
+    <div class="score bad">
+      <span class="k">Visual clarity</span>
+      <span class="v">3<small>/10</small></span>
+      <span class="bar"><i style="--w:30%"></i></span>
+      <span class="note">Hero перегружен цветом и&nbsp;количеством блоков. Глаз не&nbsp;знает, куда смотреть.</span>
+    </div>
+    <div class="score bad">
+      <span class="k">Call to action</span>
+      <span class="v">4<small>/10</small></span>
+      <span class="bar"><i style="--w:40%"></i></span>
+      <span class="note">Главная CTA «Связаться» внизу hero, без&nbsp;контраста. Пользователь её&nbsp;не&nbsp;замечает.</span>
+    </div>
+    <div class="score warn">
+      <span class="k">Navigation</span>
+      <span class="v">5<small>/10</small></span>
+      <span class="bar"><i style="--w:50%"></i></span>
+      <span class="note">mix-blend-mode даёт нечитаемые состояния поверх пёстрых ячеек. Туда&nbsp;же&nbsp;— дублирование (Диагностика&nbsp;= Discover).</span>
+    </div>
+    <div class="score warn">
+      <span class="k">Content hierarchy</span>
+      <span class="v">5<small>/10</small></span>
+      <span class="bar"><i style="--w:50%"></i></span>
+      <span class="note">3&nbsp;направления&nbsp;— главное предложение бизнеса&nbsp;— отдвинуты во&nbsp;вторую секцию.</span>
+    </div>
+    <div class="score ok">
+      <span class="k">Type &amp; grid</span>
+      <span class="v">8<small>/10</small></span>
+      <span class="bar"><i style="--w:80%"></i></span>
+      <span class="note">Commissioner + JetBrains Mono, шкала clamp(), чёткая сетка. Тут всё хорошо.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HEATMAP ============ -->
+<section data-screen-label="04 Heatmap">
+  <div class="section-head">
+    <span class="num">— 03 / Hero — что&nbsp;ломает экран</span>
+    <h2>Карта проблем</h2>
+  </div>
+  <div class="heat">
+    <div class="mock" aria-hidden="true">
+      <div class="mock-grid">
+        <div class="mock-cell mc1">12 ЦВЕТОВ</div>
+        <div class="mock-cell mc2"></div>
+        <div class="mock-cell mc3"></div>
+        <div class="mock-cell mc4"></div>
+        <div class="mock-cell mc5"></div>
+        <div class="mock-cell mc6"></div>
+        <div class="mock-cell mc7"></div>
+        <div class="mock-cell mc8"></div>
+        <div class="mock-cell mc9"></div>
+        <div class="mock-cell mc10"></div>
+        <div class="mock-cell mc-center">
+          <div class="we">Мы</div>
+          <div class="br">Premium<br>Selection</div>
+          <div class="ld">создаём <em>грандиозные</em> проекты</div>
+        </div>
+        <div class="mock-cell mc11"></div>
+        <div class="mock-cell mc12"></div>
+        <div class="mock-cell mc13"></div>
+        <div class="mock-cell mc14"></div>
+        <div class="mock-cell mc15"></div>
+        <div class="mock-cell mc16"></div>
+        <div class="mock-cell mc17"></div>
+        <div class="mock-cell mc18"></div>
+      </div>
+      <div class="pin r" style="left:18%;top:18%;">1</div>
+      <div class="pin r" style="left:50%;top:52%;">2</div>
+      <div class="pin r" style="left:50%;top:64%;">3</div>
+      <div class="pin r" style="left:88%;top:50%;">4</div>
+      <div class="pin r" style="left:6%;top:6%;">5</div>
+    </div>
+    <div class="heat-list">
+      <div class="heat-item">
+        <div class="pin-static">1</div>
+        <div>
+          <h4>18 разных цветов в&nbsp;первом экране</h4>
+          <p>В&nbsp;<code>index.html</code> определены классы&nbsp;<code>.c1—.c12</code>, плюс красный фон, плюс белый текст, плюс ротация фото. Глаз воспринимает это как&nbsp;шум, а&nbsp;не&nbsp;коллаж.</p>
+        </div>
+      </div>
+      <div class="heat-item">
+        <div class="pin-static">2</div>
+        <div>
+          <h4>«Грандиозные» — <em>контент­редактируемое</em>?</h4>
+          <p>Белая плашка с&nbsp;вращающимся словом и&nbsp;<code>contenteditable</code>. Никакого визуального сигнала, что&nbsp;это можно нажать. Юзер думает&nbsp;— анимация.</p>
+        </div>
+      </div>
+      <div class="heat-item">
+        <div class="pin-static">3</div>
+        <div>
+          <h4>«Создаём ___ проекты» — главный CTA?</h4>
+          <p>Скрытый интерактивный элемент должен быть очевидным первым шагом. Сейчас он&nbsp;закопан в&nbsp;текст и&nbsp;выглядит как&nbsp;часть оформления.</p>
+        </div>
+      </div>
+      <div class="heat-item">
+        <div class="pin-static">4</div>
+        <div>
+          <h4>Кнопка «Связаться» теряется внизу</h4>
+          <p>Белая обводка на&nbsp;красном&nbsp;— это слабый контраст. Пользователь не&nbsp;понимает: «связаться сейчас»? «общая контактная страница»? Куда ведёт?</p>
+        </div>
+      </div>
+      <div class="heat-item">
+        <div class="pin-static">5</div>
+        <div>
+          <h4>Навигация на&nbsp;mix-blend-mode</h4>
+          <p>Поверх пёстрых ячеек становится нечитаемой. На&nbsp;цветных пятнах (жёлтый, зелёный) даёт неожиданные оттенки. Логотип теряется.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINDINGS ============ -->
+<section data-screen-label="05 Findings">
+  <div class="section-head">
+    <span class="num">— 04 / Находки</span>
+    <h2>14 проблем,<br>по&nbsp;приоритетам</h2>
+  </div>
+  <div class="findings">
+
+    <!-- P0 -->
+    <div class="find">
+      <div class="head">
+        <span class="pri p0">P0 · CRITICAL</span>
+        <span class="id">F-01 · index hero</span>
+      </div>
+      <div>
+        <h4>Главная CTA не&nbsp;опознаётся</h4>
+        <p>«Связаться» внизу hero&nbsp;— белый текст в&nbsp;белой обводке на&nbsp;красном. На&nbsp;первом экране пользователь должен видеть <em>один</em> главный шаг. Сейчас глаз скачет между плашкой «грандиозные», 12&nbsp;цветными ячейками и&nbsp;текстом-манифестом.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .bottom .cta</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Сделать CTA-блок: белая заливка, чёрный текст, яркая стрелка. Над&nbsp;ним&nbsp;— лид одной строкой. Если оставить две&nbsp;кнопки&nbsp;— первая solid, вторая ghost.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p0">P0 · CRITICAL</span>
+        <span class="id">F-02 · index hero</span>
+      </div>
+      <div>
+        <h4>Слишком много цветов в&nbsp;ячейках</h4>
+        <p>12 разных хексов <code>.c1–.c12</code> + 18&nbsp;блоков сетки + ротация фото. Это конкурирует с&nbsp;центральным сообщением и&nbsp;создаёт «пёстрость», на&nbsp;которую жалуется клиент.</p>
+        <p class="where"><b>Где:</b> <code>index.html · :root + .grid</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Свести палитру ячеек к&nbsp;3&nbsp;тонам: <em>ink</em>, <em>red-shade</em>, <em>paper</em>. Фото-мокапы оставить&nbsp;— они&nbsp;и&nbsp;есть «цвет». Между фото&nbsp;— однотонный фон, не&nbsp;«радуга».</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p0">P0 · CRITICAL</span>
+        <span class="id">F-03 · index hero</span>
+      </div>
+      <div>
+        <h4>Affordance плашки «грандиозные»</h4>
+        <p>Слово в&nbsp;белой плашке имеет три состояния: ротация (анимация), contenteditable (ввод), Enter→modal (CTA). Ничто из&nbsp;этого не&nbsp;считывается визуально. Это самая интерактивная штука на&nbsp;сайте, и&nbsp;она&nbsp;же&nbsp;— самая невидимая.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .center .lede em#rotWord</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Дать плашке вид input-поля: punctir-обводка, иконка карандаша справа, мини-подпись «впишите своё&nbsp;→ ТЗ». Курсор появляется на&nbsp;hover, а&nbsp;не&nbsp;только на&nbsp;focus.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p0">P0 · CRITICAL</span>
+        <span class="id">F-04 · navigation</span>
+      </div>
+      <div>
+        <h4>Нав-меню на&nbsp;mix-blend-mode не&nbsp;читается</h4>
+        <p>Над&nbsp;жёлтой <code>.c5</code> ячейкой поверх красного&nbsp;— mix-blend-mode даёт грязно-фиолетовый оттенок. Логотип сливается. На&nbsp;тёмных фотографиях — переходит в&nbsp;серый.</p>
+        <p class="where"><b>Где:</b> <code>styles.css · .nav { mix-blend-mode: difference }</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Вместо blend-mode&nbsp;— sticky nav с&nbsp;тонкой подложкой <code>backdrop-filter:blur(8px)</code> + полупрозрачный фон, меняющийся по&nbsp;скроллу. Логотип всегда контрастный.</p>
+      </div>
+    </div>
+
+    <!-- P1 -->
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-05 · index structure</span>
+      </div>
+      <div>
+        <h4>Три направления&nbsp;— это&nbsp;главное, а&nbsp;не&nbsp;вторая секция</h4>
+        <p>Бизнес-модель компании&nbsp;— Marketing&nbsp;&amp; Research / Production / IT. Это первое, что должен видеть посетитель. Сейчас он&nbsp;скроллит мимо коллажа, чтобы добраться до&nbsp;них.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .directions</code> (после hero)</p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Сократить hero до&nbsp;высоты ~70vh, чтобы первая строка направлений уже&nbsp;«peek»-ала снизу. Или&nbsp;добавить 3&nbsp;явные кнопки-пилюли «M&amp;R / Production / IT» прямо в&nbsp;hero под&nbsp;CTA.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-06 · navigation</span>
+      </div>
+      <div>
+        <h4>«Диагностика» = «Discover» — два&nbsp;названия одного</h4>
+        <p>В&nbsp;нав-меню&nbsp;— «Диагностика». В&nbsp;hero на&nbsp;direction-страницах ведёт на&nbsp;<code>discover.html</code>&nbsp;— он&nbsp;же&nbsp;«ТЗ-генератор» в&nbsp;коде. Три названия одной фичи.</p>
+        <p class="where"><b>Где:</b> <code>app.js · NAV_HTML</code> + <code>discover.html · &lt;title&gt;</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Выбрать одно: «ТЗ за&nbsp;3&nbsp;минуты» или&nbsp;«Brief». Использовать его везде. «Диагностика» воспринимается как&nbsp;медицинская услуга&nbsp;— уберите.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-07 · works</span>
+      </div>
+      <div>
+        <h4>Кейсы без&nbsp;кейса</h4>
+        <p>Карточки работ&nbsp;— это фото&nbsp;+ заголовок. Нет&nbsp;клиента, нет&nbsp;задачи, нет&nbsp;результата. Все ссылки <code>href="#"</code>. У&nbsp;посетителя нет&nbsp;ни&nbsp;единого повода поверить, что&nbsp;вы можете решить его задачу.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .works-grid</code> + <code>works.html</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Минимум: для&nbsp;каждой карточки&nbsp;— клиент, задача в&nbsp;одну строку, метрика результата (рост&nbsp;%, объём, срок). Пусть это будет 3&nbsp;кейса вместо&nbsp;7&nbsp;«мерч-фоток».</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-08 · discover</span>
+      </div>
+      <div>
+        <h4>ТЗ-визард: 8&nbsp;шагов&nbsp;— это много</h4>
+        <p>До&nbsp;контактов&nbsp;— 7&nbsp;шагов с&nbsp;по&nbsp;6–24 опции на&nbsp;экран. Шаг&nbsp;6 («что нам сделать») — 24&nbsp;кнопки. Это пугает. Cтартап-юзер закроет на&nbsp;шаге 3.</p>
+        <p class="where"><b>Где:</b> <code>discover.html · steps 1–8</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Свернуть до&nbsp;5: цель → отрасль (включая размер) → что&nbsp;есть/что&nbsp;нужно (один шаг с&nbsp;двумя колонками) → срок+бюджет → контакты. Шаг&nbsp;6 разделить на&nbsp;3&nbsp;направления M&amp;R/Prod/IT и&nbsp;показывать только релевантные.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-09 · trust</span>
+      </div>
+      <div>
+        <h4>Цифры без&nbsp;контекста</h4>
+        <p>«240+ проектов · 12&nbsp;стран · 03&nbsp;направления». Без&nbsp;логотипов клиентов, без&nbsp;года, без&nbsp;примеров&nbsp;— это just numbers. Trust-bar в&nbsp;коде есть (<code>.trust-marquee</code>), но&nbsp;на&nbsp;index.html не&nbsp;используется.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .stats</code> vs <code>styles.css · .trust</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Под&nbsp;цифрами&nbsp;— ряд логотипов клиентов (<code>.trust-marquee</code> уже&nbsp;есть в&nbsp;styles.css&nbsp;— просто включите). 8–12 логотипов&nbsp;в&nbsp;ч/б. Это закрывает «12 стран» доказательством.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p1">P1 · MAJOR</span>
+        <span class="id">F-10 · contact</span>
+      </div>
+      <div>
+        <h4>Три почти-одинаковых contact-card</h4>
+        <p>На&nbsp;контактах&nbsp;— три карточки M&amp;R/Prod/IT с&nbsp;идентичной структурой. Менеджер указан строкой <em>«Менеджер — А.&nbsp;Рахимов»</em>&nbsp;— без&nbsp;фото, без&nbsp;должности. Пользователь не&nbsp;понимает, к&nbsp;кому он&nbsp;обращается.</p>
+        <p class="where"><b>Где:</b> <code>index.html · .contact-grid</code></p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Фото менеджера, должность, лет в&nbsp;команде. Один WhatsApp/Telegram-чип («Написать в&nbsp;Telegram»)&nbsp;— это снимет 80% «не&nbsp;знаю, что&nbsp;писать на&nbsp;email».</p>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="find">
+      <div class="head">
+        <span class="pri p2">P2 · MINOR</span>
+        <span class="id">F-11 · type</span>
+      </div>
+      <div>
+        <h4>«ВСЕ КАПСОМ» — слишком много</h4>
+        <p>Заголовки секций, направления, hero, footer&nbsp;— всё <code>text-transform:uppercase</code>. Глаз устаёт, при&nbsp;скане все слова одинаковые «башенки».</p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Капс оставить только на&nbsp;display-уровне (h1, направления). h2 секций и&nbsp;карточки&nbsp;— sentence case. Это даст естественный ритм.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p2">P2 · MINOR</span>
+        <span class="id">F-12 · directions hover</span>
+      </div>
+      <div>
+        <h4>Hover-only откровения</h4>
+        <p>В&nbsp;<code>.service</code>, <code>.case</code>, <code>.person</code> — ключевая инфа (что&nbsp;входит в&nbsp;услугу, цитата сотрудника, метрика кейса) спрятана за&nbsp;hover. На&nbsp;тачскрине этого hover-а нет&nbsp;— и&nbsp;инфы нет.</p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Показывать metric/key-point всегда, hover только усиливает. На&nbsp;тач — добавить tap-to-expand с&nbsp;явной иконкой&nbsp;«+».</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p2">P2 · MINOR</span>
+        <span class="id">F-13 · footer</span>
+      </div>
+      <div>
+        <h4>Брендмарк <code>P/S.</code> ≠ логотип в&nbsp;шапке</h4>
+        <p>В&nbsp;шапке&nbsp;— <em>P</em> и&nbsp;<em>S</em> с&nbsp;диагональной чертой. В&nbsp;футере&nbsp;— текст «P/S.». Два разных знака для&nbsp;одного бренда.</p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Один логотип-символ. Footer-mark&nbsp;— увеличенная версия того&nbsp;же&nbsp;<code>#logo-ps-mini</code>.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="head">
+        <span class="pri p2">P2 · MINOR</span>
+        <span class="id">F-14 · accessibility</span>
+      </div>
+      <div>
+        <h4>Контраст и&nbsp;motion</h4>
+        <p>Хорошо: <code>prefers-reduced-motion</code> уважается, <code>focus-visible</code> есть. Плохо: <code>--dim-2 = rgba(255,255,255,.55)</code> на&nbsp;красном&nbsp;— контраст ~3.0, ниже WCAG&nbsp;AA для&nbsp;текста.</p>
+      </div>
+      <div class="fix">
+        <h5>→ Решение</h5>
+        <p>Поднять <code>--dim-2</code> до&nbsp;.72 на&nbsp;красном фоне. Mono-метки 11px&nbsp;— это уже LARGE-text по&nbsp;WCAG, но&nbsp;для&nbsp;descriptions сделать .85.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ FIX TABLE ============ -->
+<section data-screen-label="06 Fix table">
+  <div class="section-head">
+    <span class="num">— 05 / Roadmap</span>
+    <h2>Что&nbsp;<em>чинить</em>&nbsp;и в каком порядке</h2>
+  </div>
+  <div class="fixtbl">
+    <div class="fixtbl-head">
+      <div>ID</div><div>PRI</div><div>Что</div><div>Эффект</div><div>Усилие</div><div>Impact</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-01</b></div>
+      <div data-l="PRI"><span class="pri p0">P0</span></div>
+      <div data-l="Что">Поднять CTA в&nbsp;hero, дать solid-вид</div>
+      <div data-l="Эффект">+30–50% кликов на&nbsp;«связаться»</div>
+      <div data-l="Усилие" class="effort">XS · 1ч</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-02</b></div>
+      <div data-l="PRI"><span class="pri p0">P0</span></div>
+      <div data-l="Что">Свести палитру ячеек к&nbsp;3&nbsp;тонам</div>
+      <div data-l="Эффект">Снимает жалобу «пёстро»</div>
+      <div data-l="Усилие" class="effort">S · 3ч</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-03</b></div>
+      <div data-l="PRI"><span class="pri p0">P0</span></div>
+      <div data-l="Что">Affordance для&nbsp;«грандиозные»-плашки</div>
+      <div data-l="Эффект">+ конверсия в&nbsp;ТЗ-генератор</div>
+      <div data-l="Усилие" class="effort">S · 4ч</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-04</b></div>
+      <div data-l="PRI"><span class="pri p0">P0</span></div>
+      <div data-l="Что">Заменить mix-blend-mode на&nbsp;blur+bg</div>
+      <div data-l="Эффект">Логотип всегда читаем</div>
+      <div data-l="Усилие" class="effort">XS · 30мин</div>
+      <div data-l="Impact" class="impact med">Med</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-05</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Ужать hero, направления выше fold</div>
+      <div data-l="Эффект">Юзер сразу видит, что&nbsp;это студия 3-в-1</div>
+      <div data-l="Усилие" class="effort">M · 6ч</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-06</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Унифицировать «Диагностика/Discover/ТЗ»</div>
+      <div data-l="Эффект">Снимает когнитивный диссонанс</div>
+      <div data-l="Усилие" class="effort">XS · 30мин</div>
+      <div data-l="Impact" class="impact med">Med</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-07</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Кейсы с&nbsp;клиентом+метрикой</div>
+      <div data-l="Эффект">Главный фактор доверия</div>
+      <div data-l="Усилие" class="effort">L · 2 дня</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-08</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Сократить визард до&nbsp;5&nbsp;шагов</div>
+      <div data-l="Эффект">+ completion rate 2–3×</div>
+      <div data-l="Усилие" class="effort">M · 8ч</div>
+      <div data-l="Impact" class="impact high">High</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-09</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Включить trust-marquee с&nbsp;логотипами</div>
+      <div data-l="Эффект">Превращает «12 стран» в&nbsp;факт</div>
+      <div data-l="Усилие" class="effort">S · 4ч</div>
+      <div data-l="Impact" class="impact med">Med</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-10</b></div>
+      <div data-l="PRI"><span class="pri p1">P1</span></div>
+      <div data-l="Что">Контакт-карточки с&nbsp;фото менеджера+TG</div>
+      <div data-l="Эффект">Снижает порог входа</div>
+      <div data-l="Усилие" class="effort">S · 3ч</div>
+      <div data-l="Impact" class="impact med">Med</div>
+    </div>
+    <div class="fixtbl-row">
+      <div data-l="ID"><b>F-11..14</b></div>
+      <div data-l="PRI"><span class="pri p2">P2</span></div>
+      <div data-l="Что">Капс, hover-инфа, лого, контраст</div>
+      <div data-l="Эффект">Полировка</div>
+      <div data-l="Усилие" class="effort">M · 1 день</div>
+      <div data-l="Impact" class="impact low">Low</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEXT STEPS ============ -->
+<section data-screen-label="07 Next">
+  <div class="section-head">
+    <span class="num">— 06 / Дальше</span>
+    <h2>Три пути</h2>
+  </div>
+  <div class="next-grid">
+    <div class="next-card">
+      <span class="num">A · Точечно</span>
+      <h4>Только&nbsp;P0</h4>
+      <p>Чинит самое больное за&nbsp;1&nbsp;день: CTA, палитра ячеек, плашка-инпут, навигация. Жалоба клиента закрывается, остальное&nbsp;— как&nbsp;было.</p>
+    </div>
+    <div class="next-card">
+      <span class="num">B · Редизайн hero</span>
+      <h4>Новый главный экран</h4>
+      <p>Сделать 2–3&nbsp;варианта hero с&nbsp;явной иерархией: лид&nbsp;— CTA&nbsp;— 3&nbsp;направления. Тестировать. Остальное оставить.</p>
+    </div>
+    <div class="next-card">
+      <span class="num">C · Системно</span>
+      <h4>Дизайн-система v2</h4>
+      <p>Цветной токены, кнопки 3-х&nbsp;типов, карточки, секции. Применить ко&nbsp;всем 11&nbsp;страницам. Это закладывает фундамент на&nbsp;год вперёд.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<div class="foot">
+  <span><strong>Premium Selection</strong> — UX/UI Audit · 28.04.2026</span>
+  <span>14 findings · 4 P0 · 6 P1 · 4 P2</span>
+  <span>v1.0 · Internal</span>
+</div>
+
+</body>
+</html>
